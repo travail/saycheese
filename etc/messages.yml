@@ -1,0 +1,47 @@
+---
+sex_add :
+  sex_name_ja :
+    DEFAULT :
+    NOT_BLANK : 性別名は必ず入力してください。
+  sex_name_en :
+    DEFAULT :
+    ASCII : 性別名（英語）は半角英字で入力してください。
+
+pref_edit :
+  pref_name_ja :
+    DEFAULT :
+    NOT_BLANK : 都道府県名は必ず入力してください。
+  pref_name_en :
+    DEFAULT :
+    ASCII : 都道府県名（英語）は半角英字で入力してください。
+
+group_add :
+  group_name_ja :
+    DEFAULT :
+    NOT_BLANK : グループは必ず入力してください。
+  group_name_en :
+    DEFAULT :
+    ASCII : グループ（英語）は半角英字で入力してください。
+
+user_add :
+  password :
+    DEFAULT :
+    NOT_BLANK : 必ず入力してください。
+    LENGTH : 6文字以上24文字以内で入力してください。
+    ASCII : パスワードは半角英数字で入力してください。
+  email :
+    DEFAULT :
+    NOT_BLANK : 必ず入力してください。
+
+member_add :
+  password :
+    DEFAULT :
+    NOT_BLANK : 必ず入力してください。
+    LENGTH : 6文字以上24文字以内で入力してください。
+    ASCII : パスワードは半角英数字で入力してください。
+  member_name_ja :
+    DEFAULT :
+    NOT_BLANK : 氏名は必ず入力してください。
+  email :
+    DEFAULT :
+    NOT_BLANK : メールアドレスは必ず入力してください。

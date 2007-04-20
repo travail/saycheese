@@ -1,0 +1,17 @@
+---
+
+login/:
+  user_name:
+    - rule: NOT_BLANK
+      message: "ユーザー名は必ず入力してください。"
+  password:
+    - rule: NOT_BLANK
+      message: "パスワードは必ず入力してください。"
+
+user/join/exec:
+  user_name:
+    - rule: NOT_BLANK
+      message: "ユーザー名は必ず入力してください。"
+  password:
+    - rule: NOT_BLANK
+      message: "パスワードは必ず入力してください。"
