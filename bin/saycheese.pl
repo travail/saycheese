@@ -52,9 +52,9 @@ sub client_input {
     my $thumb  = sprintf q{%s/%s.%s}, SayCheese->config->{thumbnail}->{thumbnail_path}, $obj->id, $obj->extention;
     $img->Scale( width => 256, height => 256 );
     my $cpy = $img->Clone;
-    $cpy->Crop( height => 0, y => 29 );
-    $cpy->Crop( height => 168, y => 0 );
-    $cpy->Crop( width => 208, x => 0 );
+    $cpy->Crop( width => 0, height => 0, x => 0, y => 29 );
+    $cpy->Crop( width => 0, height => 168, x => 0, y => 0 );
+    $cpy->Crop( width => 208, height => 0, x => 0, y => 0 );
     $cpy->Write( $thumb );
     unlink $tmp;
 

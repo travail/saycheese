@@ -106,8 +106,8 @@ sub recent_thumbnails: Local {
 
 =cut
 
-sub api : PathPart('api') Chained('') Arg(1) {
-    my ( $self, $c, $schema ) = @_;
+sub api : PathPart('api') Chained('') Args('') {
+    my ( $self, $c ) = @_;
 
     my $url = $c->req->path;
     $url =~ s/^api\///;
@@ -119,7 +119,7 @@ sub api : PathPart('api') Chained('') Arg(1) {
         $c->stash->{thumbnail} = $obj;
         $c->output_html;
     } else {
-        die;
+        $c->res->redirect('/');
     }
 }
 
