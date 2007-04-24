@@ -1,0 +1,145 @@
+@charset "EUC-JP";
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:link {
+  color: [% site.col.text %];
+  background: transparent;
+}
+
+a:visited {
+  color: [% site.col.text %];
+  background: transparent;
+}
+
+a:hover, a:active {
+  color: [% site.col.text %];
+  background: transparent;
+}
+
+strong {
+  font-weight: bold;
+}
+
+input {
+  font-size: 0.8em;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5em;
+  font-family: "Lucida Grande", Arial, Helvetica, Verdana, sans-serif;
+  color: [% site.col.text %];
+  background: [% site.col.page %];
+  text-align: center;
+}
+
+#container {
+  text-align: left;
+}
+
+.sidebar {
+  width: 250px;
+  margin-top: 30px;
+  float: right;
+}
+
+#alpha {
+  padding: 0 10px;
+}
+
+#beta {
+  margin: 30px 10px 0px 10px;
+}
+
+#content {}
+
+#saycheese {
+  height: 200px;
+  text-align: center;
+  padding: 30px;
+}
+
+#thumbnail {
+  padding: 10px;
+}
+
+div.thumbnail-content {
+  background: [% site.rgb.white %];
+}
+
+div.thumbnail-title {
+  padding: 0.5em 0.5em;
+  font-size: 1.2em;
+  background: url([% base %]static/images/stripe_3_3.png);
+}
+
+.thumbnail-title a {
+  color: [% site.col.anchor %];
+  background: transparent;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+img.thumbnails {
+  display: inline;
+}
+
+div.thumbnail-body {
+  padding: 0.5em 1em;
+  font-size: 1em;
+}
+
+.thumb-delete {
+  cursor: pointer;
+  color: [% site.col.anchor %];
+  background: transparent;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.thumbnail-body a {
+  color: [% site.col.anchor %];
+  background: transparent;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+#gamma {
+  float: right;
+  width: 200px;
+  margin-top: 30px;
+}
+
+/* header
+---------------------------------------------------- */
+#header {
+  padding: 20px;
+/*  color: [% site.rgb.white %];*/
+/*  background: [% site.col.line %];*/
+  text-align: center;
+}
+
+h1 {
+  font-size: 3em;
+  padding: 0.2em;
+}
+
+/* footer
+---------------------------------------------------- */
+#footer {
+  height: 290px;
+  clear: both;
+  overflow: hidden;
+  border-top: 1px solid [% site.col.line %];
+  background-image: url([% base %]static/images/stripe_2_2.png);
+  background-repeat: repeat-x repeat-y;
+}

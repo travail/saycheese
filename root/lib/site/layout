@@ -1,0 +1,7 @@
+<div id="container">
+<div id="header">[% PROCESS site/header %]</div>
+
+[% content %]
+
+<div id="footer">[% PROCESS site/footer %]</div>
+</div>

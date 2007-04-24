@@ -1,0 +1,23 @@
+[% site.rgb = {
+     black  = '#000000'
+     white  = '#ffffff'
+     grey1  = '#545454'
+     grey2  = '#cccccc'
+     grey3  = '#f2f2f2'
+     red    = '#CC4444'
+     green  = '#66AA66'
+     blue1  = '#0099cc'
+     blue2  = '#89b8df'
+     orange = '#f08900'
+   };
+
+   site.col = {
+      page    = site.rgb.white
+      text    = site.rgb.grey1
+      head    = site.rgb.grey3
+      line    = site.rgb.grey2
+      message = site.rgb.green
+      error   = site.rgb.red
+      anchor  = site.rgb.blue1
+   };
+%]

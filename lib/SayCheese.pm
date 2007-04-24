@@ -13,7 +13,14 @@ use Catalyst::Runtime '5.70';
 # Static::Simple: will serve static files from the application's root 
 #                 directory
 
-use Catalyst qw/-Debug ConfigLoader Static::Simple/;
+use Catalyst qw/
+   -Debug
+   ConfigLoader
+   Charsets::Japanese
+   DateTime::Constructor
+   DBIC::Profiler
+   Dumper
+/;
 
 our $VERSION = '0.01';
 
@@ -26,12 +33,40 @@ our $VERSION = '0.01';
 # with a external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( name => 'SayCheese' );
+__PACKAGE__->config( file => __PACKAGE__->config->{home} . '/etc/saycheese.yml' );
 
 # Start the application
 __PACKAGE__->setup;
 
+=head2 thumbnail
 
+=cut
+
+sub thumbnail : Private { shift->model('DBIC::SayCheese::Thumbnail') }
+
+
+=head2 output_json
+
+=cut
+
+sub output_json : Private {
+    my $c = shift;
+
+    $c->stash->{only_json} = 1;
+    $c->forward('View::JSON');
+}
+
+
+=head2 output_html
+
+=cut
+
+sub output_html : Private {
+    my $c = shift;
+
+    $c->stash->{only_html} = 1;
+    $c->forward('View::HTML');
+}
 =head1 NAME
 
 SayCheese - Catalyst based application

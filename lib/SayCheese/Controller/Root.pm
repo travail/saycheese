@@ -29,8 +29,17 @@ SayCheese::Controller::Root - Root Controller for SayCheese
 sub default : Private {
     my ( $self, $c ) = @_;
 
-    # Hello World
-    $c->response->body( $c->welcome_message );
+    my $req = $c->req;
+    my $itr_thumbnail = $c->thumbnail->search(
+        {},
+        {
+            order_by => 'id DESC',
+#            rows     => 10,
+#            page     => 1,
+        },
+    );
+
+    $c->stash->{itr_thumbnail} = $itr_thumbnail;
 }
 
 =head2 end
@@ -39,7 +48,16 @@ Attempt to render a view, if needed.
 
 =cut 
 
-sub end : ActionClass('RenderView') {}
+sub end : ActionClass('RenderView') {
+    my ( $self, $c ) = @_;
+
+    return if $c->res->status =~ /^3\d\d$/;
+    return if $c->stash->{only_json};
+    return if $c->stash->{only_html};
+
+    $c->stash->{template} = $c->action->reverse . '.tt' unless $c->stash->{template};
+    $c->forward('View::TT');
+}
 
 =head1 AUTHOR
 

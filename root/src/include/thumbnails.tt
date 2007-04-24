@@ -1,0 +1,16 @@
+      [% WHILE (thumbnail = itr_thumbnail.next) %]
+      <div class="thumbnail-content">
+        <div class="thumbnail-title">
+          <span id="title-url[% thumbnail.id %]" class="url"><a href="[% thumbnail.url %]" target="_blank">[% thumbnail.url %]</a></span>
+        </div>
+        <div class="thumbnail-body">
+          <a href="[% thumbnail.url %]" target="_blank">[% thumbnail.img %]</a>
+          <span style="vertical-align: top;">
+            API:<a href="[% base %]api/[% thumbnail.url %]" target="_blank">[% base %]api/[% thumbnail.url %]</a><br />
+            [% thumbnail.created_on.ymd %] [% thumbnail.created_on.hms %]
+            <span id="thumb-delete[% thumbnail.id %]" class="thumb-delete" onclick="DeleteThumbnail([% thumbnail.id %])">DELETE</span>
+          
+          </span>
+        </div>
+      </div>
+      [% END %]
