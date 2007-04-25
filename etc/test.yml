@@ -1,0 +1,22 @@
+---
+DEBUG: all
+
+name: SayCheese
+
+charsets:
+  in: EUC-JP
+  out: UTF-8
+
+dbic_profiler:
+  model_name: DBIC::SayCheese
+
+View::JSON:
+  json_driver: JSON::Syck
+  expose_stash: json_data
+  encoding: euc-jp
+
+saycheese:
+  port: 123456
+
+thumbnail:
+  thumbnail_path: __path_to(root/static/thumbnail/)__

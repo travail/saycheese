@@ -14,7 +14,6 @@ use SayCheese::Schema;
 
 
 $ENV{DISPLAY} = ':1.0';
-
 POE::Component::Server::TCP->new(
     Port        => SayCheese->config->{saycheese}->{port},
     ClientInput => \&client_input,
