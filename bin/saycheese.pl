@@ -2,16 +2,14 @@
 
 use warnings;
 use strict;
-use POE;
-use POE::Component::Server::TCP;
 use FindBin;
-
-use Data::Dumper;
-use Image::Magick;
 use lib "$FindBin::Bin/../lib";
 use SayCheese;
 use SayCheese::Schema;
-
+use POE;
+use POE::Component::Server::TCP;
+use Image::Magick;
+use Data::Dumper;
 
 $ENV{DISPLAY} = ':1.0';
 POE::Component::Server::TCP->new(
