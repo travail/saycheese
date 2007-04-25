@@ -1,5 +1,5 @@
 function ShowIndicator() {
-  $('thumbnail').innerHTML = '<img id="thumbnail_path" width="32" height="32" src="/static/images/loading.gif" alt="Loading..." />';
+  $('thumbnail').innerHTML = '<img id="thumbnail_path" width="192" height="14" src="/static/images/progress_bar.gif" alt="Loading..." />';
 }
 
 function ShowBouncing(id) {
@@ -28,6 +28,8 @@ function DeleteThumbnail(id) {
 }
 
 function Thumbnail(url) {
+  if (!url) { return; }
+
   new Ajax.Request('/ajaxrequest/thumbnail/create', {
     method: 'get',
     parameters:    '&url=' + url,
@@ -51,8 +53,12 @@ function Thumbnail(url) {
 }
 
 function ShowThumbnail(obj) {
-  $('thumbnail_path').src    = '/static/thumbnail/' + obj.id + '.' + obj.extention;
-  $('thumbnail_path').alt    = obj.thumbnail_name;
-  $('thumbnail_path').width  = obj.width;
-  $('thumbnail_path').height = obj.height;
+  if (obj.id) {
+    $('thumbnail_path').src    = '/static/thumbnail/' + obj.id + '.' + obj.extention;
+    $('thumbnail_path').alt    = obj.thumbnail_name;
+    $('thumbnail_path').width  = obj.width;
+    $('thumbnail_path').height = obj.height;
+  } else {
+    $('thumbnail').innerHTML = '';
+  }
 }
