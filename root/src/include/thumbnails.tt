@@ -4,13 +4,24 @@
           <span id="title-url[% thumbnail.id %]" class="url"><a href="[% thumbnail.url %]" target="_blank">[% thumbnail.url %]</a></span>
         </div>
         <div class="thumbnail-body">
+
+<table>
+<tr><td rowspan="5"><a href="[% thumbnail.url %]" target="_blank">[% thumbnail.img %]</a></td></tr>
+<tr><td>API:<a href="[% base %]api/[% thumbnail.url %]" target="_blank">[% base %]api/[% thumbnail.url %]</a></td></tr>
+<tr><td>[% thumbnail.created_on.ymd %] [% thumbnail.created_on.hms %]</td></tr>
+<tr><td><span id="thumb-delete[% thumbnail.id %]" class="thumb-delete" onclick="DeleteThumbnail([% thumbnail.id %])">DELETE</span></td></tr>
+<tr><td><textarea cols="64" rows="4" nowrap="nowrap"><a href="[% thumbnail.url %]"><img src="[% base %]api/[% thumbnail.url %]" width="[% thumbnail.width %]" height="[% thumbnail.height %]" border="0" alt="" /></a></textarea></td></tr>
+</table>
+<!--
           <a href="[% thumbnail.url %]" target="_blank">[% thumbnail.img %]</a>
           <span style="vertical-align: top;">
             API:<a href="[% base %]api/[% thumbnail.url %]" target="_blank">[% base %]api/[% thumbnail.url %]</a><br />
             [% thumbnail.created_on.ymd %] [% thumbnail.created_on.hms %]
             <span id="thumb-delete[% thumbnail.id %]" class="thumb-delete" onclick="DeleteThumbnail([% thumbnail.id %])">DELETE</span>
-          
+
+            <textarea cols="64" rows="4" nowrap="nowrap"><a href="[% thumbnail.url %]"><img src="[% base %]api/[% thumbnail.url %]" width="[% thumbnail.width %]" height="[% thumbnail.height %]" border="0" alt="" /></a></textarea>
           </span>
+-->
         </div>
       </div>
       [% END %]
