@@ -1,7 +1,7 @@
   <div id="beta">
   <div id="content">
     <div id="saycheese">
-      URL:<input id="form_url" type="text" name="url" size="48" value="[% url %]" />
+      <strong>URL:</strong><input id="form_url" type="text" name="url" size="48" value="[% url %]" />
       <input id="form_request" type="button" name="request" value="Say cheese!" onclick="Thumbnail($F('form_url'))" />
       <div id="thumbnail"></div>
     </div>

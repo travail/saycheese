@@ -94,8 +94,6 @@ sub recent_thumbnails: Local {
         }
     );
 
-    $c->log->dumper( $req->param('rows') );
-
     $c->stash->{template}      = 'include/thumbnails.tt';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
     $c->output_html;
