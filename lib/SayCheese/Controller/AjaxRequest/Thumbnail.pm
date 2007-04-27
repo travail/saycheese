@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use LWP::Socket;
+use URI::Fetch;
 
 =head1 NAME
 
@@ -26,8 +27,14 @@ sub create : Local {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->param('url');
-
     unless ( $url ) {
+        $c->stash->{json_data} = {};
+        $c->output_json;
+        return;
+    }
+
+    my $res = URI::Fetch->fetch( $url );
+    unless ( $res ) {
         $c->stash->{json_data} = {};
         $c->output_json;
         return;
@@ -122,6 +129,20 @@ sub api : PathPart('api') Chained('') Args('') {
 }
 
 
+=head2 search_url
+
+=cut
+
+sub search_url : Local {
+    my ( $self, $c ) = @_;
+
+    my $url = $c->req->param('url');
+    my $itr_thumbnail = $c->thumbnail->search( { url => { LIKE => sprintf q{%s%%}, $url } }, { order_by => 'url ASC' } );
+
+    $c->stash->{template} = 'include/search_url_results.tt';
+    $c->stash->{itr_thumbnail} = $itr_thumbnail;
+    $c->output_html;
+}
 =head1 AUTHOR
 
 A clever guy

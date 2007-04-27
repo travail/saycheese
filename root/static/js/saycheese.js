@@ -1,3 +1,6 @@
+function AbleSayCheese() { $('form_request').disabled = ''; };
+function DisableSayCheese() { $('form_request').disabled = 'disabled'; }
+
 function ShowIndicator() {
   $('thumbnail').innerHTML = '<img id="thumbnail_path" width="192" height="14" src="/static/images/progress_bar.gif" alt="Loading..." />';
 }
@@ -29,6 +32,7 @@ function DeleteThumbnail(id) {
 
 function Thumbnail(url) {
   if (!url) { return; }
+  DisableSayCheese();
 
   new Ajax.Request('/ajaxrequest/thumbnail/create', {
     method: 'get',
@@ -40,30 +44,45 @@ function Thumbnail(url) {
     onInteractive: ShowIndicator(),
     onComplete:    function(request) {
       var obj = eval("("+request.responseText+")");
-      ShowThumbnail(obj);
-
-      var param = '&page=1'
-      new Ajax.Updater('thumbnails', '/ajaxrequest/thumbnail/recent_thumbnails', {
-        method: 'get',
-        parameters: param,
-        asynchronous: true
-      });
+      if (obj.id) {
+        ShowThumbnail(obj);
+        var param = '&page=1'
+        new Ajax.Updater('thumbnails', '/ajaxrequest/thumbnail/recent_thumbnails', {
+          method: 'get',
+          parameters: param,
+          asynchronous: true
+        });
+      } else {
+        $('thumbnail').innerHTML = '<div class="error">Could not get response.<br />Check the URL you input.</div>';
+      }
+      AbleSayCheese();
     }.bind(this)
   });
 }
 
 function ShowThumbnail(obj) {
-  if (obj.id) {
-    $('thumbnail_path').src    = '/static/thumbnail/' + obj.id + '.' + obj.extention;
-    $('thumbnail_path').alt    = obj.thumbnail_name;
-    $('thumbnail_path').width  = obj.width;
-    $('thumbnail_path').height = obj.height;
-  } else {
-    $('thumbnail').innerHTML = '';
-  }
+  $('thumbnail_path').src    = '/static/thumbnail/' + obj.id + '.' + obj.extention;
+  $('thumbnail_path').alt    = obj.thumbnail_name;
+  $('thumbnail_path').width  = obj.width;
+  $('thumbnail_path').height = obj.height;
 }
 
 function SelectAPIPath(id) {
   var path = 'api_path' + id;
   $(path).select();
+}
+
+function SearchURL(url) {
+  $('search_url_results').innerHTML = '';
+  var param = '&url=' + url;
+  new Ajax.Updater('search_url_results', '/ajaxrequest/thumbnail/search_url', {
+    method: 'get',
+    parameters: param,
+    asynchronous: true
+  });
+}
+
+function SelectURL(url) {
+  $('form_url').value = url;
+  $('search_url_results').innerHTML = '';
 }

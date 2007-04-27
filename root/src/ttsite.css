@@ -123,6 +123,11 @@ img.thumbnails {
   margin-top: 30px;
 }
 
+.error {
+  font-weight: bold;
+  color: [% site.col.error %];
+}
+
 /* header
 ---------------------------------------------------- */
 #header {
