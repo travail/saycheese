@@ -98,10 +98,6 @@ div.thumbnail-body {
   padding: 0.1em 0.3em;
 }
 
-.thumbnail-body img {
-  border: 1px solid [% site.col.text %];
-}
-
 .thumb-delete {
   cursor: pointer;
   color: [% site.col.anchor %];
@@ -115,6 +111,10 @@ div.thumbnail-body {
   background: transparent;
   text-decoration: underline;
   font-weight: bold;
+}
+
+img.thumbnails {
+  border: 1px solid [% site.col.text %];
 }
 
 #gamma {
