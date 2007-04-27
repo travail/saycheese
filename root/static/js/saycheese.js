@@ -62,3 +62,8 @@ function ShowThumbnail(obj) {
     $('thumbnail').innerHTML = '';
   }
 }
+
+function SelectAPIPath(id) {
+  var path = 'api_path' + id;
+  $(path).select();
+}

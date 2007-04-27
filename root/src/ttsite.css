@@ -89,13 +89,17 @@ div.thumbnail-title {
   font-weight: bold;
 }
 
-img.thumbnails {
-  display: inline;
-}
-
 div.thumbnail-body {
   padding: 0.5em 1em;
   font-size: 1em;
+}
+
+.thumbnail-body td {
+  padding: 0.1em 0.3em;
+}
+
+.thumbnail-body img {
+  border: 1px solid [% site.col.text %];
 }
 
 .thumb-delete {
