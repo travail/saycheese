@@ -96,12 +96,12 @@ sub recent_thumbnails: Local {
     my $itr_thumbnail = $c->thumbnail->search( {},
         {
             order_by => 'id DESC',
-#            rows     => $req->param('rows') || 100,
-#            page     => $req->param('page') || 1,
+            rows     => $req->param('rows') || 5,
+            page     => $req->param('page') || 1,
         }
     );
 
-    $c->stash->{template}      = 'include/thumbnails.tt';
+    $c->stash->{template}      = 'include/thumbnails.inc';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
     $c->output_html;
 }
@@ -120,7 +120,7 @@ sub api : PathPart('api') Chained('') Args('') {
     my $obj = $c->thumbnail->find_by_url( $url );
     if ( $obj ) {
         $c->res->content_type('image/png');
-        $c->stash->{template}  = 'include/thumbnail.tt';
+        $c->stash->{template}  = 'include/thumbnail.inc';
         $c->stash->{thumbnail} = $obj;
         $c->output_html;
     } else {
@@ -139,7 +139,7 @@ sub search_url : Local {
     my $url = $c->req->param('url');
     my $itr_thumbnail = $c->thumbnail->search( { url => { LIKE => sprintf q{%s%%}, $url } }, { order_by => 'url ASC' } );
 
-    $c->stash->{template} = 'include/search_url_results.tt';
+    $c->stash->{template} = 'include/search_url_results.inc';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
     $c->output_html;
 }

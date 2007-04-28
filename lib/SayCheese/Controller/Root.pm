@@ -34,8 +34,8 @@ sub default : Private {
         {},
         {
             order_by => 'id DESC',
-#            rows     => 10,
-#            page     => 1,
+            rows     => $req->param('rows') || 5,
+            page     => $req->param('page') || 1,
         },
     );
 
