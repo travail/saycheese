@@ -47,6 +47,25 @@ __PACKAGE__->setup;
 sub thumbnail : Private { shift->model('DBIC::SayCheese::Thumbnail') }
 
 
+=head2 check_thumbnail
+
+=cut
+
+sub check_thumbnails {
+    my $c = shift;
+
+    my $itr_thumbnail = $c->thumbnail->search;
+    while ( my $thumb = $itr_thumbnail->next ) {
+        my $img = sprintf q{%s/%d.%s}, $c->config->{thumbnail}->{thumbnail_path}, $thumb->id, $thumb->extention;
+        unless ( -e $img ) {
+            use IO::File;
+            my $fh = IO::File->new( $img, 'w' );
+            $fh->print( $thumb->filedata );
+        }
+    }
+}
+
+
 =head2 output_json
 
 =cut

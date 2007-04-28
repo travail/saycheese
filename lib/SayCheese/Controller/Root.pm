@@ -39,16 +39,8 @@ sub default : Private {
         },
     );
 
-    while ( my $thumb = $itr_thumbnail->next ) {
-        my $img = sprintf q{%s/%d.%s}, $c->config->{thumbnail}->{thumbnail_path}, $thumb->id, $thumb->extention;
-        unless ( -e $img ) {
-            use IO::File;
-            my $fh = IO::File->new( $img, 'w' );
-            $fh->print( $thumb->filedata );
-        }
-    }
-
-    $c->stash->{itr_thumbnail} = $itr_thumbnail->reset;
+    $c->check_thumbnails;
+    $c->stash->{itr_thumbnail} = $itr_thumbnail;
 }
 
 =head2 end
