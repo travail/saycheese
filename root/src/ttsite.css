@@ -117,6 +117,10 @@ img.thumbnails {
   border: 1px solid [% site.col.text %];
 }
 
+div.search-result {
+  cursor: pointer;
+}
+
 #gamma {
   float: right;
   width: 200px;

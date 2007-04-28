@@ -1,3 +1,3 @@
 [% WHILE (thumbnail = itr_thumbnail.next) %]
-<div onclick="SelectURL('[% thumbnail.url %]')">[% thumbnail.url %]</div>
+<div class="search-result" onclick="SelectURL('[% thumbnail.url %]')">[% thumbnail.url %]</div>
 [% END %]
