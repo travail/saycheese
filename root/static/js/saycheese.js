@@ -86,3 +86,12 @@ function SelectURL(url) {
   $('form_url').value = url;
   $('search_url_results').innerHTML = '';
 }
+
+function Paging(rows, page) {
+  var param = '&rows=' + rows + '&page=' + page;
+  new Ajax.Updater('thumbnails', '/ajaxrequest/thumbnail/recent_thumbnails', {
+    method: 'get',
+    parameters: param,
+    asynchronous: true
+  });
+}
