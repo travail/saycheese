@@ -1,3 +1,4 @@
+    <div id="pager">[% PROCESS include/pager.inc %]</div>
       [% WHILE (thumbnail = itr_thumbnail.next) %]
       <div class="thumbnail-content">
         <div class="thumbnail-title">

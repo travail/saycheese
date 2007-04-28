@@ -1,4 +1,5 @@
       [% pager = itr_thumbnail.pager%]
       [% FOREACH page = [pager.first_page .. pager.last_page] %]
-      <span class="page_num" onclick="Paging(5,[% page %])">[% page %]</span>
+      [% IF pager.current_page == page %][% class = 'active-page-num' %][% ELSE %][% class = 'page-num' %][% END %]
+      <span class="[% class %]" onclick="Paging([% pager.entries_per_page %],[% page %])" >[% page %]</span>
       [% END %]

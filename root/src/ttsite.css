@@ -129,12 +129,17 @@ img.thumbnails {
   margin: 0.2em;  
 }
 
-span.page_num {
+span.page-num {
   padding: 0 0.3em;
   border: 1px solid [% site.col.anchor %];
   cursor: pointer;
 }
 
+span.active-page-num {
+  padding: 0 0.3em;
+  border: 1px solid [% site.col.anchor %];
+  background: [% site.col.error %];
+}
 
 .error {
   font-weight: bold;
