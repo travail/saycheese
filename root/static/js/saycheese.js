@@ -74,12 +74,14 @@ function SelectAPIPath(id) {
 
 function SearchURL(url) {
   $('search_url_results').innerHTML = '';
-  var param = '&url=' + url;
-  new Ajax.Updater('search_url_results', '/ajaxrequest/thumbnail/search_url', {
-    method: 'get',
-    parameters: param,
-    asynchronous: true
-  });
+  if (url) {
+    var param = '&url=' + url;
+    new Ajax.Updater('search_url_results', '/ajaxrequest/thumbnail/search_url', {
+      method: 'get',
+      parameters: param,
+      asynchronous: true
+    });
+  }
 }
 
 function SelectURL(url) {
