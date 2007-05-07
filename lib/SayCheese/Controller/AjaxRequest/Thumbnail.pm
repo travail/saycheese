@@ -18,7 +18,6 @@ Catalyst Controller.
 
 =cut
 
-
 =head2 create
 
 =cut
@@ -50,7 +49,7 @@ sub create : Local {
             my $id = undef;
             $socket->read( \$id );
             $socket = undef;
-            $obj = $c->thumbnail->find( $id );
+            $obj    = $c->thumbnail->find( $id );
         }
     } else {
         my $socket = LWP::Socket->new;
@@ -59,13 +58,12 @@ sub create : Local {
         my $id = undef;
         $socket->read( \$id );
         $socket = undef;
-        $obj = $c->thumbnail->find( $id );
+        $obj    = $c->thumbnail->find( $id );
     }
 
     $c->stash->{json_data} = $obj->as_hashref;
     $c->output_json;
 }
-
 
 =head2 delete
 
@@ -83,7 +81,6 @@ sub delete : Local {
 
     $c->res->redirect('resent_thumbnails');
 }
-
 
 =head2 recent_thumbnails
 
@@ -106,7 +103,6 @@ sub recent_thumbnails: Local {
     $c->output_html;
 }
 
-
 =head2 api
 
 =cut
@@ -116,6 +112,11 @@ sub api : PathPart('api') Chained('') Args('') {
 
     my $url = $c->req->path;
     $url =~ s/^api\///;
+    my $param = undef;
+    if ( %{$c->req->parameters} ) {
+        $param .= sprintf q{%s=%s}, $_, $c->req->parameters->{$_} foreach keys %{$c->req->parameters};
+        $url .= '?' . $param;
+    }
 
     my $obj = $c->thumbnail->find_by_url( $url );
     if ( $obj ) {
@@ -128,7 +129,6 @@ sub api : PathPart('api') Chained('') Args('') {
     }
 }
 
-
 =head2 search_url
 
 =cut
@@ -139,10 +139,11 @@ sub search_url : Local {
     my $url = $c->req->param('url');
     my $itr_thumbnail = $c->thumbnail->search( { url => { LIKE => sprintf q{%s%%}, $url } }, { order_by => 'url ASC' } );
 
-    $c->stash->{template} = 'include/search_url_results.inc';
+    $c->stash->{template}      = 'include/search_url_results.inc';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
     $c->output_html;
 }
+
 =head1 AUTHOR
 
 A clever guy
