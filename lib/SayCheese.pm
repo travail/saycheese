@@ -46,7 +46,6 @@ __PACKAGE__->setup;
 
 sub thumbnail : Private { shift->model('DBIC::SayCheese::Thumbnail') }
 
-
 =head2 check_thumbnail
 
 =cut
@@ -65,7 +64,6 @@ sub check_thumbnails {
     }
 }
 
-
 =head2 output_json
 
 =cut
@@ -77,7 +75,6 @@ sub output_json : Private {
     $c->forward('View::JSON');
 }
 
-
 =head2 output_html
 
 =cut
@@ -88,6 +85,8 @@ sub output_html : Private {
     $c->stash->{only_html} = 1;
     $c->forward('View::HTML');
 }
+
+
 =head1 NAME
 
 SayCheese - Catalyst based application
