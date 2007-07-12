@@ -19,6 +19,7 @@ use Catalyst qw/
    Charsets::Japanese
    DateTime::Constructor
    DBIC::Profiler
+   Static::Simple
    Dumper
 /;
 
