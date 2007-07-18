@@ -24,7 +24,7 @@ sub client_input {
 
     ## make tmp image file
     my $tmp = sprintf q{%s/%d-%d.png}, SayCheese->config->{thumbnail}->{thumbnail_path}, time, $$;
-    `firefox & firefox -display localhost:1 -remote "openurl($url), -new-window" -browser`;
+    `firefox & firefox -display localhost:1 -remote "openurl($url, new_window)" -browser`;
     sleep 8;
     `import -display :1 -window root -silent $tmp`;
 
