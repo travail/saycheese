@@ -16,10 +16,9 @@ use Catalyst::Runtime '5.70';
 use Catalyst qw/
    -Debug
    ConfigLoader
-   Charsets::Japanese
+   Static::Simple
    DateTime::Constructor
    DBIC::Profiler
-   Static::Simple
    Dumper
 /;
 

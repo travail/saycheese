@@ -56,6 +56,7 @@ sub client_input {
     unlink $tmp;
 
     my ( $width, $height, $filesize ) = $cpy->Get( 'width', 'height', 'filesize' );
+    ## Return id, or undef.
     if ( $obj ) {
         $obj->width( $width );
         $obj->height( $height );
