@@ -58,7 +58,7 @@ sub create : Local {
             job_servers => $c->config->{job_serbers},
         );
         my $args = freeze( \$url );
-        $client->dispatch_backgrount( 'saycheese', \$args, {} );
+        $client->dispatch_background( 'saycheese', \$args, {} );
     }
 
     $c->stash->{json_data} = $obj->as_hashref;
