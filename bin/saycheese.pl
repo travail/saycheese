@@ -8,7 +8,6 @@ use SayCheese;
 use SayCheese::Schema;
 use Gearman::Worker;
 use Image::Magick;
-use Storable qw/ thaw /;
 
 $ENV{DISPLAY} = ':1.0';
 my $worker = Gearman::Worker->new(
@@ -19,7 +18,7 @@ $worker->register_function(
         my $job = shift;
 
         ## make tmp image file
-        my $url = thaw( $job->arg );
+        my $url = $job->arg;
         my $tmp = sprintf q{%s/%d-%d.png}, SayCheese->config->{thumbnail}->{thumbnail_path}, time, $$;
         `firefox & firefox -display localhost:1 -remote "openurl($url)"`;
         sleep 8;

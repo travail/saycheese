@@ -6,7 +6,6 @@ use base 'Catalyst::Controller';
 use LWP::Socket;
 use URI::Fetch;
 use Gearman::Client;
-use Storable qw/ freeze /;
 
 =head1 NAME
 
@@ -57,8 +56,7 @@ sub create : Local {
         my $client = Gearman::Client->new(
             job_servers => $c->config->{job_serbers},
         );
-        my $args = freeze( \$url );
-        my $id   = $client->do_task( 'saycheese', \$args, {} );
+        my $id   = $client->do_task( 'saycheese', $url, {} );
         $obj     = $c->thumbnail->find( $id );
     }
 
