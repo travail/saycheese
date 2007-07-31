@@ -15,7 +15,7 @@ View::JSON:
   expose_stash: json_data
   encoding: euc-jp
 
-job_servers: [ 192.168.1.2:12345 ]
+job_servers: [ 192.168.1.1 ]
 
 thumbnail:
   thumbnail_path: __path_to(root/static/thumbnail/)__
