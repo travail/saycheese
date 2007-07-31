@@ -5,6 +5,8 @@ use warnings;
 use base 'Catalyst::Controller';
 use LWP::Socket;
 use URI::Fetch;
+use Gearman::Client;
+use Storable qw/ freeze /;
 
 =head1 NAME
 
@@ -52,13 +54,11 @@ sub create : Local {
             $obj    = $c->thumbnail->find( $id );
         }
     } else {
-        my $socket = LWP::Socket->new;
-        $socket->connect( 'localhost', $c->config->{saycheese}->{port} );
-        $socket->write( $url . "\n" );
-        my $id = undef;
-        $socket->read( \$id );
-        $socket = undef;
-        $obj    = $c->thumbnail->find( $id );
+        my $client = Gearman::Client->new(
+            job_servers => $c->config->{job_serbers},
+        );
+        my $args = freeze( $url );
+        $client->dispatch_backgrount( 'saycheese', \$args, {} );
     }
 
     $c->stash->{json_data} = $obj->as_hashref;
