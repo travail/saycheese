@@ -57,7 +57,7 @@ sub create : Local {
         my $client = Gearman::Client->new(
             job_servers => $c->config->{job_serbers},
         );
-        my $args = freeze( $url );
+        my $args = freeze( \$url );
         $client->dispatch_backgrount( 'saycheese', \$args, {} );
     }
 
