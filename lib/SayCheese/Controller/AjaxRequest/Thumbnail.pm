@@ -54,10 +54,10 @@ sub create : Local {
         }
     } else {
         my $client = Gearman::Client->new(
-            job_servers => $c->config->{job_serbers},
+            job_servers => $c->config->{job_servers},
         );
-        my $id   = $client->do_task( 'saycheese', $url, {} );
-        $obj     = $c->thumbnail->find( $id );
+        my $id = $client->do_task( 'saycheese', $url, {} );
+        $obj   = $c->thumbnail->find( $id );
     }
 
     $c->stash->{json_data} = $obj->as_hashref;

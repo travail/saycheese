@@ -59,7 +59,7 @@ $worker->register_function(
             $obj->filesize( $filesize );
             $obj->filedata( $cpy->ImageToBlob );
             $obj->update;
-            return obj->id;
+            return $obj->id;
         } else {
             return undef;
         }
