@@ -73,11 +73,10 @@ sub path {
     return sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumbnail_path}, $self->id, $self->extention;
 }
 
-sub img {
+sub file_name {
     my $self = shift;
 
-    my $config = SayCheese->config;
-    return sprintf q{<img class="thumbnails" src="%s">}, $self->path;
+    return sprintf q{%d.%s}, $self->id, $self->extention;
 }
 
 1;
