@@ -30,13 +30,9 @@ sub default : Private {
     my ( $self, $c ) = @_;
 
     my $req = $c->req;
-    my $itr_thumbnail = $c->thumbnail->search(
-        {},
-        {
-            order_by => 'id DESC',
-            rows     => $req->param('rows') || 5,
-            page     => $req->param('page') || 1,
-        },
+    my $itr_thumbnail = $c->thumbnail->index_thumbnails(
+        rows => $req->param('rows') || 5,
+        page => $req->param('page') || 1,
     );
 
     $c->check_thumbnails;

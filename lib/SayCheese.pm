@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Catalyst::Runtime '5.70';
+use IO::File;
 
 # Set flags and add plugins for the application
 #
@@ -55,12 +56,8 @@ sub check_thumbnails {
 
     my $itr_thumbnail = $c->thumbnail->search;
     while ( my $thumb = $itr_thumbnail->next ) {
-        my $img = sprintf q{%s/%d.%s}, $c->config->{thumbnail}->{thumbnail_path}, $thumb->id, $thumb->extention;
-        unless ( -e $img ) {
-            use IO::File;
-            my $fh = IO::File->new( $img, 'w' );
-            $fh->print( $thumb->filedata );
-        }
+        my $path = sprintf q{%s/%d.%s}, $c->config->{thumbnail}->{thumbnail_path}, $thumb->id, $thumb->extention;
+        $thumbnail->print_thumbnail unless -e $path;
     }
 }
 

@@ -42,20 +42,9 @@ sub create : Local {
 
     my $obj = $c->model('DBIC::SayCheese::Thumbnail')->find_by_url( $url );
     if ( $obj ) {
-        my $thumb = sprintf q{%s/%s.%s}, $c->config->{thumbnail}->{thumbnail_path}, $obj->id, $obj->extention;
-        unless ( -e $thumb ) {
-            my $socket = LWP::Socket->new;
-            $socket->connect( 'localhost', $c->config->{saycheese}->{port} );
-            $socket->write( $url . "\n" );
-            my $id = undef;
-            $socket->read( \$id );
-            $socket = undef;
-            $obj    = $c->thumbnail->find( $id );
-        }
+        $obj->print_thumbnail;
     } else {
-        my $client = Gearman::Client->new(
-            job_servers => $c->config->{job_servers},
-        );
+        my $client = Gearman::Client->new( job_servers => $c->config->{job_servers} );
         my $id = $client->do_task( 'saycheese', $url, {} );
         $obj   = $c->thumbnail->find( $$id );
     }

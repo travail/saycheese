@@ -3,6 +3,8 @@ package SayCheese::Schema::Thumbnail;
 use strict;
 use warnings;
 use base 'DBIx::Class';
+use SayCheese;
+use IO::File;
 
 __PACKAGE__->load_components( qw/ PK::Auto ResultSetManager +SayCheese::DBIC Core / );
 __PACKAGE__->table('thumbnail');
@@ -37,10 +39,32 @@ sub as_hashref {
     };
 }
 
+sub index_thumbnails : ResultSet {
+    my ( $self, %args ) = @_;
+
+    return $self->search(
+        {},
+        {
+            order_by => 'id DESC',
+            rows     => $args{rows} || 5,
+            page     => $args{page} || 1,
+        },
+    );
+}
+
 sub find_by_url : ResultSet {
     my ( $self, $url ) = @_;
 
     return $self->single( { url => $url }, {});
+}
+
+sub print_thumbnail {
+    my $self = shift;
+
+    my $config = SayCheese->config;
+    my $path = sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumbnail_path}, $self->id, $self->extention;
+    my $fh = IO::File->new( $path, 'w' );
+    $fh->print( $self->filedata );
 }
 
 sub img {
