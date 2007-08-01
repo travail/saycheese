@@ -56,8 +56,7 @@ sub check_thumbnails {
 
     my $itr_thumbnail = $c->thumbnail->search;
     while ( my $thumb = $itr_thumbnail->next ) {
-        my $path = sprintf q{%s/%d.%s}, $c->config->{thumbnail}->{thumbnail_path}, $thumb->id, $thumb->extention;
-        $thumb->print_thumbnail unless -e $path;
+        $thumb->print_thumbnail unless -e $thumb->path;
     }
 }
 

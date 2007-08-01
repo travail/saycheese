@@ -62,15 +62,22 @@ sub print_thumbnail {
     my $self = shift;
 
     my $config = SayCheese->config;
-    my $path = sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumbnail_path}, $self->id, $self->extention;
-    my $fh = IO::File->new( $path, 'w' );
+    my $fh = IO::File->new( $self->path, 'w' );
     $fh->print( $self->filedata );
+}
+
+sub path {
+    my $self = shift;
+
+    my $config = SayCheese->config;
+    return sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumnbail_path}, $self->id, $self->extention;
 }
 
 sub img {
     my $self = shift;
 
-    return sprintf q{<img class="thumbnails" src="/static/thumbnail/%d.%s">}, $self->id, $self->extention;
+    my $config = SayCheese->config;
+    return sprintf q{<img class="thumbnails" src="%s">}, $self->path;
 }
 
 1;

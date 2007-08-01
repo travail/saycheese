@@ -63,7 +63,7 @@ sub delete : Local {
     my $id = $c->req->param('id');
     my $obj = $c->thumbnail->find( $id );
     if ( $obj ) {
-        unlink sprintf q{%/%.%}, $c->config->{thumbnail}->{thumbnail_path}, $obj->id, $obj->extention;
+        unlink $obj->path;
         $obj->delete;
     }
 
@@ -74,7 +74,7 @@ sub delete : Local {
 
 =cut
 
-sub recent_thumbnails: Local {
+sub recent_thumbnails : Local {
     my ( $self, $c ) = @_;
 
     my $req = $c->req;
