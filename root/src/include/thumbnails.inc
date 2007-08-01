@@ -6,7 +6,7 @@
         </div>
         <div class="thumbnail-body">
 <table>
-<tr><td rowspan="6"><a href="[% thumbnail.url %]" target="_blank">[% thumbnail.img %]</a></td></tr>
+<tr><td rowspan="6"><a href="[% thumbnail.url %]" target="_blank"><img class="thumbnails" src="[% thumbnail.path %]" /></a></td></tr>
 <tr><td>[% thumbnail.created_on.ymd %] [% thumbnail.created_on.hms %]</td></tr>
 <tr><td>API:<a href="[% base %]api/[% thumbnail.url %]" target="_blank">[% base %]api/[% thumbnail.url %]</a></td></tr>
 <tr><td><span id="thumb-delete[% thumbnail.id %]" class="thumb-delete" onclick="if(confirm('DELETE?')){DeleteThumbnail([% thumbnail.id %])}">DELETE</span></td></tr>
