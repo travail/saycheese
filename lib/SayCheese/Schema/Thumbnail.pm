@@ -70,7 +70,7 @@ sub path {
     my $self = shift;
 
     my $config = SayCheese->config;
-    return sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumnbail_path}, $self->id, $self->extention;
+    return sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumbnail_path}, $self->id, $self->extention;
 }
 
 sub img {
