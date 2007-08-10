@@ -42,7 +42,6 @@ $worker->register_function(
         } );
 
         ## make thumbnail
-#        my $thumb  = sprintf q{%s/%s.%s}, SayCheese->config->{thumbnail}->{thumbnail_path}, $obj->id, $obj->extention;
         my $thumb  = sprintf q{%s/%s.%s}, $obj->path;
         $img->Scale( width => 256, height => 256 );
         my $cpy = $img->Clone;
