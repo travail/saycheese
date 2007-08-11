@@ -42,7 +42,7 @@ $worker->register_function(
         } );
 
         ## make thumbnail
-        my $thumb  = sprintf q{%s/%s.%s}, $obj->path;
+        my $thumb  = $obj->path;
         $img->Scale( width => 256, height => 256 );
         my $cpy = $img->Clone;
         $cpy->Crop( width => 0, height => 0, x => 0, y => 29 );
