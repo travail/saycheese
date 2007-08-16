@@ -99,7 +99,7 @@ sub api : PathPart('api') Chained('') Args('') {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
-    $url =~ s/^api\///;
+    $url =~ s/^\/api\///;
 
     my $obj = $c->thumbnail->find_by_url( $url );
     if ( $obj ) {
