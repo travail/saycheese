@@ -98,13 +98,8 @@ sub recent_thumbnails : Local {
 sub api : PathPart('api') Chained('') Args('') {
     my ( $self, $c ) = @_;
 
-    my $url = $c->req->path;
+    my $url = $c->req->uri->path_query;
     $url =~ s/^api\///;
-    my $param = undef;
-    if ( %{$c->req->parameters} ) {
-        $param .= sprintf q{%s=%s}, $_, $c->req->parameters->{$_} foreach keys %{$c->req->parameters};
-        $url .= '?' . $param;
-    }
 
     my $obj = $c->thumbnail->find_by_url( $url );
     if ( $obj ) {
