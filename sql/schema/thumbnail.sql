@@ -9,5 +9,6 @@ CREATE TABLE thumbnail (
     width          SMALLINT UNSIGNED DEFAULT 0,
     height         SMALLINT UNSIGNED DEFAULT 0,
     filesize       MEDIUMINT UNSIGNED DEFAULT 0,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=ujis;
+    PRIMARY KEY (id),
+    INDEX index_url(url)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
