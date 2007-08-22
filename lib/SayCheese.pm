@@ -34,8 +34,7 @@ our $VERSION = '0.01';
 # with a external configuration file acting as an override for
 # local deployment.
 
-$ENV{IS_TEST} = __PACKAGE__->config->{home} eq '/home/travail/public_html/SVNHOME/SayCheese' ? 1 : 0;
-__PACKAGE__->config( file => $ENV{IS_TEST} ? __PACKAGE__->config->{home} . '/etc/test.yml' : __PACKAGE__->config->{home} . '/etc/saycheese.yml' );
+__PACKAGE__->config( file => __PACKAGE__->path_to('etc/conf/') );
 
 # Start the application
 __PACKAGE__->setup;

@@ -6,7 +6,7 @@ use base 'Catalyst::Model::DBIC::Schema';
 __PACKAGE__->config(
     schema_class => 'SayCheese::Schema',
     connect_info => [
-        'dbi:mysql:saycheese',
+        SayCheese->config->{dsn},
         'travail',
         'travail',
         
