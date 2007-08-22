@@ -15,7 +15,7 @@ View::JSON:
   expose_stash: json_data
   encoding: euc-jp
 
-dsn: dbi:mysql:saycheese:hostname=192.168.1.2;
+connect_info: [ 'dbi:mysql:saycheese:hostname=192.168.1.2;', 'travail', 'travail' ]
 
 job_servers: [ 192.168.1.1 ]
 

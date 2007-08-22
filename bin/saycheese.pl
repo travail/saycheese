@@ -9,9 +9,10 @@ use SayCheese::Schema;
 use Gearman::Worker;
 use Image::Magick;
 
+my $config = SayCheese->config;
 $ENV{DISPLAY} = ':1.0';
 my $worker = Gearman::Worker->new(
-    job_servers => SayCheese->config->{job_servers},
+    job_servers => $config->{job_servers},
 );
 $worker->register_function(
     saycheese => sub {
@@ -19,7 +20,7 @@ $worker->register_function(
 
         ## make tmp image file
         my $url = $job->arg;
-        my $tmp = sprintf q{%s/%d-%d.png}, SayCheese->config->{thumbnail}->{thumbnail_path}, time, $$;
+        my $tmp = sprintf q{%s/%d-%d.png}, $config->{thumbnail}->{thumbnail_path}, time, $$;
         `firefox & firefox -display localhost:1 -remote "openurl($url)"`;
         sleep 8;
         `import -display :1 -window root -silent $tmp`;
@@ -28,7 +29,7 @@ $worker->register_function(
         $img->Read( $tmp );
         $img->Set( quality => 90 );
 
-        my $schema = SayCheese::Schema->connect( 'dbi:mysql:saycheese', 'travail', 'travail' );
+        my $schema = SayCheese::Schema->connect( @{$config->{connect_info}} );
         my $obj    = $schema->resultset('Thumbnail')->create( {
             created_on     => DateTime->now->set_time_zone('Asia/Tokyo'),
             modified_on    => DateTime->now->set_time_zone('Asia/Tokyo'),
