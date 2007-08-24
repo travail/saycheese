@@ -35,7 +35,6 @@ sub default : Private {
         page => $req->param('page') || 1,
     );
 
-    $c->check_thumbnails;
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
 }
 

@@ -46,18 +46,6 @@ __PACKAGE__->setup;
 
 sub thumbnail : Private { shift->model('DBIC::SayCheese::Thumbnail') }
 
-=head2 check_thumbnail
-
-=cut
-
-sub check_thumbnails {
-    my $c = shift;
-
-    my $itr_thumbnail = $c->thumbnail->search;
-    while ( my $thumb = $itr_thumbnail->next ) {
-        $thumb->print_thumbnail unless -e $thumb->path;
-    }
-}
 
 =head2 output_json
 
@@ -69,6 +57,7 @@ sub output_json : Private {
     $c->stash->{only_json} = 1;
     $c->forward('View::JSON');
 }
+
 
 =head2 output_html
 

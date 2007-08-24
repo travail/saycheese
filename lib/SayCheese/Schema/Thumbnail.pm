@@ -66,6 +66,13 @@ sub print_thumbnail {
     $fh->print( $self->filedata );
 }
 
+sub img_path {
+    my $self = shift;
+
+    $self->print_thumbnail unless -e $self->path;
+    return sprintf q{static/thumbnail/%d.%s}, $self->id, $self->extention;
+}
+
 sub path {
     my $self = shift;
 
