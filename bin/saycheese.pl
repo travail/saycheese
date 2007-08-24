@@ -9,8 +9,8 @@ use SayCheese::Schema;
 use Gearman::Worker;
 use Image::Magick;
 
-my $config = SayCheese->config;
 $ENV{DISPLAY} = ':1.0';
+my $config = SayCheese->config;
 my $worker = Gearman::Worker->new(
     job_servers => $config->{job_servers},
 );
@@ -31,8 +31,8 @@ $worker->register_function(
 
         my $schema = SayCheese::Schema->connect( @{$config->{connect_info}} );
         my $obj    = $schema->resultset('Thumbnail')->create( {
-            created_on     => DateTime->now->set_time_zone('Asia/Tokyo'),
-            modified_on    => DateTime->now->set_time_zone('Asia/Tokyo'),
+            created_on     => DateTime->now->set_time_zone( $config->{time_zone} ),
+            modified_on    => DateTime->now->set_time_zone( $config->{time_zone} ),
             url            => $url,
             thumbnail_name => undef,
             extention      => 'png',
