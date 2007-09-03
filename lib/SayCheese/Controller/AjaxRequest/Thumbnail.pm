@@ -102,7 +102,10 @@ sub api : PathPart('api') Chained('') Args('') {
     $url =~ s/^\/api\///;
 
     my $obj = $c->cache->get( $url );
-    unless ( $obj ) {
+    if ( $obj ) {
+        $c->log->info('*** Cache Hit!!! ***');
+    } else ( $obj ) {
+        $c->log->info('*** Cache Not Hit... ***');
         $obj = $c->thumbnail->find_by_url( $url );
         $c->cache->set( $url, $obj ) if $obj;
     }
