@@ -15,12 +15,13 @@ use IO::File;
 #                 directory
 
 use Catalyst qw/
-   -Debug
-   ConfigLoader
-   Static::Simple
-   DateTime::Constructor
-   DBIC::Profiler
-   Dumper
+    -Debug
+    ConfigLoader
+    Static::Simple
+    Cache::Memcached
+    DateTime::Constructor
+    DBIC::Profiler
+    Dumper
 /;
 
 our $VERSION = '0.01';
