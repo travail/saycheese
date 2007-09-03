@@ -101,7 +101,11 @@ sub api : PathPart('api') Chained('') Args('') {
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/api\///;
 
-    my $obj = $c->thumbnail->find_by_url( $url );
+    my $obj = $c->cache->get( $url );
+    unless ( $obj ) {
+        $obj = $c->thumbnail->find_by_url( $url );
+        $c->cache->set( $url, $obj ) if $obj;
+    }
     if ( $obj ) {
         $c->res->content_type('image/png');
         $c->stash->{template}  = 'include/thumbnail.inc';
