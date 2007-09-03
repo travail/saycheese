@@ -22,7 +22,7 @@ connect_info: [ 'dbi:mysql:saycheese:hostname=192.168.1.2;', 'travail', 'travail
 job_servers: [ 192.168.1.1 ]
 
 cache:
-  servers: [ qw/ 192.168.1.1:11211 / ]
+  servers: [ '192.168.1.1:11211' ]
 
 thumbnail:
   thumbnail_path: __path_to(root/static/thumbnail/)__
