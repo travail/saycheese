@@ -30,7 +30,7 @@ $worker->register_function(
         $img->Set( quality => 90 );
 
         my $schema = SayCheese::Schema->connect( @{$config->{connect_info}} );
-        my $obj    = $schema->resultset('Thumbnail')->create( {
+        my $obj    = $schema->resultset('Thumbnail')->update_or_create( {
             created_on     => DateTime->now->set_time_zone( $config->{time_zone} ),
             modified_on    => DateTime->now->set_time_zone( $config->{time_zone} ),
             url            => $url,
@@ -40,7 +40,7 @@ $worker->register_function(
             width          => undef,
             height         => undef,
             filesize       => undef,
-        } );
+        }, 'unique_url' );
 
         ## make thumbnail
         my $thumb  = $obj->path;

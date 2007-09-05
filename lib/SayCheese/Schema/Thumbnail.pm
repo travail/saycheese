@@ -21,6 +21,7 @@ __PACKAGE__->add_columns( qw/
     filesize
 /);
 __PACKAGE__->set_primary_key('id');
+__PACKAGE__->add_unique_constraint( unique_url => [ qw/ url / ] );
 __PACKAGE__->datetime_column( qw/ created_on modified_on / );
 
 sub as_hashref {
