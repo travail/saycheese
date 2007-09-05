@@ -20,6 +20,7 @@ $worker->register_function(
 
         ## make tmp image file
         my $url = $job->arg;
+        warn "URL : $url\n";
         my $tmp = sprintf q{%s/%d-%d.png}, $config->{thumbnail}->{thumbnail_path}, time, $$;
         `firefox & firefox -display localhost:1 -remote "openurl($url)"`;
         sleep 8;
@@ -55,6 +56,7 @@ $worker->register_function(
         my ( $width, $height, $filesize ) = $cpy->Get( 'width', 'height', 'filesize' );
         ## Return id, or undef.
         if ( $obj ) {
+            warn "SUCCESS\n";
             $obj->width( $width );
             $obj->height( $height );
             $obj->filesize( $filesize );
@@ -62,6 +64,7 @@ $worker->register_function(
             $obj->update;
             return $obj->id;
         } else {
+            warn "FAIL\n";
             return undef;
         }
     }
