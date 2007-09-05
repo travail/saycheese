@@ -36,7 +36,7 @@ function Thumbnail(url) {
 
   new Ajax.Request('/ajaxrequest/thumbnail/create', {
     method: 'get',
-    parameters:    '&url=' + encodeURIComponet(url),
+    parameters:    '&url=' + encodeURIComponent(url),
     onCreated:     ShowIndicator(),
     onAccepted:    ShowIndicator(),
     onLoading:     ShowIndicator(),
