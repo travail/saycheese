@@ -109,14 +109,11 @@ sub api : PathPart('api') Chained('') Args('') {
         $obj = $c->thumbnail->find_by_url( $url );
         $c->cache->set( $url, $obj ) if $obj;
     }
-    if ( $obj ) {
-        $c->res->content_type('image/png');
-        $c->stash->{template}  = 'include/thumbnail.inc';
-        $c->stash->{thumbnail} = $obj;
-        $c->output_html;
-    } else {
-        $c->res->redirect('/');
-    }
+
+    $c->res->content_type('image/png');
+    $c->stash->{template}  = 'include/thumbnail.inc';
+    $c->stash->{thumbnail} = $obj;
+    $c->output_html;
 }
 
 =head2 search_url
