@@ -101,7 +101,7 @@ sub api : PathPart('api') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/api\///;
-    $uri = URI::Escape::uri_unescape( $url );
+    $url = URI::Escape::uri_unescape( $url );
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
