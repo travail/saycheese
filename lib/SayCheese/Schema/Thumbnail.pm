@@ -56,7 +56,7 @@ sub index_thumbnails : ResultSet {
 sub find_by_url : ResultSet {
     my ( $self, $url ) = @_;
 
-    return $self->single( { url => $url }, {});
+    return $self->single( { url => { LIKE => sprintf q{%s%%}, $url } }, {});
 }
 
 sub print_thumbnail {
