@@ -3,7 +3,6 @@ package SayCheese::Controller::AjaxRequest::Thumbnail;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use LWP::Socket;
 use URI::Fetch;
 use URI::Escape;
 use Gearman::Client;
