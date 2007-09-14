@@ -96,11 +96,11 @@ sub recent_thumbnails : Local {
 
 =cut
 
-sub medium : Path('/api/medium') {
+sub medium : PathPart('medium') Chained('') Args('') {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
-    $url =~ s/^\/api\///;
+    $url =~ s/^\/medium\///;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
