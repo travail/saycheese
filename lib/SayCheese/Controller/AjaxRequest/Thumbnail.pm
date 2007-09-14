@@ -91,6 +91,33 @@ sub recent_thumbnails : Local {
     $c->output_html;
 }
 
+
+=head medium
+
+=cut
+
+sub medium : Path('/api/medium') {
+    my ( $self, $c ) = @_;
+
+    my $url = $c->req->uri->path_query;
+    $url =~ s/^\/api\///;
+
+    my $obj = $c->cache->get( $url );
+    if ( $obj ) {
+        $c->log->info('*** Cache Hit!!! ***');
+    } else {
+        $c->log->info('*** Cache Not Hit... ***');
+        $obj = $c->thumbnail->find_by_url( $url );
+        $c->cache->set( $url, $obj ) if $obj;
+    }
+
+    $c->res->content_type('image/png');
+    $c->stash->{template}  = 'include/thumbnail.inc';
+    $c->stash->{thumbnail} = $obj;
+    $c->output_html;
+}
+
+
 =head2 api
 
 =cut
