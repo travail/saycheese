@@ -2,6 +2,7 @@
 
    site.url = {
      base    = base
+     www     = 'http://saycheese.no-ip.inco/'
      home    = "${base}welcome"
      message = "${base}message"
    }
