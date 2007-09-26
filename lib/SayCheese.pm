@@ -35,7 +35,7 @@ our $VERSION = '0.01';
 # with a external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( file => __PACKAGE__->path_to('etc/conf/') );
+__PACKAGE__->config( 'Plugin::ConfigLoader' => { file => __PACKAGE__->path_to('etc/conf/') } );
 
 # Start the application
 __PACKAGE__->setup;
