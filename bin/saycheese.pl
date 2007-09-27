@@ -30,7 +30,7 @@ $worker->register_function(
         $img->Read( $tmp );
         $img->Set( quality => 90 );
 
-        my $schema = SayCheese::Schema->connect( @{$config->{connect_info}} );
+        my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
         my $obj    = $schema->resultset('Thumbnail')->update_or_create( {
             created_on     => DateTime->now->set_time_zone( $config->{time_zone} ),
             modified_on    => DateTime->now->set_time_zone( $config->{time_zone} ),
