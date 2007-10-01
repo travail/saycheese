@@ -21,6 +21,7 @@ use Catalyst qw/
     Cache::Memcached
     DateTime::Constructor
     DBIC::Profiler
+    View
     Dumper
 /;
 
@@ -46,30 +47,6 @@ __PACKAGE__->setup;
 =cut
 
 sub thumbnail : Private { shift->model('DBIC::SayCheese::Thumbnail') }
-
-
-=head2 output_json
-
-=cut
-
-sub output_json : Private {
-    my $c = shift;
-
-    $c->stash->{only_json} = 1;
-    $c->forward('View::JSON');
-}
-
-
-=head2 output_html
-
-=cut
-
-sub output_html : Private {
-    my $c = shift;
-
-    $c->stash->{only_html} = 1;
-    $c->forward('View::HTML');
-}
 
 
 =head1 NAME

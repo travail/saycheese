@@ -88,7 +88,7 @@ sub recent_thumbnails : Local {
 
     $c->stash->{template}      = 'include/thumbnails.inc';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
-    $c->output_html;
+    $c->output_file;
 }
 
 
@@ -114,7 +114,7 @@ sub medium : PathPart('medium') Chained('') Args('') {
     $c->res->content_type('image/png');
     $c->stash->{template}  = 'include/thumbnail.inc';
     $c->stash->{thumbnail} = $obj;
-    $c->output_html;
+    $c->output_file;
 }
 
 
@@ -140,7 +140,7 @@ sub api : PathPart('api') Chained('') Args('') {
     $c->res->content_type('image/png');
     $c->stash->{template}  = 'include/thumbnail.inc';
     $c->stash->{thumbnail} = $obj;
-    $c->output_html;
+    $c->output_file;
 }
 
 =head2 search_url
@@ -155,7 +155,7 @@ sub search_url : Local {
 
     $c->stash->{template}      = 'include/search_url_results.inc';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
-    $c->output_html;
+    $c->output_file;
 }
 
 =head1 AUTHOR

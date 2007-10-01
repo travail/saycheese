@@ -1,9 +1,9 @@
-package SayCheese::View::HTML;
+package SayCheese::View::File;
 
 use strict;
 use base 'Catalyst::View::TT';
 
-__PACKAGE__->config({
+__PACKAGE__->config(
 #    CATALYST_VAR => 'Catalyst',
     INCLUDE_PATH => [
         SayCheese->path_to( 'root', 'src' ),
@@ -14,11 +14,11 @@ __PACKAGE__->config({
 #    WRAPPER      => 'site/wrapper',
 #    ERROR        => 'error.tt2',
 #    TIMER        => 0
-});
+);
 
 =head1 NAME
 
-SayCheese::View::HTML - TT View for SayCheese
+SayCheese::View::File - TT View for SayCheese
 
 =head1 DESCRIPTION
 
