@@ -49,7 +49,7 @@ sub end : ActionClass('RenderView') {
 
     return if $c->res->status =~ /^3\d\d$/;
     return if $c->stash->{only_json};
-    return if $c->stash->{only_html};
+    return if $c->stash->{only_file};
 
     $c->stash->{template} = $c->action->reverse . '.tt' unless $c->stash->{template};
     $c->forward('View::TT');
