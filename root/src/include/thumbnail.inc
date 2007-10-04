@@ -1,1 +1,1 @@
-[% thumbnail.filedata %]
+[% thumbnail.medium %]

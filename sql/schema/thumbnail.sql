@@ -5,10 +5,10 @@ CREATE TABLE thumbnail (
     url            VARCHAR(64),
     thumbnail_name VARCHAR(48),
     extention      VARCHAR(8) NOT NULL,
-    filedata       MEDIUMBLOB,
-    width          SMALLINT UNSIGNED DEFAULT 0,
-    height         SMALLINT UNSIGNED DEFAULT 0,
-    filesize       MEDIUMINT UNSIGNED DEFAULT 0,
+    original       MEDIUMBLOB,
+    large          MEDIUMBLOB,
+    medium         MEDIUMBLOB,
+    small          MEDIUMBLOB,
     PRIMARY KEY (id),
     INDEX index_url (url)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

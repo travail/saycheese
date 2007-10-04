@@ -15,10 +15,10 @@ __PACKAGE__->add_columns( qw/
     url
     thumbnail_name
     extention
-    filedata
-    width
-    height
-    filesize
+    original
+    large
+    medium
+    small
 /);
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint( unique_url => [ qw/ url / ] );
@@ -34,9 +34,6 @@ sub as_hashref {
         url            => $self->url,
         thumbnail_name => $self->thumbnail_name,
         extention      => $self->extention,
-        width          => $self->width,
-        height         => $self->height,
-        filesize       => $self->filesize,
     };
 }
 
@@ -64,7 +61,7 @@ sub print_thumbnail {
 
     my $config = SayCheese->config;
     my $fh = IO::File->new( $self->path, 'w' );
-    $fh->print( $self->filedata );
+    $fh->print( $self->medium );
 }
 
 sub img_path {
