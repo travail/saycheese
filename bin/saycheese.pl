@@ -39,17 +39,13 @@ $worker->register_function(
         sleep 3;
 
         ## make original size image
-        my $cmd2 = "import -display $ENV{DISPLAY} -window root -silent /home/httpd/html/origine." . $ext;
+        my $cmd2 = "import -display $ENV{DISPLAY} -window root -silent $tmp" . $ext;
         my $r2   = system $cmd2;
         warn "Execute command : $cmd2\n";
         if ( $r2 ) {
             warn "Can't import, $cmd2 return $r2.\n";
             exit;
         }
-
-        my $img = Image::Magick->new;
-        $img->Read( $tmp );
-        $img->Set( quality => 100 );
 
         my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
         my $obj    = $schema->resultset('Thumbnail')->update_or_create( {
@@ -66,8 +62,9 @@ $worker->register_function(
 
         ## make thumbnail
         my $thumb  = $obj->path;
-        my $img = Image::Magick->new;
-        $img->Read( '/home/httpd/html/origine' . $ext );
+        my $img    = Image::Magick->new;
+        $img->Read( $tmp );
+        $img->Set( quality => 100 );
         $img->Set( quality => 100 );
 
         $img->Crop( width => 1200, height => 800, x => 5, y => 159 );
