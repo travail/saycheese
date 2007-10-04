@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 use FindBin;
-use "FindBin::Bin/../lib";
+use lib "FindBin::Bin/../lib";
+use lib '/home/public/cgi/lib';
 use SayCheese;
 
 my $config = SayCheese->config;
