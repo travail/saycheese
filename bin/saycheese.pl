@@ -26,7 +26,7 @@ $worker->register_function(
         warn "Starting saycheese.\n";
         warn "URL : $url\n";
         ## open URL
-        my $tmp = sprintf q{%s/%d-%d.png}, $config->{thumbnail}->{thumbnail_path}, time, $$;
+        my $tmp = sprintf q{%s/%d-%d.jpg}, $config->{thumbnail}->{thumbnail_path}, time, $$;
         my $cmd1 = sprintf q{%s -remote "openURL(%s)"}, $ff, $url;
         my $r1 = system $cmd1;
         warn "Execute command : $cmd1\n";
@@ -64,7 +64,6 @@ $worker->register_function(
         my $thumb  = $obj->path;
         my $img    = Image::Magick->new;
         $img->Read( $tmp );
-        $img->Set( quality => 100 );
         $img->Set( quality => 100 );
 
         $img->Crop( width => 1200, height => 800, x => 5, y => 159 );
