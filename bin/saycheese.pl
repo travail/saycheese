@@ -26,7 +26,7 @@ $worker->register_function(
         warn "Starting saycheese.\n";
         warn "URL : $url\n";
         ## open URL
-        my $tmp = sprintf q{%s/%d-%d.jpg}, $config->{thumbnail}->{thumbnail_path}, time, $$;
+        my $tmp = sprintf q{%s/%d-%d.%s}, $config->{thumbnail}->{thumbnail_path}, time, $$, $ext;
         my $cmd1 = sprintf q{%s -remote "openURL(%s)"}, $ff, $url;
         my $r1 = system $cmd1;
         warn "Execute command : $cmd1\n";
@@ -39,7 +39,7 @@ $worker->register_function(
         sleep 3;
 
         ## make original size image
-        my $cmd2 = "import -display $ENV{DISPLAY} -window root -silent $tmp" . $ext;
+        my $cmd2 = "import -display $ENV{DISPLAY} -window root -silent $tmp";
         my $r2   = system $cmd2;
         warn "Execute command : $cmd2\n";
         if ( $r2 ) {
