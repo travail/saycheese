@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
+use lib '/home/public/cgi/lib';
 use SayCheese;
 use SayCheese::Schema;
 use Gearman::Worker;
