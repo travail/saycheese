@@ -63,8 +63,8 @@ function Thumbnail(url) {
 function ShowThumbnail(obj) {
   $('thumbnail_path').src    = '/static/thumbnail/' + obj.id + '.' + obj.extention;
   $('thumbnail_path').alt    = obj.thumbnail_name;
-  $('thumbnail_path').width  = obj.width;
-  $('thumbnail_path').height = obj.height;
+  $('thumbnail_path').width  = 400;
+  $('thumbnail_path').height = 150;
 }
 
 function SelectAPIPath(id) {
