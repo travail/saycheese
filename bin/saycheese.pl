@@ -66,9 +66,14 @@ $worker->register_function(
         $img->Read( $tmp );
         $img->Set( quality => 100 );
 
-        $img->Crop( width => 1200, height => 800, x => 5, y => 159 );
+        $img->Crop( width => 1200, height => 800, x => 5, y => 110 );
         warn "Write max size image, 1200x800.\n";
 #        $img->Write( '/home/httpd/html/max.' . $ext );
+
+        warn "Write large size image, 400x300.\n";
+        my $l = $img->Clone;
+        $l->Scale( width => 400, height => 300 );
+#        $l->Write( $thumb );
 
         warn "Write medium size image, 200x150.\n";
         my $m = $img->Clone;
@@ -84,7 +89,7 @@ $worker->register_function(
         ## Return id, or undef.
         if ( $obj ) {
             $obj->original( $img->ImageToBlob );
-            $obj->large( undef );
+            $obj->large( $l->ImageToBlog );
             $obj->medium( $m->ImageToBlob );
             $obj->small( $s->ImageToBlob );
             $obj->update;
