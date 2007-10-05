@@ -27,4 +27,4 @@ cache:
 thumbnail:
   thumbnail_path: __path_to(root/static/thumbnail/)__
 
-DISPLAY: ':10.0'
+DISPLAY: ':1.0'
