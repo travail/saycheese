@@ -19,6 +19,7 @@ __PACKAGE__->add_columns( qw/
     large
     medium
     small
+    is_finished
 /);
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint( unique_url => [ qw/ url / ] );
