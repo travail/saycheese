@@ -89,7 +89,7 @@ $worker->register_function(
         ## Return id, or undef.
         if ( $obj ) {
             $obj->original( $img->ImageToBlob );
-            $obj->large( $l->ImageToBlog );
+            $obj->large( $l->ImageToBlob );
             $obj->medium( $m->ImageToBlob );
             $obj->small( $s->ImageToBlob );
             $obj->update;
