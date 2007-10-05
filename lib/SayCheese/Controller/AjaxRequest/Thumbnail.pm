@@ -92,6 +92,32 @@ sub recent_thumbnails : Local {
 }
 
 
+=head large
+
+=cut
+
+sub large : PathPart('large') Chained('') Args('') {
+    my ( $self, $c ) = @_;
+
+    my $url = $c->req->uri->path_query;
+    $url =~ s/^\/large\///;
+
+    my $obj = $c->cache->get( $url );
+    if ( $obj ) {
+        $c->log->info('*** Cache Hit!!! ***');
+    } else {
+        $c->log->info('*** Cache Not Hit... ***');
+        $obj = $c->thumbnail->find_by_url( $url );
+        $c->cache->set( $url, $obj ) if $obj;
+    }
+
+    $c->res->content_type('image/jpg');
+    $c->stash->{template}  = 'include/large.inc';
+    $c->stash->{thumbnail} = $obj;
+    $c->output_file;
+}
+
+
 =head medium
 
 =cut
@@ -111,8 +137,34 @@ sub medium : PathPart('medium') Chained('') Args('') {
         $c->cache->set( $url, $obj ) if $obj;
     }
 
-    $c->res->content_type('image/png');
-    $c->stash->{template}  = 'include/thumbnail.inc';
+    $c->res->content_type('image/jpg');
+    $c->stash->{template}  = 'include/medium.inc';
+    $c->stash->{thumbnail} = $obj;
+    $c->output_file;
+}
+
+
+=head small
+
+=cut
+
+sub small : PathPart('small') Chained('') Args('') {
+    my ( $self, $c ) = @_;
+
+    my $url = $c->req->uri->path_query;
+    $url =~ s/^\/small\///;
+
+    my $obj = $c->cache->get( $url );
+    if ( $obj ) {
+        $c->log->info('*** Cache Hit!!! ***');
+    } else {
+        $c->log->info('*** Cache Not Hit... ***');
+        $obj = $c->thumbnail->find_by_url( $url );
+        $c->cache->set( $url, $obj ) if $obj;
+    }
+
+    $c->res->content_type('image/jpg');
+    $c->stash->{template}  = 'include/small.inc';
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
 }
