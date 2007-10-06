@@ -93,6 +93,7 @@ $worker->register_function(
             $obj->large( $l->ImageToBlob );
             $obj->medium( $m->ImageToBlob );
             $obj->small( $s->ImageToBlob );
+            $obj->is_finished( 1 );
             $obj->update;
             warn "Finish saycheese.\n\n";
             return $obj->id;
