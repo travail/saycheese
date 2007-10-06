@@ -15,8 +15,9 @@ my $worker = Gearman::Worker->new(
     job_servers => $config->{job_servers},
 );
 $ENV{DISPLAY} = $config->{DISPLAY};
-my $ff = 'firefox';
-my $ext = 'jpg';
+my $ff    = 'firefox';
+my $ext   = 'jpg';
+my $sleep = 10;
 $worker->register_function(
     saycheese => sub {
         my $job = shift;
@@ -35,8 +36,8 @@ $worker->register_function(
             exit;
         }
         warn "Rendering $url.\n";
-        warn "sleep : 3 seconds\n";
-        sleep 10;
+        warn "sleep : $sleep seconds\n";
+        sleep $sleep;
 
         ## make original size image
         my $cmd2 = "import -display $ENV{DISPLAY} -window root -silent $tmp";
