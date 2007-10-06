@@ -49,7 +49,7 @@ $worker->register_function(
         } else {
             warn sprintf qq{ERROR : %s.\n}, $res->status_line;
             warn "ERROR : $url does not exist.\n\n";
-            next;
+            return;
         }
 
         ## open URL
@@ -59,7 +59,7 @@ $worker->register_function(
         warn "EXECUTE COMMAND : $cmd1\n";
         if ( $r1 ) {
             warn "ERROR : Can't render, $cmd1 return $r1.\n";
-            exit;
+            return;
         }
         warn "RENDERING : $url.\n";
         warn "SLEEP : $sleep seconds\n";
@@ -71,7 +71,7 @@ $worker->register_function(
         warn "EXECUTE COMMAND : $cmd2\n";
         if ( $r2 ) {
             warn "ERROR : Can't import, $cmd2 return $r2.\n";
-            exit;
+            return;
         }
 
         $obj = $schema->resultset('Thumbnail')->update_or_create( {
@@ -85,7 +85,7 @@ $worker->register_function(
             medium         => undef,
             small          => undef,
         }, 'unique_url' );
-        warn sprintf qq{UPDATE OR CREATE : %s}, $obj->url;
+        warn sprintf qq{UPDATE OR CREATE : %s as id %d.\n\n}, $obj->url, $obj->id;
 
         ## make thumbnail
         my $thumb  = $obj->path;
@@ -124,7 +124,7 @@ $worker->register_function(
             return $obj->id;
         } else {
             warn "FAIL saycheese.pl.\n\n";
-            return undef;
+            return;
         }
     }
 );
