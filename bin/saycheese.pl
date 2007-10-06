@@ -33,9 +33,9 @@ $worker->register_function(
         my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
         my $obj    = $schema->resultset('SayCheese::Schema::Thumbnail')->find_by_url( $url );
         if ( $obj ) {
-            warn sprintf qq{URL %s already exists as id %d.\n}, $obj->url, $obj->id;
+            warn sprintf qq{URL : %s already exists as id %d.\n}, $obj->url, $obj->id;
             if ( $obj->is_finished ) {
-                warn sprintf qq{URL %s is already finished as id %d.\n\n}, $obj->url, $obj->id;
+                warn sprintf qq{URL : %s is already finished as id %d.\n\n}, $obj->url, $obj->id;
                 return $obj->id;
             }
         }
