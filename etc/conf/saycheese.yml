@@ -28,3 +28,8 @@ thumbnail:
   thumbnail_path: __path_to(root/static/thumbnail/)__
 
 DISPLAY: ':1.0'
+
+user_agent: 
+  agent: SayCheese/1.0
+  from: travail@cabane.no-ip.org
+  timeout: 15

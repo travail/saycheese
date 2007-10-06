@@ -19,8 +19,12 @@ $ENV{DISPLAY} = $config->{DISPLAY};
 my $ff    = 'firefox';
 my $ext   = 'jpg';
 my $sleep = 10;
-my $ua = LWP::UserAgent->new;
-$ua->agent('SayCheese/1.0 ');
+my $ua = LWP::UserAgent->new(
+    agent   => $config->{user_agent}->{agent},
+    from    => $config->{user_agent}->{from},
+    timeout => $config->{user_agent}->{timeout},
+);
+$ua->default_header( Accept => [ qw(text/html text/plain image/*) ] );
 $ua->timeout( 10 );
 $worker->register_function(
     saycheese => sub {
