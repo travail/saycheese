@@ -36,6 +36,7 @@ $worker->register_function(
             warn sprintf qq{URL : %s already exists as id %d.\n}, $obj->url, $obj->id;
             if ( $obj->is_finished ) {
                 warn sprintf qq{URL : %s is already finished as id %d.\n\n}, $obj->url, $obj->id;
+                warn "FINISH saycheese.pl.\n\n";
                 return $obj->id;
             }
         }
