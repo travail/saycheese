@@ -27,7 +27,7 @@ $worker->register_function(
         my $job = shift;
         my $url = $job->arg;
 
-        warn "Starting saycheese.\n";
+        warn "Starting saycheese.pl\n";
         warn "URL : $url\n";
         ## Is finished?
         my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
@@ -42,11 +42,12 @@ $worker->register_function(
 
         ## URL exists?
         my $res = $ua->get( $url );
+        warn "FETCH DOCUMENT : $url\n";
         if ( $res->is_success ) {
             warn "$url exists.\n";
         } else {
-            warn sprintf qq{*** %s. ***\n}, $res->status_line;
-            warn "*** $url does not exist. ***\n\n";
+            warn sprintf qq{ERROR : %s.\n}, $res->status_line;
+            warn "ERROR : $url does not exist.\n\n";
             next;
         }
 
@@ -54,21 +55,21 @@ $worker->register_function(
         my $tmp  = sprintf q{%s/%d-%d.%s}, $config->{thumbnail}->{thumbnail_path}, time, $$, $ext;
         my $cmd1 = sprintf q{%s -remote "openURL(%s)"}, $ff, $url;
         my $r1   = system $cmd1;
-        warn "Execute command : $cmd1\n";
+        warn "EXECUTE COMMAND : $cmd1\n";
         if ( $r1 ) {
-            warn "Can't render, $cmd1 return $r1.\n";
+            warn "ERROR : Can't render, $cmd1 return $r1.\n";
             exit;
         }
-        warn "Rendering $url.\n";
-        warn "sleep : $sleep seconds\n";
+        warn "RENDERING : $url.\n";
+        warn "SLEEP : $sleep seconds\n";
         sleep $sleep;
 
         ## make original size image
         my $cmd2 = "import -display $ENV{DISPLAY} -window root -silent $tmp";
         my $r2   = system $cmd2;
-        warn "Execute command : $cmd2\n";
+        warn "EXECUTE COMMAND : $cmd2\n";
         if ( $r2 ) {
-            warn "Can't import, $cmd2 return $r2.\n";
+            warn "ERROR : Can't import, $cmd2 return $r2.\n";
             exit;
         }
 
@@ -83,6 +84,7 @@ $worker->register_function(
             medium         => undef,
             small          => undef,
         }, 'unique_url' );
+        warn sprintf qq{UPDATE OR CREATE : %s}, $obj->url;
 
         ## make thumbnail
         my $thumb  = $obj->path;
@@ -107,7 +109,7 @@ $worker->register_function(
         warn "Write small size image, 80x60.\n";
 
         unlink $tmp;
-        warn "Unlink $tmp.\n";
+        warn "UNLINK : $tmp.\n";
 
         ## Return id, or undef.
         if ( $obj ) {
@@ -117,10 +119,10 @@ $worker->register_function(
             $obj->small( $s->ImageToBlob );
             $obj->is_finished( 1 );
             $obj->update;
-            warn "Finish saycheese.\n\n";
+            warn "FINISH saycheese.pl\n\n";
             return $obj->id;
         } else {
-            warn "FAIL.\n";
+            warn "FAIL saycheese.pl.\n\n";
             return undef;
         }
     }
