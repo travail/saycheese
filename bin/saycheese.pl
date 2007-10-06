@@ -35,7 +35,7 @@ $worker->register_function(
         if ( $obj ) {
             warn sprintf qq{URL : %s already exists as id %d.\n}, $obj->url, $obj->id;
             if ( $obj->is_finished ) {
-                warn sprintf qq{URL : %s is already finished as id %d.\n\n}, $obj->url, $obj->id;
+                warn sprintf qq{URL : %s is already finished as id %d.\n}, $obj->url, $obj->id;
                 warn "FINISH saycheese.pl.\n\n";
                 return $obj->id;
             }
@@ -45,7 +45,7 @@ $worker->register_function(
         my $res = $ua->get( $url );
         warn "FETCH DOCUMENT : $url\n";
         if ( $res->is_success ) {
-            warn "$url exists.\n";
+            warn "OK : $url exists.\n";
         } else {
             warn sprintf qq{ERROR : %s.\n}, $res->status_line;
             warn "ERROR : $url does not exist.\n\n";
