@@ -7,6 +7,7 @@ use lib "$FindBin::Bin/../lib";
 use lib '/home/public/cgi/lib';
 use SayCheese;
 use SayCheese::Schema;
+use LWP::UserAgent;
 use Gearman::Worker;
 use Image::Magick;
 
@@ -18,18 +19,43 @@ $ENV{DISPLAY} = $config->{DISPLAY};
 my $ff    = 'firefox';
 my $ext   = 'jpg';
 my $sleep = 10;
+my $ua = LWP::UserAgent->new;
+$ua->agent('SayCheese/1.0 ');
+$ua->timeout( 10 );
 $worker->register_function(
     saycheese => sub {
         my $job = shift;
-
-        ## make tmp image file
         my $url = $job->arg;
+
+        warn "Starting saycheese.\n";
+        warn "URL : $url\n";
+        ## Is finished?
+        my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
+        my $obj    = $schema->resultset('SayCheese::Schema::Thumbnail')->find_by_url( $url );
+        if ( $thumb ) {
+            warn sprintf qq{%s already exists.\n}, $thumb->url;
+            if ( $thumb->is_fnished ) {
+                warn sprintf qq{%s is already finished.\n\n}, $thumb->url;
+                return $thumb->id;
+            }
+        }
+
+        ## URL exists?
+        my $res = $ua->get( $url );
+        if ( $res->is_success ) {
+            warn "$url exists.\n";
+        } else {
+            warn sprintf qq{*** %s. ***\n}, $res->status_line;
+            warn "*** $url does not exist. ***\n\n";
+            next;
+        }
+
         warn "Starting saycheese.\n";
         warn "URL : $url\n";
         ## open URL
-        my $tmp = sprintf q{%s/%d-%d.%s}, $config->{thumbnail}->{thumbnail_path}, time, $$, $ext;
+        my $tmp  = sprintf q{%s/%d-%d.%s}, $config->{thumbnail}->{thumbnail_path}, time, $$, $ext;
         my $cmd1 = sprintf q{%s -remote "openURL(%s)"}, $ff, $url;
-        my $r1 = system $cmd1;
+        my $r1   = system $cmd1;
         warn "Execute command : $cmd1\n";
         if ( $r1 ) {
             warn "Can't render, $cmd1 return $r1.\n";
@@ -48,8 +74,7 @@ $worker->register_function(
             exit;
         }
 
-        my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
-        my $obj    = $schema->resultset('Thumbnail')->update_or_create( {
+        $obj = $schema->resultset('Thumbnail')->update_or_create( {
             created_on     => DateTime->now->set_time_zone( $config->{time_zone} ),
             modified_on    => DateTime->now->set_time_zone( $config->{time_zone} ),
             url            => $url,
@@ -69,23 +94,22 @@ $worker->register_function(
 
         $img->Crop( width => 1200, height => 800, x => 5, y => 115 );
         warn "Write max size image, 1200x800.\n";
-#        $img->Write( '/home/httpd/html/max.' . $ext );
 
-        warn "Write large size image, 400x300.\n";
         my $l = $img->Clone;
         $l->Scale( width => 400, height => 300 );
-#        $l->Write( $thumb );
+        warn "Write large size image, 400x300.\n";
 
-        warn "Write medium size image, 200x150.\n";
         my $m = $img->Clone;
         $m->Scale( width => 200, height => 150 );
         $m->Write( $thumb );
+        warn "Write medium size image, 200x150.\n";
 
-        warn "Write small size image, 80x60.\n";
         my $s = $img->Clone;
         $s->Scale( width => 80, height => 60 );
-#        $s->Write( '/home/httpd/html/small.' . $ext );
+        warn "Write small size image, 80x60.\n";
+
         unlink $tmp;
+        warn "Unlink $tmp.\n";
 
         ## Return id, or undef.
         if ( $obj ) {
