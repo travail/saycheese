@@ -50,8 +50,6 @@ $worker->register_function(
             next;
         }
 
-        warn "Starting saycheese.\n";
-        warn "URL : $url\n";
         ## open URL
         my $tmp  = sprintf q{%s/%d-%d.%s}, $config->{thumbnail}->{thumbnail_path}, time, $$, $ext;
         my $cmd1 = sprintf q{%s -remote "openURL(%s)"}, $ff, $url;
