@@ -85,7 +85,7 @@ $worker->register_function(
             medium         => undef,
             small          => undef,
         }, 'unique_url' );
-        warn sprintf qq{UPDATE OR CREATE : %s as id %d.\n\n}, $obj->url, $obj->id;
+        warn sprintf qq{UPDATE OR CREATE : %s as id %d.\n}, $obj->url, $obj->id;
 
         ## make thumbnail
         my $thumb  = $obj->path;
