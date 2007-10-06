@@ -36,7 +36,7 @@ $worker->register_function(
         }
         warn "Rendering $url.\n";
         warn "sleep : 3 seconds\n";
-        sleep 3;
+        sleep 10;
 
         ## make original size image
         my $cmd2 = "import -display $ENV{DISPLAY} -window root -silent $tmp";
@@ -66,7 +66,7 @@ $worker->register_function(
         $img->Read( $tmp );
         $img->Set( quality => 100 );
 
-        $img->Crop( width => 1200, height => 800, x => 5, y => 110 );
+        $img->Crop( width => 1200, height => 800, x => 5, y => 115 );
         warn "Write max size image, 1200x800.\n";
 #        $img->Write( '/home/httpd/html/max.' . $ext );
 
