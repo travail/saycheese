@@ -34,7 +34,7 @@ $worker->register_function(
         my $obj    = $schema->resultset('SayCheese::Schema::Thumbnail')->find_by_url( $url );
         if ( $obj ) {
             warn sprintf qq{%s already exists.\n}, $obj->url;
-            if ( $obj->is_fnished ) {
+            if ( $obj->is_finished ) {
                 warn sprintf qq{%s is already finished.\n\n}, $obj->url;
                 return $obj->id;
             }
