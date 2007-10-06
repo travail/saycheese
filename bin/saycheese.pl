@@ -32,11 +32,11 @@ $worker->register_function(
         ## Is finished?
         my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
         my $obj    = $schema->resultset('SayCheese::Schema::Thumbnail')->find_by_url( $url );
-        if ( $thumb ) {
-            warn sprintf qq{%s already exists.\n}, $thumb->url;
-            if ( $thumb->is_fnished ) {
-                warn sprintf qq{%s is already finished.\n\n}, $thumb->url;
-                return $thumb->id;
+        if ( $obj ) {
+            warn sprintf qq{%s already exists.\n}, $obj->url;
+            if ( $obj->is_fnished ) {
+                warn sprintf qq{%s is already finished.\n\n}, $obj->url;
+                return $obj->id;
             }
         }
 
