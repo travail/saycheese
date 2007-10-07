@@ -37,10 +37,10 @@ $worker->register_function(
         my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
         my $obj    = $schema->resultset('SayCheese::Schema::Thumbnail')->find_by_url( $url );
         if ( $obj ) {
-            warn sprintf qq{URL : %s already exists as id %d.\n}, $obj->url, $obj->id;
+            warn sprintf qq{EXISTS : %s exists as id %d.\n}, $obj->url, $obj->id;
             if ( $obj->is_finished ) {
-                warn sprintf qq{URL : %s is already finished as id %d.\n}, $obj->url, $obj->id;
-                warn "FINISH saycheese.pl.\n\n";
+                warn sprintf qq{ALREADY FINISHED : %s is already finished as id %d.\n}, $obj->url, $obj->id;
+                warn "FINISH saycheese.pl\n\n";
                 return $obj->id;
             }
         }
@@ -127,7 +127,7 @@ $worker->register_function(
             warn "FINISH saycheese.pl\n\n";
             return $obj->id;
         } else {
-            warn "FAIL saycheese.pl.\n\n";
+            warn "FAIL saycheese.pl\n\n";
             return;
         }
     }
