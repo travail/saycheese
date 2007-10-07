@@ -31,7 +31,7 @@ $worker->register_function(
         my $job = shift;
         my $url = $job->arg;
 
-        warn "Starting saycheese.pl\n";
+        warn "STARTING saycheese.pl\n";
         warn "URL : $url\n";
         ## Is finished?
         my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
@@ -46,8 +46,8 @@ $worker->register_function(
         }
 
         ## URL exists?
+        warn "FETCHIGN DOCUMENT : $url\n";
         my $res = $ua->get( $url );
-        warn "FETCH DOCUMENT : $url\n";
         if ( $res->is_success ) {
             warn "OK : $url exists.\n";
         } else {
