@@ -53,6 +53,7 @@ $worker->register_function(
         } else {
             warn sprintf qq{ERROR : %s.\n}, $res->status_line;
             warn "ERROR : $url does not exist.\n\n";
+            warn "FINISH saycheese.pl\n\n";
             return;
         }
 
