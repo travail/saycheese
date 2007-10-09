@@ -18,14 +18,13 @@ my $worker = Gearman::Worker->new(
 $ENV{DISPLAY} = $config->{DISPLAY};
 my $ff    = 'firefox';
 my $ext   = 'jpg';
-my $sleep = 10;
-my $ua = LWP::UserAgent->new(
+my $sleep = 15;
+my $ua    = LWP::UserAgent->new(
     agent   => $config->{user_agent}->{agent},
     from    => $config->{user_agent}->{from},
     timeout => $config->{user_agent}->{timeout},
 );
 $ua->default_header( Accept => [ qw(text/html text/plain image/*) ] );
-$ua->timeout( 10 );
 $worker->register_function(
     saycheese => sub {
         my $job = shift;

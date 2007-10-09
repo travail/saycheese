@@ -2,7 +2,7 @@ CREATE TABLE thumbnail (
     id             INT NOT NULL AUTO_INCREMENT,
     created_on     DATETIME,
     modified_on    DATETIME,
-    url            VARCHAR(64),
+    url            VARCHAR(256) NOT NULL,
     thumbnail_name VARCHAR(48),
     extention      VARCHAR(8) NOT NULL,
     original       MEDIUMBLOB,
