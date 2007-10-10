@@ -12,19 +12,17 @@ use Gearman::Worker;
 use Image::Magick;
 
 my $config = SayCheese->config;
-my $worker = Gearman::Worker->new(
-    job_servers => $config->{job_servers},
-);
-$ENV{DISPLAY} = $config->{DISPLAY};
-my $ff    = 'firefox';
-my $ext   = 'jpg';
-my $sleep = 15;
-my $ua    = LWP::UserAgent->new(
+my $worker = Gearman::Worker->new( job_servers => $config->{job_servers} );
+my $ff     = 'firefox';
+my $ext    = 'jpg';
+my $sleep  = 15;
+my $ua     = LWP::UserAgent->new(
     agent   => $config->{user_agent}->{agent},
     from    => $config->{user_agent}->{from},
     timeout => $config->{user_agent}->{timeout},
 );
 $ua->default_header( Accept => [ qw(text/html text/plain image/*) ] );
+$ENV{DISPLAY} = $config->{DISPLAY};
 $worker->register_function(
     saycheese => sub {
         my $job = shift;
@@ -98,20 +96,20 @@ $worker->register_function(
         $img->Set( quality => 100 );
 
         $img->Crop( width => 1200, height => 800, x => 5, y => 115 );
-        warn "Write max size image, 1200x800.\n";
+        warn "WRITING IMAGE : max size image, 1200x800.\n";
 
         my $l = $img->Clone;
         $l->Scale( width => 400, height => 300 );
-        warn "Write large size image, 400x300.\n";
+        warn "WRITING IMAGE : large size image, 400x300.\n";
 
         my $m = $img->Clone;
         $m->Scale( width => 200, height => 150 );
         $m->Write( $thumb );
-        warn "Write medium size image, 200x150.\n";
+        warn "WRITING IMAGE : medium size image, 200x150.\n";
 
         my $s = $img->Clone;
         $s->Scale( width => 80, height => 60 );
-        warn "Write small size image, 80x60.\n";
+        warn "WRITING IMAGE : small size image, 80x60.\n";
 
         unlink $tmp;
         warn "UNLINK : $tmp.\n";
