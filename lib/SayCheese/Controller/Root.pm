@@ -31,7 +31,7 @@ sub default : Private {
 
     my $req = $c->req;
     my $itr_thumbnail = $c->thumbnail->index_thumbnails(
-        rows => $req->param('rows') || 5,
+        rows => $req->param('rows') || $c->config->{default_rows},
         page => $req->param('page') || 1,
     );
 

@@ -35,3 +35,5 @@ user_agent:
   agent: SayCheese/1.0
   from: travail@cabane.no-ip.org
   timeout: 15
+
+default_rows: 10

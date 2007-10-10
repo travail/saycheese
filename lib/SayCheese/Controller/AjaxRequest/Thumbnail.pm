@@ -81,7 +81,7 @@ sub recent_thumbnails : Local {
     my $itr_thumbnail = $c->thumbnail->search( {},
         {
             order_by => 'id DESC',
-            rows     => $req->param('rows') || 5,
+            rows     => $req->param('rows') || $c->config->{default_rows},
             page     => $req->param('page') || 1,
         }
     );

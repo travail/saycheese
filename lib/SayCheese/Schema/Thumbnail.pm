@@ -41,11 +41,12 @@ sub as_hashref {
 sub index_thumbnails : ResultSet {
     my ( $self, %args ) = @_;
 
+    my $config = SayCheese->config;
     return $self->search(
         {},
         {
             order_by => 'id DESC',
-            rows     => $args{rows} || 5,
+            rows     => $args{rows} || $config->{default_rows},
             page     => $args{page} || 1,
         },
     );
