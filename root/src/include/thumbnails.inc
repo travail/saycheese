@@ -6,7 +6,7 @@
         </div>
         <div class="thumbnail-body">
 <table>
-<tr><td rowspan="6"><a href="[% thumbnail.url %]" target="_blank"><img class="thumbnails" src="/[% thumbnail.img_path %]" /></a></td></tr>
+<tr><td rowspan="8"><a href="[% thumbnail.url %]" target="_blank"><img class="thumbnails" src="/[% thumbnail.img_path %]" /></a></td></tr>
 <tr><td>[% thumbnail.created_on.ymd %] [% thumbnail.created_on.hms %]</td></tr>
 <tr><td>Large:<a href="[% c.config.service_url %]large/[% thumbnail.url %]" target="_blank">[% c.config.service_url %]large/[% thumbnail.url %]</a></td></tr>
 <tr><td>Medium:<a href="[% c.config.service_url %]medium/[% thumbnail.url %]" target="_blank">[% c.config.service_url %]medium/[% thumbnail.url %]</a></td></tr>
