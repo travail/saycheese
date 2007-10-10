@@ -1,7 +1,10 @@
   <div id="beta">
   <div id="content">
     <div id="saycheese">
-      <strong>URL:</strong><input id="form_url" type="text" name="url" size="48" value="[% url %]" onkeyup="SearchURL($F('form_url'));" />
+<!--
+      <strong>URL:</strong><input id="form_url" type="text" name="url" size="48" value="[% url %]" onkeyup="SearchURL($F('form_url'));" />-->
+-->
+      <strong>URL:</strong><input id="form_url" type="text" name="url" size="48" value="[% url %]" />
       <input id="form_request" type="button" name="request" value="Say cheese!" onclick="Thumbnail($F('form_url'))" />
       <div id="search_url_results" style="border: 1px solid [% site.col.text %];"></div>
       <div id="thumbnail"></div>
