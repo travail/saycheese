@@ -111,7 +111,7 @@ sub large : PathPart('large') Chained('') Args('') {
         $c->cache->set( $url, $obj ) if $obj;
     }
 
-    $c->res->content_type('image/jpg');
+    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
     $c->stash->{template}  = 'include/large.inc';
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
@@ -137,7 +137,7 @@ sub medium : PathPart('medium') Chained('') Args('') {
         $c->cache->set( $url, $obj ) if $obj;
     }
 
-    $c->res->content_type('image/jpg');
+    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
     $c->stash->{template}  = 'include/medium.inc';
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
@@ -163,7 +163,7 @@ sub small : PathPart('small') Chained('') Args('') {
         $c->cache->set( $url, $obj ) if $obj;
     }
 
-    $c->res->content_type('image/jpg');
+    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
     $c->stash->{template}  = 'include/small.inc';
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
@@ -189,7 +189,7 @@ sub api : PathPart('api') Chained('') Args('') {
         $c->cache->set( $url, $obj ) if $obj;
     }
 
-    $c->res->content_type('image/png');
+    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
     $c->stash->{template}  = 'include/thumbnail.inc';
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
