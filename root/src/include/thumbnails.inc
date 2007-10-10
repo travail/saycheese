@@ -18,3 +18,4 @@
         </div>
       </div>
       [% END %]
+    <div id="pager">[% PROCESS include/pager.inc %]</div>
