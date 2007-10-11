@@ -21,6 +21,7 @@ use Catalyst qw/
     Cache::Memcached
     DateTime::Constructor
     DBIC::Profiler
+    +SayCheese::Plugin::UserAgent
     View
     Dumper
 /;
