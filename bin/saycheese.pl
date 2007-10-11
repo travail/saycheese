@@ -63,7 +63,7 @@ $worker->register_function(
             warn "ERROR : Can't render, $cmd1 return $r1.\n";
             return;
         }
-        warn "RENDERING : $url.\n";
+        warn "RENDERING : $url\n";
         warn "SLEEP : $sleep seconds\n";
         sleep $sleep;
 
