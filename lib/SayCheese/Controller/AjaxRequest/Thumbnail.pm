@@ -3,8 +3,6 @@ package SayCheese::Controller::AjaxRequest::Thumbnail;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use URI::Fetch;
-use URI::Escape;
 use Gearman::Client;
 
 =head1 NAME
@@ -33,8 +31,8 @@ sub create : Local {
         return;
     }
 
-    my $res = URI::Fetch->fetch( $url );
-    unless ( $res ) {
+    my $res = $c->agent->get( $url );
+    unless ( $res->is_success ) {
         $c->stash->{json_data} = {};
         $c->output_json;
         return;
