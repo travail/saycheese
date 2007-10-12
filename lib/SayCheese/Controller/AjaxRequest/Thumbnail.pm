@@ -31,7 +31,7 @@ sub create : Local {
         return;
     }
 
-    my $res = $c->agent->get( $url );
+    my $res = $c->ua->get( $url );
     unless ( $res->is_success ) {
         $c->stash->{json_data} = {};
         $c->output_json;
