@@ -19,12 +19,17 @@ service_url: http://saycheese.no-ip.info/
 
 time_zone: Asia/Tokyo
 
-connect_info: [ 'dbi:mysql:saycheese:hostname=192.168.1.2;', 'travail', 'travail' ]
+connect_info:
+  - dbi:mysql:saycheese:hostname=192.168.1.2;
+  - travail
+  - travail
 
-job_servers: [ 192.168.1.1 ]
+job_servers:
+  - 192.168.1.1
 
 cache:
-  servers: [ '192.168.1.1:11211' ]
+  servers:
+    - 192.168.1.1:11211
 
 thumbnail:
   thumbnail_path: __path_to(root/static/thumbnail/)__
@@ -32,7 +37,7 @@ thumbnail:
 DISPLAY: ':1.0'
 
 user_agent: 
-  agent: SayCheese/1.0
+  agent: SayCheese/1.0 (http://saycheese.no-ip.info)
   from: travail@cabane.no-ip.org
   timeout: 15
 

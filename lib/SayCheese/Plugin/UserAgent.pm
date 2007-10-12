@@ -18,11 +18,11 @@ SayCheese Plugin.
 =cut
 
 
-=head2 agent
+=head2 user_agent
 
 =cut
 
-sub agent {
+sub user_agent {
     my $c = shift;
 
     my $ua = LWP::UserAgent->new(
@@ -35,6 +35,12 @@ sub agent {
     return $ua;
 }
 
+
+=head2 ua
+
+=cut
+
+*ua = \&user_agent;
 
 =head1 AUTHOR
 
