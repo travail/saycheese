@@ -39,7 +39,7 @@ sub setup {
             $data .= $_;
         }
         my $classdata = '_' . $size;
-        $c->$classdata( $data );
+        __PACKAGE__->$classdata( $data );
     }
 
     $c->NEXT::setup( @_ );
