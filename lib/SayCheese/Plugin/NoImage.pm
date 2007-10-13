@@ -5,7 +5,7 @@ use warnings;
 use base 'Class::Data::Inheritable';
 use FileHandle;
 
-__PACKAGE__->mk_classdata( qw/ _large _medium _small / );
+__PACKAGE__->mk_classdata( $_ ) foreach ( _large _medium _small );
 
 
 =head1 NAME
@@ -33,7 +33,7 @@ sub setup {
     my $medium = FileHandle->new( $config->{no_image}->{medium}, 'r' );
     my $small  = FileHandle->new( $config->{no_image}->{small}, 'r' );
 
-    foreach my $size ( qw/ large medium small / ) {
+    foreach my $size ( qw/ medium small / ) {
         my $data = undef;
         while ( <$size> ) {
             $data .= $_;
