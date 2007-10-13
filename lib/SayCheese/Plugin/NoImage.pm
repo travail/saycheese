@@ -35,7 +35,7 @@ sub setup {
 
     foreach my $size ( qw/ large medium small / ) {
         my $data = undef;
-        while ( <$sile> ) {
+        while ( <$size> ) {
             $data .= $_;
         }
         my $classdata = '_' . $size;
