@@ -29,7 +29,7 @@ sub setup {
     my $c = shift;
 
     my $config = $c->config;
-    my $large  = FileHandle->new( $config->{no_image}->{large}, 'r' );
+#    my $large  = FileHandle->new( $config->{no_image}->{large}, 'r' );
     my $medium = FileHandle->new( $config->{no_image}->{medium}, 'r' );
     my $small  = FileHandle->new( $config->{no_image}->{small}, 'r' );
 
