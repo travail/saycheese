@@ -22,6 +22,7 @@ use Catalyst qw/
     DateTime::Constructor
     DBIC::Profiler
     +SayCheese::Plugin::UserAgent
+    +SayCheese::Plugin::NoImage
     View
     Dumper
 /;

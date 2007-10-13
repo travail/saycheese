@@ -1,4 +1,5 @@
 [% pager = itr_thumbnail.pager %]
+  <div>Say Cheese [% pager.total_entries %] Times!</div>
   <div class="pager">
     [% limit_page = 15 %]
     [% middle_page = (limit_page - 1) / 2 + 1 %]

@@ -99,6 +99,7 @@ sub large : PathPart('large') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/large\///;
+    $url = s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
@@ -125,6 +126,7 @@ sub medium : PathPart('medium') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/medium\///;
+    $url = s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
@@ -132,7 +134,11 @@ sub medium : PathPart('medium') Chained('') Args('') {
     } else {
         $c->log->info('*** Cache Not Hit... ***');
         $obj = $c->thumbnail->find_by_url( $url );
-        $c->cache->set( $url, $obj ) if $obj;
+        if ( $obj ) {
+            $c->cache->set( $url, $obj );
+        } else {
+            $self->no_image;
+        }
     }
 
     $c->res->content_type( qw( image/jpeg image/gif image/png ) );
@@ -151,6 +157,7 @@ sub small : PathPart('small') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/small\///;
+    $url = s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
@@ -177,6 +184,7 @@ sub api : PathPart('api') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/api\///;
+    $url = s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
@@ -201,7 +209,10 @@ sub search_url : Local {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->param('url');
-    my $itr_thumbnail = $c->thumbnail->search( { url => { LIKE => sprintf q{%s%%}, $url } }, { order_by => 'url ASC' } );
+    my $itr_thumbnail = $c->thumbnail->search(
+        { url => { LIKE => sprintf q{%s%%}, $url } },
+        { order_by => 'url ASC' },
+    );
 
     $c->stash->{template}      = 'include/search_url_results.inc';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
