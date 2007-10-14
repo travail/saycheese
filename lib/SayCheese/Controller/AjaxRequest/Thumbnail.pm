@@ -99,7 +99,7 @@ sub large : PathPart('large') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/large\///;
-    $url = s/%7E/~/;
+    $url =~ s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
@@ -126,7 +126,7 @@ sub medium : PathPart('medium') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/medium\///;
-    $url = s/%7E/~/;
+    $url =~ s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
@@ -137,7 +137,8 @@ sub medium : PathPart('medium') Chained('') Args('') {
         if ( $obj ) {
             $c->cache->set( $url, $obj );
         } else {
-            $self->no_image;
+            $obj = {};
+            $obj->{medium} = $c->no_image_m;
         }
     }
 
@@ -157,7 +158,7 @@ sub small : PathPart('small') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/small\///;
-    $url = s/%7E/~/;
+    $url =~ s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
@@ -184,7 +185,7 @@ sub api : PathPart('api') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/api\///;
-    $url = s/%7E/~/;
+    $url =~ s/%7E/~/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {

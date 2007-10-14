@@ -5,7 +5,9 @@ use warnings;
 use base 'Class::Data::Inheritable';
 use FileHandle;
 
-__PACKAGE__->mk_classdata( $_ ) foreach ( _large _medium _small );
+__PACKAGE__->mk_classdata('_large');
+__PACKAGE__->mk_classdata('_medium');
+__PACKAGE__->mk_classdata('_small');
 
 
 =head1 NAME
@@ -33,17 +35,38 @@ sub setup {
     my $medium = FileHandle->new( $config->{no_image}->{medium}, 'r' );
     my $small  = FileHandle->new( $config->{no_image}->{small}, 'r' );
 
-    foreach my $size ( qw/ medium small / ) {
-        my $data = undef;
-        while ( <$size> ) {
-            $data .= $_;
-        }
-        my $classdata = '_' . $size;
-        __PACKAGE__->$classdata( $data );
-    }
+    my ( $l_data, $m_data, $s_data );
+#    $l_data .= $_ while <$large>;
+    $m_data .= $_ while <$medium>;
+    $s_data .= $_ while <$small>;
+
+#    __PACKAGE__->_large( $l_data );
+    __PACKAGE__->_medium( $m_data );
+    __PACKAGE__->_small( $s_data );
 
     $c->NEXT::setup( @_ );
 }
+
+
+=head2 no_image_l
+
+=cut
+
+sub no_image_l { __PACKAGE__->_large }
+
+
+=head2 no_image_m
+
+=cut
+
+sub no_image_m { __PACKAGE__->_medium }
+
+
+=head2 no_image_s
+
+=cut
+
+sub no_image_s { __PACKAGE__->_small }
 
 
 =head1 AUTHOR
