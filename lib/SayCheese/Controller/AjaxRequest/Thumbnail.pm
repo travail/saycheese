@@ -166,7 +166,12 @@ sub small : PathPart('small') Chained('') Args('') {
     } else {
         $c->log->info('*** Cache Not Hit... ***');
         $obj = $c->thumbnail->find_by_url( $url );
-        $c->cache->set( $url, $obj ) if $obj;
+        if ( $obj ) {
+            $c->cache->set( $url, $obj ) if $obj;
+        } else {
+            $obj = {};
+            $obj->{small} = $c->no_image_s;
+        }
     }
 
     $c->res->content_type( qw( image/jpeg image/gif image/png ) );
