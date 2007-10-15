@@ -107,7 +107,12 @@ sub large : PathPart('large') Chained('') Args('') {
     } else {
         $c->log->info('*** Cache Not Hit... ***');
         $obj = $c->thumbnail->find_by_url( $url );
-        $c->cache->set( $url, $obj ) if $obj;
+        if ( $obj ) {
+            $c->cache->set( $url, $obj );
+        } else {
+            $obj = {};
+            $obj->{large} = $c->no_image_l;
+        }
     }
 
     $c->res->content_type( qw( image/jpeg image/gif image/png ) );
