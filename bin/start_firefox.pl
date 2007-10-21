@@ -9,7 +9,7 @@ use SayCheese;
 
 my $config = SayCheese->config;
 $ENV{DISPLAY} = $config->{DISPLAY};
-my $cmd = '/usr/lib/firefox-1.5.0.10/firefox-bin';
+my $cmd = 'firefox';
 my $r   = system $cmd;
 warn "Execute command $cmd.\n";
 die "$cmd return $r.\n\n" if $r;
