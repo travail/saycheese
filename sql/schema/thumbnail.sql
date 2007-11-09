@@ -4,7 +4,7 @@ CREATE TABLE thumbnail (
     modified_on    DATETIME,
     url            VARCHAR(256) NOT NULL,
     thumbnail_name VARCHAR(48),
-    extention      VARCHAR(8) NOT NULL,
+    extension      VARCHAR(8) NOT NULL,
     original       MEDIUMBLOB,
     large          MEDIUMBLOB,
     medium         MEDIUMBLOB,
