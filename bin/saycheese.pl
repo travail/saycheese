@@ -81,7 +81,7 @@ $worker->register_function(
             modified_on    => DateTime->now->set_time_zone( $config->{time_zone} ),
             url            => $url,
             thumbnail_name => undef,
-            extention      => $ext,
+            extension      => $ext,
             original       => undef,
             large          => undef,
             medium         => undef,
