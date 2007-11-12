@@ -61,7 +61,7 @@ function Thumbnail(url) {
 }
 
 function ShowThumbnail(obj) {
-  $('thumbnail_path').src    = '/static/thumbnail/' + obj.id + '.' + obj.extention;
+  $('thumbnail_path').src    = '/static/thumbnail/' + obj.id + '.' + obj.extension;
   $('thumbnail_path').alt    = obj.thumbnail_name;
   $('thumbnail_path').width  = 200;
   $('thumbnail_path').height = 150;

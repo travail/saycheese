@@ -14,7 +14,7 @@ __PACKAGE__->add_columns( qw/
     modified_on
     url
     thumbnail_name
-    extention
+    extension
     original
     large
     medium
@@ -34,7 +34,7 @@ sub as_hashref {
         modified_on    => sprintf( q{%s %s}, $self->modified_on->ymd, $self->modified_on->hms ),
         url            => $self->url,
         thumbnail_name => $self->thumbnail_name,
-        extention      => $self->extention,
+        extension      => $self->extension,
     };
 }
 
@@ -70,20 +70,20 @@ sub img_path {
     my $self = shift;
 
     $self->print_thumbnail unless -e $self->path;
-    return sprintf q{static/thumbnail/%d.%s}, $self->id, $self->extention;
+    return sprintf q{static/thumbnail/%d.%s}, $self->id, $self->extension;
 }
 
 sub path {
     my $self = shift;
 
     my $config = SayCheese->config;
-    return sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumbnail_path}, $self->id, $self->extention;
+    return sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumbnail_path}, $self->id, $self->extension;
 }
 
 sub file_name {
     my $self = shift;
 
-    return sprintf q{%d.%s}, $self->id, $self->extention;
+    return sprintf q{%d.%s}, $self->id, $self->extension;
 }
 
 1;
