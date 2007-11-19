@@ -47,7 +47,7 @@ sub create : Local {
         $obj   = $c->thumbnail->find( $$id );
     }
 
-    $c->stash->{json_data} = $obj->as_hashref;
+    $c->stash->{json_data} = $obj ? $obj->as_hashref : {};
     $c->output_json;
 }
 
