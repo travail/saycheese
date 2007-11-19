@@ -47,3 +47,14 @@ no_image:
   large: __path_to(root/static/images/no_image_l.gif)__
   medium: __path_to(root/static/images/no_image_m.gif)__
   small: __path_to(root/static/images/no_image_s.gif)__
+
+invalid_extension:
+  - pdf
+  - mov
+  - rm
+  - wmv
+  - mp3
+  - mp4
+
+invalid_host:
+  - youtube.com

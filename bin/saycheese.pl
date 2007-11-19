@@ -30,6 +30,12 @@ $worker->register_function(
 
         warn "STARTING saycheese.pl\n";
         warn "URL : $url\n";
+        ## Valid extension?
+        $url =~ /(.*)\.(.*)/;
+        if ( grep { $2 eq $_ } @{$config->{invalid_extension}} ) {
+            warn "WARN : $2 is invalid extension.\n";
+            return;
+        }
         ## Is finished?
         my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
         my $obj    = $schema->resultset('SayCheese::Schema::Thumbnail')->find_by_url( $url );

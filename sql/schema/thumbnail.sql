@@ -9,6 +9,7 @@ CREATE TABLE thumbnail (
     large          MEDIUMBLOB,
     medium         MEDIUMBLOB,
     small          MEDIUMBLOB,
+    is_finished    TINYINT(1) UNSIGNED DEFAULT 0,
     PRIMARY KEY (id),
     INDEX index_url (url)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
