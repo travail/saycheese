@@ -34,6 +34,7 @@ $worker->register_function(
         $url =~ /(.*)\.(.*)/;
         if ( grep { $2 eq $_ } @{$config->{invalid_extension}} ) {
             warn "WARN : $2 is invalid extension.\n";
+            warn "FAIL saycheese.pl\n\n";
             return;
         }
         ## Is finished?
@@ -55,8 +56,7 @@ $worker->register_function(
             warn "OK : $url exists.\n";
         } else {
             warn sprintf qq{ERROR : %s.\n}, $res->status_line;
-            warn "ERROR : $url does not exist.\n";
-            warn "FINISH saycheese.pl\n\n";
+            warn "FAIL saycheese.pl\n\n";
             return;
         }
 
@@ -67,6 +67,7 @@ $worker->register_function(
         warn "EXECUTE COMMAND : $cmd1\n";
         if ( $r1 ) {
             warn "ERROR : Can't render, $cmd1 return $r1.\n";
+            warn "FAIL saycheese.pl\n\n";
             return;
         }
         warn "RENDERING : $url\n";
@@ -79,6 +80,7 @@ $worker->register_function(
         warn "EXECUTE COMMAND : $cmd2\n";
         if ( $r2 ) {
             warn "ERROR : Can't import, $cmd2 return $r2.\n";
+            warn "FAIL saycheese.pl\n\n";
             return;
         }
 
