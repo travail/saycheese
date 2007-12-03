@@ -30,6 +30,13 @@ $worker->register_function(
 
         warn "STARTING saycheese.pl\n";
         warn "URL : $url\n";
+        ## Valid schema?
+        $url =~ /^(.*:\/\/)/;
+        if ( grep { $1 eq $_ } @{$config->{invalid_schema}} ) {
+            warn "WARN : $2 is invalid schema.\n";
+            warn "FAIL saycheese.pl\n\n";
+            return;
+        }
         ## Valid extension?
         $url =~ /(.*)\.(.*)/;
         if ( grep { $2 eq $_ } @{$config->{invalid_extension}} ) {
