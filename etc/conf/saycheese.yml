@@ -48,7 +48,7 @@ no_image:
   medium: __path_to(root/static/images/no_image_m.gif)__
   small: __path_to(root/static/images/no_image_s.gif)__
 
-invalid_schema
+invalid_schema:
   - https
   - ftp
 
