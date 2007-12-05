@@ -110,7 +110,7 @@ $worker->register_function(
         $img->Read( $tmp );
         $img->Set( quality => 100 );
 
-        $img->Crop( width => 1200, height => 800, x => 5, y => 115 );
+        $img->Crop( width => 1200, height => 800, x => 5, y => 116 );
         warn "WRITING IMAGE : max size image, 1200x800.\n";
 
         my $l = $img->Clone;
