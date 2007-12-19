@@ -60,6 +60,7 @@ invalid_extension:
   - mp3
   - mp4
   - wav
+  - ppt
 
 invalid_host:
   - youtube.com
