@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Catalyst::Runtime '5.70';
-use IO::File;
 
 # Set flags and add plugins for the application
 #

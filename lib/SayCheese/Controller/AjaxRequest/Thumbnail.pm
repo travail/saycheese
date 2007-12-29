@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Gearman::Client;
+use DateTime::Format::HTTP;
 
 =head1 NAME
 
@@ -109,6 +110,9 @@ sub large : PathPart('large') Chained('') Args('') {
         $obj = $c->thumbnail->find_by_url( $url );
         if ( $obj ) {
             $c->cache->set( $url, $obj );
+            ## set Last-Modified, Content-Length for cache
+            $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
+            $c->res->headers->content_length( length $obj->{small} );
         } else {
             $obj = {};
             $obj->{large} = $c->no_image_l;
@@ -141,6 +145,9 @@ sub medium : PathPart('medium') Chained('') Args('') {
         $obj = $c->thumbnail->find_by_url( $url );
         if ( $obj ) {
             $c->cache->set( $url, $obj );
+            ## set Last-Modified, Content-Length for cache
+            $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
+            $c->res->headers->content_length( length $obj->{small} );
         } else {
             $obj = {};
             $obj->{medium} = $c->no_image_m;
@@ -173,6 +180,9 @@ sub small : PathPart('small') Chained('') Args('') {
         $obj = $c->thumbnail->find_by_url( $url );
         if ( $obj ) {
             $c->cache->set( $url, $obj ) if $obj;
+            ## set Last-Modified, Content-Length for cache
+            $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
+            $c->res->headers->content_length( length $obj->{small} );
         } else {
             $obj = {};
             $obj->{small} = $c->no_image_s;
@@ -207,6 +217,9 @@ sub api : PathPart('api') Chained('') Args('') {
     }
 
     $c->res->content_type( qw( image/jpeg image/gif image/png ) );
+    $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
+    $c->res->headers->content_length( length $obj->{small} );
+
     $c->stash->{template}  = 'include/thumbnail.inc';
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
