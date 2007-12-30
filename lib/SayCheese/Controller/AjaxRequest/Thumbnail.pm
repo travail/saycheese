@@ -111,8 +111,10 @@ sub large : PathPart('large') Chained('') Args('') {
         if ( $obj ) {
             $c->cache->set( $url, $obj );
             ## set Last-Modified, Content-Length for cache
-            $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
-            $c->res->headers->content_length( length $obj->{small} );
+            $c->res->headers->header(
+                'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+                'Content-Length' => length $obj->large,
+            );
         } else {
             $obj = {};
             $obj->{large} = $c->no_image_l;
@@ -146,8 +148,10 @@ sub medium : PathPart('medium') Chained('') Args('') {
         if ( $obj ) {
             $c->cache->set( $url, $obj );
             ## set Last-Modified, Content-Length for cache
-            $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
-            $c->res->headers->content_length( length $obj->{small} );
+            $c->res->headers->header(
+                'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+                'Content-Length' => length $obj->medium,
+            );
         } else {
             $obj = {};
             $obj->{medium} = $c->no_image_m;
@@ -181,8 +185,11 @@ sub small : PathPart('small') Chained('') Args('') {
         if ( $obj ) {
             $c->cache->set( $url, $obj ) if $obj;
             ## set Last-Modified, Content-Length for cache
-            $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
-            $c->res->headers->content_length( length $obj->{small} );
+            $c->res->headers->header(
+                'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+                'Content-Length' => length $obj->small,
+            );
+            $c->log->dumper( $c->res->headers );
         } else {
             $obj = {};
             $obj->{small} = $c->no_image_s;
