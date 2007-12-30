@@ -189,7 +189,6 @@ sub small : PathPart('small') Chained('') Args('') {
                 'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
                 'Content-Length' => length $obj->small,
             );
-            $c->log->dumper( $c->res->headers );
         } else {
             $obj = {};
             $obj->{small} = $c->no_image_s;
