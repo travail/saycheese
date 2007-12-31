@@ -117,6 +117,14 @@ img.thumbnails {
   border: 1px solid [% site.col.text %];
 }
 
+#form_url_text, #form_search, #form_request {
+  font-size:2em;
+}
+
+.error {
+  font-size: 1.5em;
+}
+
 div.search-result {
   cursor: pointer;
 }

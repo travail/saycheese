@@ -3,6 +3,8 @@ DEBUG: all
 
 name: SayCheese
 
+default_view: TT
+
 charsets:
   in: EUC-JP
   out: UTF-8

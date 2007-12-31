@@ -15,11 +15,20 @@
       [% first_page = pager.current_page - side_page %]
       [% last_page = pager.current_page + side_page %]
     [% ELSE %]
-      [% first_page = pager.last_page - (limit_page - 1) %]
+      [% IF pager.last_page > limit_page %]
+        [% first_page = pager.last_page - (limit_page - 1) %]
+      [% ELSE %]
+        [% first_page = 1 %]
+      [% END %]
       [% last_page = pager.last_page %]
     [% END %]
       [% FOREACH page = [first_page .. last_page] %]
-      [% IF pager.current_page == page %][% class = 'active-page-num' %][% ELSE %][% class = 'page-num' %][% END %]
-      <span class="[% class %]" onclick="Paging([% pager.entries_per_page %],[% page %])" >[% page %]</span>
+        [% IF pager.current_page == page %]
+          [% class = 'active-page-num' %]
+          <span class="[% class %]">[% page %]</span>
+        [% ELSE %]
+          [% class = 'page-num' %]
+          <a href="/?page=[% page %]&url=[% c.req.param('url') %]"><span class="[% class %]">[% page %]</span></a>
+        [% END %]
       [% END %]
   </div>

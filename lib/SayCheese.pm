@@ -18,6 +18,7 @@ use Catalyst qw/
     ConfigLoader
     Static::Simple
     Cache::Memcached
+    FillInForm
     DateTime::Constructor
     DBIC::Profiler
     +SayCheese::Plugin::UserAgent

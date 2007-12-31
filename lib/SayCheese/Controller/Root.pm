@@ -26,16 +26,46 @@ SayCheese::Controller::Root - Root Controller for SayCheese
 
 =cut
 
-sub default : Private {
+sub index : Private {
     my ( $self, $c ) = @_;
 
     my $req = $c->req;
     my $itr_thumbnail = $c->thumbnail->index_thumbnails(
+        url  => $req->param('url') || undef,
         rows => $req->param('rows') || $c->config->{default_rows},
         page => $req->param('page') || 1,
     );
 
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
+    $c->stash->{fillform} = { url => $req->param('url') };
+}
+
+=head2 default
+
+=cut
+
+sub default : Private {
+    my ( $self, $c ) = @_;
+
+    $c->log->info('*** SayCheese::Controller::Root::default ***');
+
+    $c->load_template('index.tt');
+    $c->forward('index');
+}
+
+=head2 render
+
+=cut
+
+sub render : ActionClass('RenderView') {
+    my ( $self, $c ) = @_;
+
+    $c->log->info('*** SayCheese::Controller::Root::render ***');
+
+    return if $c->stash->{only_file};
+    return if $c->stash->{only_json};
+
+    $c->load_template unless $c->stash->{template};
 }
 
 =head2 end
@@ -44,15 +74,13 @@ Attempt to render a view, if needed.
 
 =cut 
 
-sub end : ActionClass('RenderView') {
+sub end : Private {
     my ( $self, $c ) = @_;
 
-    return if $c->res->status =~ /^3\d\d$/;
-    return if $c->stash->{only_json};
-    return if $c->stash->{only_file};
+    $c->log->info('*** SayCheese::Controller::Root::end ***');
 
-    $c->stash->{template} = $c->action->reverse . '.tt' unless $c->stash->{template};
-    $c->forward('View::TT');
+    $c->forward('render');
+    $c->fillform( $c->stash->{fillform} ) if $c->stash->{fillform};
 }
 
 =head1 AUTHOR

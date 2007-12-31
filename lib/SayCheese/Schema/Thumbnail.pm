@@ -42,8 +42,10 @@ sub index_thumbnails : ResultSet {
     my ( $self, %args ) = @_;
 
     my $config = SayCheese->config;
+    my %wheres = ();
+    $wheres{url} = { LIKE => sprintf q{%s%%}, $args{url} } if $args{url};
     return $self->search(
-        {},
+        { %wheres },
         {
             order_by => 'id DESC',
             rows     => $args{rows} || $config->{default_rows},

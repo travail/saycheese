@@ -1,5 +1,6 @@
 function AbleSayCheese() { $('form_request').disabled = ''; };
 function DisableSayCheese() { $('form_request').disabled = 'disabled'; }
+function DisableSearchThumbnail() { $('form_search').disabled = 'disabled'; }
 
 function ShowIndicator() {
   $('thumbnail').innerHTML = '<img id="thumbnail_path" width="192" height="14" src="/static/images/progress_bar.gif" alt="Loading..." />';
@@ -28,6 +29,14 @@ function DeleteThumbnail(id) {
       });
     }.bind(this)
   })
+}
+
+function SearchThumbnail(url) {
+  if (!url) { return; }
+  DisableSearchThumbnail();
+
+  $('form_saycheese').action = $('form_saycheese').action + '?url=' + url;
+  $('form_saycheese').submit();
 }
 
 function Thumbnail(url) {
