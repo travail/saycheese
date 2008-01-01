@@ -39,12 +39,30 @@ sub as_hashref {
 }
 
 sub index_thumbnails : ResultSet {
-    my ( $self, %args ) = @_;
+    my ( $class, %args ) = @_;
 
     my $config = SayCheese->config;
     my %wheres = ();
     $wheres{url} = { LIKE => sprintf q{%s%%}, $args{url} } if $args{url};
-    return $self->search(
+    return $class->search(
+        { %wheres },
+        {
+            columns  => [ qw/ id created_on modified_on url extension / ],
+            order_by => 'id DESC',
+            rows     => $args{rows} || $config->{default_rows},
+            page     => $args{page} || 1,
+        },
+    );
+    
+}
+
+sub ndex_thumbnails : ResultSet {
+    my ( $class, %args ) = @_;
+
+    my $config = SayCheese->config;
+    my %wheres = ();
+    $wheres{url} = { LIKE => sprintf q{%s%%}, $args{url} } if $args{url};
+    return $class->search(
         { %wheres },
         {
             order_by => 'id DESC',
@@ -55,9 +73,9 @@ sub index_thumbnails : ResultSet {
 }
 
 sub find_by_url : ResultSet {
-    my ( $self, $url ) = @_;
+    my ( $class, $url ) = @_;
 
-    return $self->single( { url => { LIKE => sprintf q{%s%%}, $url } }, {});
+    return $class->single( { url => { LIKE => sprintf q{%s%%}, $url } }, {});
 }
 
 sub print_thumbnail {
