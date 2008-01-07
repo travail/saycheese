@@ -90,7 +90,6 @@ sub recent_thumbnails : Local {
     $c->output_file;
 }
 
-
 =head large
 
 =cut
@@ -110,8 +109,9 @@ sub large : PathPart('large') Chained('') Args('') {
         $obj = $c->thumbnail->find_by_url( $url );
         if ( $obj ) {
             $c->cache->set( $url, $obj );
-            ## set Last-Modified, Content-Length for cache
+            ## set Expires, Last-Modified, Content-Length for cache
             $c->res->headers->header(
+                'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => 1800 ) ),
                 'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
                 'Content-Length' => length $obj->large,
             );
@@ -126,7 +126,6 @@ sub large : PathPart('large') Chained('') Args('') {
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
 }
-
 
 =head medium
 
@@ -147,8 +146,9 @@ sub medium : PathPart('medium') Chained('') Args('') {
         $obj = $c->thumbnail->find_by_url( $url );
         if ( $obj ) {
             $c->cache->set( $url, $obj );
-            ## set Last-Modified, Content-Length for cache
+            ## set Expires, Last-Modified, Content-Length for cache
             $c->res->headers->header(
+                'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => 1800 ) ),
                 'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
                 'Content-Length' => length $obj->medium,
             );
@@ -163,7 +163,6 @@ sub medium : PathPart('medium') Chained('') Args('') {
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
 }
-
 
 =head small
 
@@ -184,8 +183,9 @@ sub small : PathPart('small') Chained('') Args('') {
         $obj = $c->thumbnail->find_by_url( $url );
         if ( $obj ) {
             $c->cache->set( $url, $obj ) if $obj;
-            ## set Last-Modified, Content-Length for cache
+            ## set Expires, Last-Modified, Content-Length for cache
             $c->res->headers->header(
+                'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => 1800 ) ),
                 'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
                 'Content-Length' => length $obj->small,
             );
@@ -197,36 +197,6 @@ sub small : PathPart('small') Chained('') Args('') {
 
     $c->res->content_type( qw( image/jpeg image/gif image/png ) );
     $c->stash->{template}  = 'include/small.inc';
-    $c->stash->{thumbnail} = $obj;
-    $c->output_file;
-}
-
-
-=head2 api
-
-=cut
-
-sub api : PathPart('api') Chained('') Args('') {
-    my ( $self, $c ) = @_;
-
-    my $url = $c->req->uri->path_query;
-    $url =~ s/^\/api\///;
-    $url =~ s/%7E/~/;
-
-    my $obj = $c->cache->get( $url );
-    if ( $obj ) {
-        $c->log->info('*** Cache Hit!!! ***');
-    } else {
-        $c->log->info('*** Cache Not Hit... ***');
-        $obj = $c->thumbnail->find_by_url( $url );
-        $c->cache->set( $url, $obj ) if $obj;
-    }
-
-    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
-    $c->res->headers->last_modified( DateTime::Format::HTTP->format_datetime( $c->dt ) );
-    $c->res->headers->content_length( length $obj->{small} );
-
-    $c->stash->{template}  = 'include/thumbnail.inc';
     $c->stash->{thumbnail} = $obj;
     $c->output_file;
 }
