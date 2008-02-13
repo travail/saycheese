@@ -32,7 +32,7 @@ job_servers:
   - 192.168.1.1
 
 cache:
-  expires: 86400
+  expires: 31536000
   servers:
     - 192.168.1.1:11211
 

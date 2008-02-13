@@ -37,7 +37,7 @@ sub index : Private {
     );
 
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
-    $c->stash->{fillform} = { url => $req->param('url') };
+    $c->stash->{fillform} = { url => $req->param('url') || undef };
 }
 
 =head2 default
