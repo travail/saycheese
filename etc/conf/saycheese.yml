@@ -5,17 +5,13 @@ name: SayCheese
 
 default_view: TT
 
-charsets:
-  in: EUC-JP
-  out: UTF-8
-
 dbic_profiler:
   model_name: DBIC::SayCheese
 
 View::JSON:
   json_driver: JSON::Syck
   expose_stash: json_data
-  encoding: euc-jp
+  encoding: utf8
 
 service_url: http://saycheese.no-ip.info/
 
@@ -34,7 +30,8 @@ job_servers:
 cache:
   expires: 31536000
   servers:
-    - 192.168.1.1:11211
+    - 192.168.1.1:11211 
+    - 192.168.1.2:11211
 
 thumbnail:
   thumbnail_path: __path_to(root/static/thumbnail/)__
