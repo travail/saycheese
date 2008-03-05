@@ -104,6 +104,12 @@ sub large : PathPart('large') Chained('') Args('') {
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
         $c->log->info('*** Cache Hit!!! ***');
+        ## set Expires, Last-Modified, Content-Length for cache
+        $c->res->headers->header(
+            'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
+            'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+            'Content-Length' => length $obj->large,
+        );
     } else {
         $c->log->info('*** Cache Not Hit... ***');
         $obj = $c->thumbnail->find_by_url( $url );
@@ -141,6 +147,12 @@ sub medium : PathPart('medium') Chained('') Args('') {
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
         $c->log->info('*** Cache Hit!!! ***');
+        ## set Expires, Last-Modified, Content-Length for cache
+        $c->res->headers->header(
+            'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
+            'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+            'Content-Length' => length $obj->large,
+        );
     } else {
         $c->log->info('*** Cache Not Hit... ***');
         $obj = $c->thumbnail->find_by_url( $url );
@@ -178,6 +190,12 @@ sub small : PathPart('small') Chained('') Args('') {
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
         $c->log->info('*** Cache Hit!!! ***');
+        ## set Expires, Last-Modified, Content-Length for cache
+        $c->res->headers->header(
+            'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
+            'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+            'Content-Length' => length $obj->large,
+        );
     } else {
         $c->log->info('*** Cache Not Hit... ***');
         $obj = $c->thumbnail->find_by_url( $url );

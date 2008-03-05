@@ -2,6 +2,7 @@ package SayCheese;
 
 use strict;
 use warnings;
+use NEXT;
 
 use Catalyst::Runtime '5.70';
 

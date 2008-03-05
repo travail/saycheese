@@ -1,5 +1,5 @@
 ---
-DEBUG: all
+DEBUG: info
 
 Model::SayCheese:
   schema_class: SayCheese::Schema
