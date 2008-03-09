@@ -98,7 +98,7 @@ div.thumbnail-body {
   padding: 0.1em 0.3em;
 }
 
-.thumb-delete {
+.thumb-update, .thumb-delete {
   cursor: pointer;
   color: [% site.col.anchor %];
   background: transparent;

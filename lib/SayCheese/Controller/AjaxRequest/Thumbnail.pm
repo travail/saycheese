@@ -52,6 +52,30 @@ sub create : Local {
     $c->output_json;
 }
 
+=haed2 update
+
+=cut
+
+sub update : Local {
+    my ( $self, $c ) = @_;
+
+    my $id = $c->req->param('id');
+    my $obj = $c->thumbnail->find( $id );
+    if ( $id ) {
+        my $cache = $c->cache->get( $obj->url );
+        if ( $cache ) {
+            $c->log->info('*** Cache Hit! ***');
+            $c->cache->delete( $obj->url );
+            $c->log->info('*** Delete Cache ***');
+        }
+        my $client = Gearman::Client->new( job_servers => $c->config->{job_servers} );
+        $client->do_task( 'saycheese', $obj->url, {} );
+        $c->cache->set( $obj->url, $obj );
+    }
+
+    $c->res->redirect('recent_thumbnails');
+}
+
 =head2 delete
 
 =cut
@@ -100,10 +124,11 @@ sub large : PathPart('large') Chained('') Args('') {
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/large\///;
     $url =~ s/%7E/~/;
+    $url =~ s/%23/#/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
-        $c->log->info('*** Cache Hit!!! ***');
+        $c->log->info('*** Cache Hit! ***');
         ## set Expires, Last-Modified, Content-Length for cache
         $c->res->headers->header(
             'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
@@ -143,10 +168,11 @@ sub medium : PathPart('medium') Chained('') Args('') {
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/medium\///;
     $url =~ s/%7E/~/;
+    $url =~ s/%23/#/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
-        $c->log->info('*** Cache Hit!!! ***');
+        $c->log->info('*** Cache Hit! ***');
         ## set Expires, Last-Modified, Content-Length for cache
         $c->res->headers->header(
             'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
@@ -186,10 +212,11 @@ sub small : PathPart('small') Chained('') Args('') {
     my $url = $c->req->uri->path_query;
     $url =~ s/^\/small\///;
     $url =~ s/%7E/~/;
+    $url =~ s/%23/#/;
 
     my $obj = $c->cache->get( $url );
     if ( $obj ) {
-        $c->log->info('*** Cache Hit!!! ***');
+        $c->log->info('*** Cache Hit! ***');
         ## set Expires, Last-Modified, Content-Length for cache
         $c->res->headers->header(
             'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),

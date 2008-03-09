@@ -1,12 +1,10 @@
 ---
-#DEBUG: all
-
 name: SayCheese
 
 default_view: TT
 
-dbic_profiler:
-  model_name: DBIC::SayCheese
+DBIC::Profiler:
+  MODEL_NAME: DBIC::SayCheese
 
 View::JSON:
   json_driver: JSON::Syck

@@ -6,20 +6,40 @@ function ShowIndicator() {
   $('thumbnail').innerHTML = '<img id="thumbnail_path" width="192" height="14" src="/static/images/progress_bar.gif" alt="Loading..." />';
 }
 
-function ShowBouncing(id) {
-  thumb_delete = 'thumb-delete' + id;
-  $(thumb_delete).innerHTML = '<img width="16" height="16" src="/static/images/loading-bouncing.gif" alt="Loading..." />';
+function ShowBouncing(id,pos) {
+  position = pos + id;
+  $(position).innerHTML = '<img width="16" height="16" src="/static/images/loading-bouncing.gif" alt="Loading..." />';
+}
+
+function UpdateThumbnail(id) {
+  new Ajax.Request('/ajaxrequest/thumbnail/update', {
+    method: 'get',
+    parameters:     '&id=' + id,
+    onCreated:      ShowBouncing(id,'thumb-update'),
+    onAccepted:     ShowBouncing(id,'thumb-update'),
+    onLoading:      ShowBouncing(id,'thumb-update'),
+    onLoaded:       ShowBouncing(id,'thumb-update'),
+    onInterractive: ShowBouncing(id,'thumb-update'),
+    onComplete:     function(request) {
+      var param = '&page=1'
+      new Ajax.Updater('thumbnails', '/ajaxrequest/thumbnail/recent_thumbnails', {
+        method: 'get',
+        parameters: param,
+        asynchronous: true
+      });
+    }.bind(this)
+  })
 }
 
 function DeleteThumbnail(id) {
   new Ajax.Request('/ajaxrequest/thumbnail/delete', {
     method: 'get',
     parameters:     '&id=' + id,
-    onCreated:      ShowBouncing(id),
-    onAccepted:     ShowBouncing(id),
-    onLoading:      ShowBouncing(id),
-    onLoaded:       ShowBouncing(id),
-    onInterractive: ShowBouncing(id),
+    onCreated:      ShowBouncing(id,'thumb-delete'),
+    onAccepted:     ShowBouncing(id,'thumb-delete'),
+    onLoading:      ShowBouncing(id,'thumb-delete'),
+    onLoaded:       ShowBouncing(id,'thumb-delete'),
+    onInterractive: ShowBouncing(id,'thumb-delete'),
     onComplete:     function(request) {
       var param = '&page=1'
       new Ajax.Updater('thumbnails', '/ajaxrequest/thumbnail/recent_thumbnails', {
