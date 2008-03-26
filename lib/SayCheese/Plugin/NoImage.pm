@@ -3,8 +3,7 @@ package SayCheese::Plugin::NoImage;
 use strict;
 use warnings;
 use base 'Class::Data::Inheritable';
-use FileHandle;
-use IO::File;
+use SayCheese::FileHandle;
 
 __PACKAGE__->mk_classdata('_large');
 __PACKAGE__->mk_classdata('_medium');
@@ -33,21 +32,14 @@ sub setup {
 
     my $config = $c->config;
     my ( $lfh, $mfh, $sfh );
-#    $lfh = IO::File->new( $config->{no_image}->{large}, IO::File::O_RDONLY );
-    $mfh = IO::File->new( $config->{no_image}->{medium}, IO::File::O_RDONLY );
-    $sfh = IO::File->new( $config->{no_image}->{small}, IO::File::O_RDONLY );
+#    $lfh = SayCheese::FileHandle->new( $config->{no_image}->{large}, 'r' );
+    $mfh = SayCheese::FileHandle->new( $config->{no_image}->{medium}, 'r' );
+    $sfh = SayCheese::FileHandle->new( $config->{no_image}->{small}, 'r' );
 
     my ( $ldata, $mdata, $sdata );
-#    while ( $lfh->sysread( my $lbuf, 8192 ) ) {
-#        $ldata .= $lbuf;
-#    }
-
-    while ( $mfh->sysread( my $mbuf, 8192 ) ) {
-        $mdata .= $mbuf;
-    }
-    while ( $sfh->sysread( my $sbuf, 8192 ) ) {
-        $sdata .= $sbuf;
-    }
+#    $ldata .= $lfh->slurp;
+    $mdata .= $mfh->slurp;
+    $sdata .= $sfh->slurp;
 
 #    __PACKAGE__->_large( $ldata );
     __PACKAGE__->_medium( $mdata );
@@ -56,23 +48,42 @@ sub setup {
     $c->NEXT::setup( @_ );
 }
 
-=head2 no_image_l
+=head2 no_image
+
+    Return no image. Default size is 'medium'.
 
 =cut
 
-sub no_image_l { shift->_large }
+sub no_image {
+    my ( $c, $size ) = @_;
 
-=head2 no_image_m
+    $size ||= 'medium';
+    $c->$size;
+}
+
+=head2 large
+
+    Return large size no image.
 
 =cut
 
-sub no_image_m { shift->_medium }
+sub large { shift->_large }
 
-=head2 no_image_s
+=head2 medium
+
+    Return medium size no image.
 
 =cut
 
-sub no_image_s { shift->_small }
+sub medium { shift->_medium }
+
+=head2 small
+
+    Return small size no image.
+
+=cut
+
+sub small { shift->_small }
 
 
 =head1 AUTHOR

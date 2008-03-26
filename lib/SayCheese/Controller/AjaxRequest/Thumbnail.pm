@@ -3,6 +3,9 @@ package SayCheese::Controller::AjaxRequest::Thumbnail;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use SayCheese::Utils qw/ url2thumbpath unescape_uri /;
+use SayCheese::FileHandle;
+use Digest::MD5 qw/ md5_hex /;
 use Gearman::Client;
 use DateTime::Format::HTTP;
 
@@ -41,7 +44,7 @@ sub create : Local {
 
     my $obj = $c->model('DBIC::SayCheese::Thumbnail')->find_by_url( $url );
     if ( $obj ) {
-        $obj->print_thumbnail;
+        ## nothing to do.
     } else {
         my $client = Gearman::Client->new( job_servers => $c->config->{job_servers} );
         my $id = $client->do_task( 'saycheese', $url, {} );
@@ -83,12 +86,9 @@ sub update : Local {
 sub delete : Local {
     my ( $self, $c ) = @_;
 
-    my $id = $c->req->param('id');
+    my $id  = $c->req->param('id');
     my $obj = $c->thumbnail->find( $id );
-    if ( $obj ) {
-        unlink $obj->path;
-        $obj->delete;
-    }
+    $obj->delete if $obj;
 
     $c->res->redirect('resent_thumbnails');
 }
@@ -101,148 +101,10 @@ sub recent_thumbnails : Local {
     my ( $self, $c ) = @_;
 
     my $req = $c->req;
-    my $itr_thumbnail = $c->thumbnail->search( {},
-        {
-            order_by => 'id DESC',
-            rows     => $req->param('rows') || $c->config->{default_rows},
-            page     => $req->param('page') || 1,
-        }
-    );
+    my $itr_thumbnail = $c->thumbnail->index_thumbnails;
 
     $c->stash->{template}      = 'include/thumbnails.inc';
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
-    $c->output_file;
-}
-
-=head large
-
-=cut
-
-sub large : PathPart('large') Chained('') Args('') {
-    my ( $self, $c ) = @_;
-
-    my $url = $c->req->uri->path_query;
-    $url =~ s/^\/large\///;
-    $url =~ s/%7E/~/;
-    $url =~ s/%23/#/;
-
-    my $obj = $c->cache->get( $url );
-    if ( $obj ) {
-        $c->log->info('*** Cache Hit! ***');
-        ## set Expires, Last-Modified, Content-Length for cache
-        $c->res->headers->header(
-            'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
-            'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
-            'Content-Length' => length $obj->large,
-        );
-    } else {
-        $c->log->info('*** Cache Not Hit... ***');
-        $obj = $c->thumbnail->find_by_url( $url );
-        if ( $obj ) {
-            $c->cache->set( $url, $obj );
-            ## set Expires, Last-Modified, Content-Length for cache
-            $c->res->headers->header(
-                'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
-                'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
-                'Content-Length' => length $obj->large,
-            );
-        } else {
-            $obj = {};
-            $obj->{large} = $c->no_image_l;
-        }
-    }
-
-    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
-    $c->stash->{template}  = 'include/large.inc';
-    $c->stash->{thumbnail} = $obj;
-    $c->output_file;
-}
-
-=head medium
-
-=cut
-
-sub medium : PathPart('medium') Chained('') Args('') {
-    my ( $self, $c ) = @_;
-
-    my $url = $c->req->uri->path_query;
-    $url =~ s/^\/medium\///;
-    $url =~ s/%7E/~/;
-    $url =~ s/%23/#/;
-
-    my $obj = $c->cache->get( $url );
-    if ( $obj ) {
-        $c->log->info('*** Cache Hit! ***');
-        ## set Expires, Last-Modified, Content-Length for cache
-        $c->res->headers->header(
-            'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
-            'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
-            'Content-Length' => length $obj->large,
-        );
-    } else {
-        $c->log->info('*** Cache Not Hit... ***');
-        $obj = $c->thumbnail->find_by_url( $url );
-        if ( $obj ) {
-            $c->cache->set( $url, $obj );
-            ## set Expires, Last-Modified, Content-Length for cache
-            $c->res->headers->header(
-                'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
-                'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
-                'Content-Length' => length $obj->medium,
-            );
-        } else {
-            $obj = {};
-            $obj->{medium} = $c->no_image_m;
-        }
-    }
-
-    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
-    $c->stash->{template}  = 'include/medium.inc';
-    $c->stash->{thumbnail} = $obj;
-    $c->output_file;
-}
-
-=head small
-
-=cut
-
-sub small : PathPart('small') Chained('') Args('') {
-    my ( $self, $c ) = @_;
-
-    my $url = $c->req->uri->path_query;
-    $url =~ s/^\/small\///;
-    $url =~ s/%7E/~/;
-    $url =~ s/%23/#/;
-
-    my $obj = $c->cache->get( $url );
-    if ( $obj ) {
-        $c->log->info('*** Cache Hit! ***');
-        ## set Expires, Last-Modified, Content-Length for cache
-        $c->res->headers->header(
-            'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
-            'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
-            'Content-Length' => length $obj->large,
-        );
-    } else {
-        $c->log->info('*** Cache Not Hit... ***');
-        $obj = $c->thumbnail->find_by_url( $url );
-        if ( $obj ) {
-            $c->cache->set( $url, $obj ) if $obj;
-            ## set Expires, Last-Modified, Content-Length for cache
-            $c->res->headers->header(
-                'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
-                'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
-                'Content-Length' => length $obj->small,
-            );
-        } else {
-            $obj = {};
-            $obj->{small} = $c->no_image_s;
-        }
-    }
-
-    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
-    $c->stash->{template}  = 'include/small.inc';
-    $c->stash->{thumbnail} = $obj;
     $c->output_file;
 }
 
@@ -264,9 +126,166 @@ sub search_url : Local {
     $c->output_file;
 }
 
+=head large
+
+    Return large size thumbnail.
+
+=cut
+
+sub large : PathPart('large') Chained('') Args('') {
+    my ( $self, $c ) = @_;
+
+    my $url = $c->req->uri->path_query;
+    $url =~ s{^/large/}{};
+    $url = unescape_uri( $url );
+
+    my $thumbnail = $c->cache->get( $url );
+    if ( $thumbnail ) {
+        $c->log->info('*** Cache Hit! ***');
+        $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
+    } else {
+        $c->log->info('*** Cache Not Hit... ***');
+        my $thumbpath = url2thumbpath( $url, 'large' );
+        if ( !-e $thumbpath ) {
+            $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
+            my $obj = $c->thumbnail->find_by_url_like( $url );
+            $thumbpath = $obj->large_path if $obj;
+        }
+        if ( -e $thumbpath ) {
+            $c->log->info("*** Thumbnail Found! $thumbpath ***");
+            $thumbnail = $c->slurp_thumbnail( $thumbpath );
+            $c->cache->set( $url, $thumbnail );
+            $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
+        } else {
+            $thumbnail = $c->no_image('medium');
+        }
+    }
+
+    $c->forward( 'post_process' , [ $thumbnail ] );
+}
+
+=head medium
+
+    Return medium size thumbnail.
+
+=cut
+
+sub medium : PathPart('medium') Chained('') Args('') {
+    my ( $self, $c ) = @_;
+
+    my $url = $c->req->uri->path_query;
+    $url =~ s{^/medium/}{};
+    $url = unescape_uri( $url );
+
+    my $thumbnail = $c->cache->get( $url );
+    if ( $thumbnail ) {
+        $c->log->info('*** Cache Hit! ***');
+        $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
+    } else {
+        $c->log->info('*** Cache Not Hit... ***');
+        my $thumbpath = url2thumbpath( $url, 'medium' );
+        if ( !-e $thumbpath ) {
+            $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
+            my $obj = $c->thumbnail->find_by_url_like( $url );
+            $thumbpath = $obj->medium_path if $obj;
+        }
+        if ( -e $thumbpath ) {
+            $c->log->info("*** Thumbnail Found! $thumbpath ***");
+            $thumbnail = $c->slurp_thumbnail( $thumbpath );
+            $c->cache->set( $url, $thumbnail );
+            $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
+        } else {
+            $thumbnail = $c->no_image('medium');
+        }
+    }
+
+    $c->forward( 'post_process', [ $thumbnail ] );
+}
+
+=head small
+
+    Return small size thumbnail.
+
+=cut
+
+sub small : PathPart('small') Chained('') Args('') {
+    my ( $self, $c ) = @_;
+
+    my $url = $c->req->uri->path_query;
+    $url =~ s{^/small/}{};
+    $url = unescape_uri( $url );
+
+    my $thumbnail = $c->cache->get( $url );
+    if ( $thumbnail ) {
+        $c->log->info('*** Cache Hit! ***');
+        $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
+    } else {
+        $c->log->info('*** Cache Not Hit... ***');
+        my $thumbpath = url2thumbpath( $url, 'small' );
+        if ( !-e $thumbpath ) {
+            $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
+            my $obj = $c->thumbnail->find_by_url_like( $url );
+            $thumbpath = $obj->small_path if $obj;
+        }
+        if ( -e $thumbpath ) {
+            $c->log->info("*** Thumbnail Found! $thumbpath ***");
+            $thumbnail = $c->slurp_thumbnail( $thumbpath );
+            $c->cache->set( $url, $thumbnail );
+            $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
+        } else {
+            $thumbnail = $c->no_image('small')
+        }
+    }
+
+    $c->forward( 'post_process', [ $thumbnail ] );
+}
+
+=head2 post_process
+
+    Post Processor. Set Content-Type, stash 'thumbnail.inc' and thumbnail, and out put file.
+
+=cut
+
+sub post_process : Private {
+    my ( $self, $c, $thumbnail ) = @_;
+
+    $c->forward('set_content_type');
+    $c->stash->{template}  = 'include/thumbnail.inc';
+    $c->stash->{thumbnail} = $thumbnail;
+    $c->output_file;
+}
+
+=head2 set_http_header
+
+    Set Expires, Last-Modified, Content-Length for cache
+
+=cut
+
+sub set_http_header : Private {
+    my ( $self, $c, $content_length ) = @_;
+
+    $c->res->headers->header(
+        'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
+        'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+        'Content-Length' => $content_length,
+    );
+}
+
+=head2 set_content_type
+
+    Set Contet-Type for image
+
+=cut
+
+sub set_content_type : Private {
+    my ( $self, $c ) = @_;
+
+    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
+}
+
 =head1 AUTHOR
 
-A clever guy
+travail
 
 =head1 LICENSE
 

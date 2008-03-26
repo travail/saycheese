@@ -51,6 +51,18 @@ __PACKAGE__->setup;
 
 sub thumbnail : Private { shift->model('DBIC::SayCheese::Thumbnail') }
 
+=head2 slurp_thumnail
+
+    Slurp thumbnail.
+
+=cut
+
+sub slurp_thumbnail : Private {
+    my ( $c, $path ) = @_;
+
+    my $fh = SayCheese::FileHandle->new( $path, 'r' );
+    return $fh ? $fh->slurp : undef;
+}
 
 =head1 NAME
 

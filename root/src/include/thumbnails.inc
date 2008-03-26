@@ -6,7 +6,6 @@
         </div>
         <div class="thumbnail-body">
 <table>
-<!--<tr><td colspan="2" rowspan="8"><a href="[% #thumbnail.url %]" target="_blank"><img class="thumbnails" src="/[% #thumbnail.img_path %]" /></a></td></tr>-->
 <tr>
 <td colspan="2" rowspan="8"><a href="[% thumbnail.url %]" target="_blank"><img class="thumbnails" src="[% c.config.service_url %]medium/[% thumbnail.url %]" /></a></td>
 </tr>

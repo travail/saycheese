@@ -15,11 +15,6 @@ service_url: http://saycheese.no-ip.info/
 
 time_zone: Asia/Tokyo
 
-connect_info:
-  - dbi:mysql:saycheese:hostname=192.168.1.2;
-  - travail
-  - travail
-
 default_rows: 10
 
 job_servers:
@@ -32,7 +27,26 @@ cache:
     - 192.168.1.2:11211
 
 thumbnail:
-  thumbnail_path: __path_to(root/static/thumbnail/)__
+  extension: jpg
+  default_size: medium
+  size:
+    original:
+      width: 1200
+      height: 800
+    large:
+      width: 400
+      height: 300
+    medium:
+      width: 200
+      height: 150
+    small:
+      width: 80
+      height: 60
+  dir:
+    original: /home/public/var/SayCheese/thumbnail/original
+    small: /home/public/var/SayCheese/thumbnail/small
+    medium: /home/public/var/SayCheese/thumbnail/medium
+    large: /home/public/var/SayCheese/thumbnail/large
 
 DISPLAY: ':1.0'
 

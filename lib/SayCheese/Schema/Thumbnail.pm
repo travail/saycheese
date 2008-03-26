@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'DBIx::Class';
 use SayCheese;
-use IO::File;
+use SayCheese::Utils qw/ url2thumbpath /;
 
 __PACKAGE__->load_components( qw/ PK::Auto ResultSetManager +SayCheese::DBIC Core / );
 __PACKAGE__->table('thumbnail');
@@ -13,12 +13,7 @@ __PACKAGE__->add_columns( qw/
     created_on
     modified_on
     url
-    thumbnail_name
-    extension
-    original
-    large
-    medium
-    small
+    digest
     is_finished
 /);
 __PACKAGE__->set_primary_key('id');
@@ -28,13 +23,14 @@ __PACKAGE__->datetime_column( qw/ created_on modified_on / );
 sub as_hashref {
     my $self = shift;
 
+    my $config = SayCheese->config;
     return {
-        id             => $self->id,
-        created_on     => sprintf( q{%s %s}, $self->created_on->ymd, $self->created_on->hms ),
-        modified_on    => sprintf( q{%s %s}, $self->modified_on->ymd, $self->modified_on->hms ),
-        url            => $self->url,
-        thumbnail_name => $self->thumbnail_name,
-        extension      => $self->extension,
+        id          => $self->id,
+        created_on  => sprintf( q{%s %s}, $self->created_on->ymd, $self->created_on->hms ),
+        modified_on => sprintf( q{%s %s}, $self->modified_on->ymd, $self->modified_on->hms ),
+        url         => $self->url,
+        digest      => $self->digest,
+        extension   => $config->{thumbnail}->{extension},
     };
 }
 
@@ -47,7 +43,6 @@ sub index_thumbnails : ResultSet {
     return $class->search(
         { %wheres },
         {
-            columns  => [ qw/ id created_on modified_on url extension / ],
             order_by => 'id DESC',
             rows     => $args{rows} || $config->{default_rows},
             page     => $args{page} || 1,
@@ -61,32 +56,15 @@ sub find_by_url : ResultSet {
     return $class->single( { url => $url } );
 }
 
-sub print_thumbnail {
-    my $self = shift;
+sub find_by_url_like : ResultSet {
+    my ( $class, $url ) = @_;
 
-    my $config = SayCheese->config;
-    my $fh = IO::File->new( $self->path, 'w' );
-    $fh->print( $self->medium );
+    return $class->single( { url => { LIKE => sprintf q{%s%%}, $url } } );
 }
 
-sub img_path {
-    my $self = shift;
-
-    $self->print_thumbnail unless -e $self->path;
-    return sprintf q{static/thumbnail/%d.%s}, $self->id, $self->extension;
-}
-
-sub path {
-    my $self = shift;
-
-    my $config = SayCheese->config;
-    return sprintf q{%s/%s.%s}, $config->{thumbnail}->{thumbnail_path}, $self->id, $self->extension;
-}
-
-sub file_name {
-    my $self = shift;
-
-    return sprintf q{%d.%s}, $self->id, $self->extension;
-}
+sub original_path { url2thumbpath( shift->url, 'original' ) }
+sub small_path    { url2thumbpath( shift->url, 'small' ) }
+sub medium_path   { url2thumbpath( shift->url, 'medium' ) }
+sub large_path    { url2thumbpath( shift->url, 'large' ) }
 
 1;
