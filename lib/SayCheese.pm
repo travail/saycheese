@@ -27,6 +27,7 @@ use Catalyst qw/
     View
     Dumper
 /;
+#    Log::Colorful
 
 our $VERSION = '0.01';
 
