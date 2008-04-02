@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use FindBin qw/ $Bin /;
+use lib "$Bin/../lib";
+use lib '/home/public/cgi/lib';
+use SayCheese;
+use SayCheese::Utils qw/ url2thumbpath /;
+
+use Data::Dumper;
+
+$| = 1;
+my $config = SayCheese->config;
+while ( my $url = <> ) {
+    chomp $url;
+    my $size = 'medium';
+    ( $size, $url ) = split '/', $url, 2;
+    my $thumbpath = url2thumbpath( $url, $size );
+    if ( -e $thumbpath ) {
+        print "$thumbpath\n";
+    } else {
+        print sprintf qq{%s\n}, $config->{no_image}->{$size};
+    }
+}
