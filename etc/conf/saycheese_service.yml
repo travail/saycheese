@@ -1,9 +1,36 @@
 ---
 DEBUG: info
 
-Model::SayCheese:
+Model::DBIC::SayCheese:
   schema_class: SayCheese::Schema
   connect_info:
     - dbi:mysql:saycheese:hostname=192.168.1.1
     - travail
     - travail
+
+Model::DBIC::SayCheese::Slave:
+  schema_class: SayCheese::Schema
+  connect_info:
+    - dbi:mysql:saycheese:hostname=192.168.1.2
+    - travail
+    - travail
+
+View::TT:
+  INCLUDE_PATH:
+    - __path_to(root/src)__
+    - __path_to(root/lib)__
+    - __path_to(root/static)__
+  PRE_PROCESS: config/main
+  WRAPPER: site/wrapper
+  ERROR: error.tt2
+  TIMER: 0,
+  COMPILE_EXT: ttc
+  COMPILE_DIR: /tmp
+
+View::File:
+  INCLUDE_PATH:
+    - __path_to(root/src)__
+    - __path_to(root/lib)__
+    - __path_to(root/static)__
+  COMPILE_EXT: ttc
+  COMPILE_DIR: /tmp

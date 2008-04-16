@@ -1,13 +1,13 @@
-package SayCheese::Model::DBIC::SayCheese;
+package SayCheese::Model::DBIC::SayCheese::Slave;
 
 use strict;
 use base 'Catalyst::Model::DBIC::Schema';
 
-__PACKAGE__->config( SayCheese->config->{'Model::DBIC::SayCheese'} );
+__PACKAGE__->config( SayCheese->config->{'Model::DBIC::SayCheese::Slave'} );
 
 =head1 NAME
 
-SayCheese::Model::DBIC::SayCheese - Catalyst DBIC Schema Model
+SayCheese::Model::DBIC::SayCheese::Slave - Catalyst DBIC Schema Model
 =head1 SYNOPSIS
 
 See L<SayCheese>
@@ -18,7 +18,7 @@ L<Catalyst::Model::DBIC::Schema> Model using schema L<SayCheese::Schema>
 
 =head1 AUTHOR
 
-A clever guy
+TRAVAIL
 
 =head1 LICENSE
 

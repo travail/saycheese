@@ -17,8 +17,9 @@ SayCheese Plugin.
 
 =cut
 
-
 =head2 user_agent
+
+C<user_agent> return C<LWP::UserAgent> object.
 
 =cut
 
@@ -37,6 +38,8 @@ sub user_agent {
 
 
 =head2 ua
+
+C<ua> is alias for C<user_agent>.
 
 =cut
 

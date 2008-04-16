@@ -20,6 +20,6 @@ while ( my $url = <> ) {
     if ( -e $thumbpath ) {
         print "$thumbpath\n";
     } else {
-        print sprintf qq{%s\n}, $config->{no_image}->{$size};
+        print sprintf qq{http://192.168.1.2/%s/%s\n},$size, $url;
     }
 }

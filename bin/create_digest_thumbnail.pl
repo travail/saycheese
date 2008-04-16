@@ -10,7 +10,7 @@ use SayCheese::Utils qw/ url2thmubpath /;
 use SayCheese::FileHandle;
 
 my $config = SayCheese->config;
-my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
+my $schema = SayCheese::Schema->connect( @{$config->{'Model::DBIC::SayCheese'}->{connect_info}} );
 $schema->storage->debug( 1 );
 my $itr_thumbnail = $schema->resultset('SayCheese::Schema::Thumbnail')->search;
 while ( my $thumbnail = $itr_thumbnail->next ) {

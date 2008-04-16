@@ -20,6 +20,22 @@ __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint( unique_url => [ qw/ url / ] );
 __PACKAGE__->datetime_column( qw/ created_on modified_on / );
 
+=head1 NAME
+
+SayCheese::Schema::Thumbnail
+
+=head1 SYNOPSIS
+
+See L<SayCheese>.
+
+=head1 DESCRIPTION
+
+=head1 METHODS
+
+=head2 as_hashref
+
+=cut
+
 sub as_hashref {
     my $self = shift;
 
@@ -33,6 +49,10 @@ sub as_hashref {
         extension   => $config->{thumbnail}->{extension},
     };
 }
+
+=head2 index_thumbnails
+
+=cut
 
 sub index_thumbnails : ResultSet {
     my ( $class, %args ) = @_;
@@ -50,11 +70,19 @@ sub index_thumbnails : ResultSet {
     );
 }
 
+=head2 find_by_url
+
+=cut
+
 sub find_by_url : ResultSet {
     my ( $class, $url ) = @_;
 
     return $class->single( { url => $url } );
 }
+
+=head2 find_by_url_like
+
+=cut
 
 sub find_by_url_like : ResultSet {
     my ( $class, $url ) = @_;
@@ -62,9 +90,51 @@ sub find_by_url_like : ResultSet {
     return $class->single( { url => { LIKE => sprintf q{%s%%}, $url } } );
 }
 
+=head2 original_path
+
+Returns path to original size thumbnail.
+
+=cut
+
 sub original_path { url2thumbpath( shift->url, 'original' ) }
-sub small_path    { url2thumbpath( shift->url, 'small' ) }
-sub medium_path   { url2thumbpath( shift->url, 'medium' ) }
+
+=head2 large_path
+
+Returns path to large size thumbnail.
+
+=cut
+
 sub large_path    { url2thumbpath( shift->url, 'large' ) }
 
+=head2 medium_path
+
+Returns path to medium size thumbnail.
+
+=cut
+
+sub medium_path   { url2thumbpath( shift->url, 'medium' ) }
+
+=head2 small_path
+
+Returns path to small size thumbnail.
+
+=cut
+
+sub small_path    { url2thumbpath( shift->url, 'small' ) }
+
+=head1 AUTHOR
+
+travail, C<travail@cabane.no-ip.org>
+
+=head1 COPYRIGHT
+
+This program is free software, you can redistribute it and/or modify it under
+the same terms as Perl itself.
+
+=cut
+
 1;
+
+
+
+

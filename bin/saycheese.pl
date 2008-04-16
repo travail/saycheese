@@ -51,8 +51,8 @@ $worker->register_function(
         }
 
         ## finished?
-        my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
-        my $obj    = $schema->resultset('SayCheese::Schema::Thumbnail')->find_by_url( $url );
+        my $schema = SayCheese::Schema->connect( @{$config->{'Model::DBIC::SayCheese'}->{connect_info}} );
+        my $obj    = $schema->resultset('Thumbnail')->find_by_url( $url );
         if ( $obj ) {
             warn sprintf qq{EXISTS : %s exists as id %d.\n}, $obj->url, $obj->id;
             if ( $obj->is_finished ) {

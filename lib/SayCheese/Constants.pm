@@ -24,7 +24,9 @@ See L<SayCheese>.
 
 =head1 CONSTANTS
 
-=head2
+=head2 CONFIG
+
+SayCheese config as C<HASHREF>.
 
 =cut
 

@@ -22,7 +22,7 @@ GetOptions(
 pod2usage( 1 ) if $help;
 
 my $config = SayCheese->config;
-my $schema = SayCheese::Schema->connect( @{$config->{'Model::SayCheese'}->{connect_info}} );
+my $schema = SayCheese::Schema->connect( @{$config->{'Model::DBIC::SayCheese'}->{connect_info}} );
 $schema->storage->debug( 1 ) if $debug;
 
 $schema->storage->txn_begin;
