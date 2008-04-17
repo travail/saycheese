@@ -8,8 +8,6 @@ use lib '/home/public/cgi/lib';
 use SayCheese;
 use SayCheese::Utils qw/ url2thumbpath /;
 
-use Data::Dumper;
-
 $| = 1;
 my $config = SayCheese->config;
 while ( my $url = <> ) {
@@ -20,6 +18,6 @@ while ( my $url = <> ) {
     if ( -e $thumbpath ) {
         print "$thumbpath\n";
     } else {
-        print sprintf qq{http://192.168.1.2/%s/%s\n},$size, $url;
+        print sprintf qq{http://192.168.1.2:3010/%s/%s\n},$size, $url;
     }
 }
