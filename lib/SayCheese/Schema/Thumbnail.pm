@@ -104,7 +104,7 @@ Returns path to large size thumbnail.
 
 =cut
 
-sub large_path    { url2thumbpath( shift->url, 'large' ) }
+sub large_path { url2thumbpath( shift->url, 'large' ) }
 
 =head2 medium_path
 
@@ -112,7 +112,7 @@ Returns path to medium size thumbnail.
 
 =cut
 
-sub medium_path   { url2thumbpath( shift->url, 'medium' ) }
+sub medium_path { url2thumbpath( shift->url, 'medium' ) }
 
 =head2 small_path
 
@@ -120,7 +120,7 @@ Returns path to small size thumbnail.
 
 =cut
 
-sub small_path    { url2thumbpath( shift->url, 'small' ) }
+sub small_path { url2thumbpath( shift->url, 'small' ) }
 
 =head1 AUTHOR
 

@@ -8,13 +8,6 @@ Model::DBIC::SayCheese:
     - travail
     - travail
 
-Model::DBIC::SayCheese::Slave:
-  schema_class: SayCheese::Schema
-  connect_info:
-    - dbi:mysql:saycheese:hostname=192.168.1.2
-    - travail
-    - travail
-
 View::TT:
   INCLUDE_PATH:
     - __path_to(root/src)__
