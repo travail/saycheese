@@ -1,13 +1,23 @@
 package SayCheese::Schema;
 
 use strict;
+use warnings;
+#use base qw/ DBIx::Class::Schema::Loader /;
 use base qw/ DBIx::Class::Schema /;
 
-#__PACKAGE__->load_components( qw/ Slave / );
-#__PACKAGE__->slave_datasource( [
-#    [ qw/ dbi:mysql:saycheese_local:hostname=192.168.1.1 travail travail / ],
-#    [ qw/ dbi:mysql:saycheese_local:hostname=192.168.1.2 travail travail / ],
-#] );
+__PACKAGE__->load_components( qw/ Schema::Slave / );
+__PACKAGE__->slave_moniker('::Slave');
+__PACKAGE__->slave_connect_info( SayCheese->config->{slave_connect_info} );
+#__PACKAGE__->loader_options(
+#    relationships => 1,
+#    components    => [ qw/
+#        InflateColumn::DateTime
+#        InflateColumn::URI
+#        Row::Slave
+#        Core
+#    / ],
+#);
+__PACKAGE__->load_classes;
 
 =head1 NAME
 
@@ -21,11 +31,6 @@ See L<SayCheese>.
 
 =head1 METHODS
 
-=head2 load_classes
-
-=cut
-
-__PACKAGE__->load_classes;
 
 =head1 AUTHOR
 

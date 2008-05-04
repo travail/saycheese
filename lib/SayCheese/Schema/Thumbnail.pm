@@ -6,19 +6,24 @@ use base 'DBIx::Class';
 use SayCheese;
 use SayCheese::Utils qw/ url2thumbpath /;
 
-__PACKAGE__->load_components( qw/ PK::Auto ResultSetManager +SayCheese::DBIC Core / );
+__PACKAGE__->load_components( qw/
+    ResultSetManager
+    InflateColumn::DateTime
+    InflateColumn::URI
+    Row::Slave
+    Core
+/ );
 __PACKAGE__->table('thumbnail');
-__PACKAGE__->add_columns( qw/
-    id
-    created_on
-    modified_on
-    url
-    digest
-    is_finished
-/);
+__PACKAGE__->add_columns(
+    'id',
+    'created_on', { data_type => 'datetime' },
+    'modified_on', { data_type => 'datetime' },
+    'url', { data_type => 'varchar', is_uri => 1 },
+    'digest',
+    'is_finished',
+);
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint( unique_url => [ qw/ url / ] );
-__PACKAGE__->datetime_column( qw/ created_on modified_on / );
 
 =head1 NAME
 
