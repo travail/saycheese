@@ -34,7 +34,7 @@ See L<SayCheese>.
 
 =head1 AUTHOR
 
-travail, C<travail@cabane.no-ip.org>
+travail, C<travail@travail.jp>
 
 =head1 COPYRIGHT
 

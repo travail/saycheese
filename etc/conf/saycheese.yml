@@ -11,7 +11,7 @@ View::JSON:
   expose_stash: json_data
   encoding: utf8
 
-service_url: http://saycheese.no-ip.info/
+service_url: http://saycheese.travail.jp/
 
 time_zone: Asia/Tokyo
 
@@ -51,8 +51,8 @@ thumbnail:
 DISPLAY: ':1.0'
 
 user_agent: 
-  agent: SayCheese/1.0 (http://saycheese.no-ip.info)
-  from: travail@cabane.no-ip.org
+  agent: SayCheese/1.0 (http://saycheese.travail.jp)
+  from: saycheese@travail.jp
   timeout: 5
 
 no_image:

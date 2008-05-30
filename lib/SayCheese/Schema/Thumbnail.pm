@@ -129,7 +129,7 @@ sub small_path { url2thumbpath( shift->url, 'small' ) }
 
 =head1 AUTHOR
 
-travail, C<travail@cabane.no-ip.org>
+travail, C<travail@travail.jp>
 
 =head1 COPYRIGHT
 
