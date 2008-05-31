@@ -10,7 +10,6 @@ __PACKAGE__->load_components( qw/
     ResultSetManager
     InflateColumn::DateTime
     InflateColumn::URI
-    Row::Slave
     Core
 / );
 __PACKAGE__->table('thumbnail');

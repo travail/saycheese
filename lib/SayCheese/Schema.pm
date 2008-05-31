@@ -2,12 +2,11 @@ package SayCheese::Schema;
 
 use strict;
 use warnings;
-#use base qw/ DBIx::Class::Schema::Loader /;
 use base qw/ DBIx::Class::Schema /;
 
-__PACKAGE__->load_components( qw/ Schema::Slave / );
-__PACKAGE__->slave_moniker('::Slave');
-__PACKAGE__->slave_connect_info( SayCheese->config->{slave_connect_info} );
+#__PACKAGE__->load_components( qw/ Schema::Slave / );
+#__PACKAGE__->slave_moniker('::Slave');
+#__PACKAGE__->slave_connect_info( SayCheese->config->{slave_connect_info} );
 #__PACKAGE__->loader_options(
 #    relationships => 1,
 #    components    => [ qw/
