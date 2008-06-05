@@ -3,12 +3,16 @@ package SayCheese::Utils;
 use strict;
 use warnings;
 use base qw/ Exporter /;
-use Digest::MD5 qw/ md5_hex /;
+use FindBin qw/ $Bin /;
 use File::Basename qw/ dirname /;
 use File::Path qw/ mkpath /;
-use Carp qw/ croak /;
+use File::Spec;
+use Config::Multi;
+use Digest::MD5 qw/ md5_hex /;
 
-our @EXPORT_OK = ( qw/ digest2thumbpath url2thumbpath unescape_uri / );
+our @EXPORT_OK = ( qw/
+    saycheese_config digest2thumbpath url2thumbpath unescape_uri
+/ );
 
 =head1 NAME
 
@@ -22,9 +26,24 @@ See L<SayCheese>.
 
 =head1 METHODS
 
+=head2 saycheese_config
+
+=cut
+sub  saycheese_config {
+    my ( $v, $d, $f ) = File::Spec->splitpath( $INC{'SayCheese/Utils.pm'} );
+    my $dir = File::Spec->catfile( $d, '..', '..', 'etc', 'conf' );
+    my $cm = Config::Multi->new( {
+        dir       => $dir,
+        app_name  => 'saycheese',
+        prefix    => undef,
+        extension => 'yml'
+    } );
+    return $cm->load;
+}
+
 =head2 digest2thumbpath( $digest, $size )
 
-    Return md5_hex file name from digest. Default size is medium.
+Return md5_hex file name from digest. Default size is medium.
 
 =cut
 
@@ -33,7 +52,7 @@ sub digest2thumbpath {
 
     return unless $digest;
 
-    my $config = SayCheese->config;
+    my $config = saycheese_config();
     $size ||= $config->{thumbnail}->{default_size};
     return sprintf q{%s/%s/%s/%s.%s},
         $config->{thumbnail}->{dir}->{$size},
@@ -45,7 +64,7 @@ sub digest2thumbpath {
 
 =head2 url2thumbpath( $url, $size )
 
-    Return md5_hex file name from url. Default size is medium.
+Return md5_hex file name from url. Default size is medium.
 
 =cut
 
@@ -54,7 +73,7 @@ sub url2thumbpath {
 
     return unless $url;
 
-    my $config = SayCheese->config;
+    my $config = saycheese_config();
     $size ||= $config->{thumbnail}->{default_size};
     my $thumbpath = digest2thumbpath( md5_hex( $url ), $size );
     my $dir = dirname( $thumbpath );
@@ -65,7 +84,7 @@ sub url2thumbpath {
 
 =head2 unescape_uri( $escaped_uri )
 
-    Unescape URI especialy %7E and %23.
+Unescape URI especialy %7E and %23.
 
 =cut
 

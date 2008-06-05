@@ -5,7 +5,7 @@ use strict;
 use FindBin qw/ $Bin /;
 use lib "$Bin/../lib";
 use lib '/home/public/cgi/lib';
-use SayCheese;
+use SayCheese::Utils qw/ saycheese_config /;
 use SayCheese::Constants;
 use SayCheese::Schema;
 use LWP::UserAgent;
@@ -13,7 +13,7 @@ use Digest::MD5 qw/ md5_hex /;
 use Gearman::Worker;
 use Image::Magick;
 
-my $config = SayCheese->config;
+my $config = saycheese_config();
 my $worker = Gearman::Worker->new( job_servers => $config->{job_servers} );
 my $ff     = 'firefox';
 my $ext    = $config->{thumbnail}->{extension};

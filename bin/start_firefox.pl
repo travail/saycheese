@@ -5,9 +5,9 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use lib '/home/public/cgi/lib';
-use SayCheese;
+use SayCheese::Utils qw/ saycheese_config /;
 
-my $config = SayCheese->config;
+my $config = saycheese_config();
 $ENV{DISPLAY} = $config->{DISPLAY};
 my $cmd = 'firefox';
 my $r   = system $cmd;
