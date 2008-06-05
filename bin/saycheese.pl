@@ -10,8 +10,9 @@ use SayCheese::Constants;
 use SayCheese::Schema;
 use LWP::UserAgent;
 use Digest::MD5 qw/ md5_hex /;
-use Gearman::Worker;
+use DateTime;
 use Image::Magick;
+use Gearman::Worker;
 
 my $config = saycheese_config();
 my $worker = Gearman::Worker->new( job_servers => $config->{job_servers} );
@@ -98,8 +99,8 @@ $worker->register_function(
         }
 
         $obj = $schema->resultset('Thumbnail')->update_or_create( {
-            created_on  => DateTime->now->set_time_zone( $config->{time_zone} ),
-            modified_on => DateTime->now->set_time_zone( $config->{time_zone} ),
+            created_on  => DateTime->now( time_zone => $config->{time_zone} ),
+            modified_on => DateTime->now( time_zone => $config->{time_zone} ),
             url         => $url,
             digest      => md5_hex( $url ),
         }, 'unique_url' );
@@ -149,4 +150,7 @@ $worker->register_function(
     }
 );
 
-$worker->work while 1;
+while ( 1 ) {
+    warn "=== WORKER START ===\n";
+    $worker->work;
+}
