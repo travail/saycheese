@@ -3,9 +3,6 @@ name: SayCheese
 
 default_view: TT
 
-DBIC::Profiler:
-  MODEL_NAME: DBIC::SayCheese
-
 View::JSON:
   json_driver: JSON::Syck
   expose_stash: json_data

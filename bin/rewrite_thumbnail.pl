@@ -6,11 +6,9 @@ use FindBin qw/ $Bin /;
 use lib "$Bin/../lib";
 use lib '/home/public/cgi/lib';
 use File::Spec;
-use Config::Multi;
-use SayCheese::Utils qw/ saycheese_config url2thumbpath /;
+use SayCheese::Utils qw/ url2thumbpath /;
 
 $| = 1;
-my $config = saycheese_config();
 while ( my $url = <> ) {
     chomp $url;
     my $size = 'medium';
