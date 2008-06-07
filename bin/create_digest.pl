@@ -4,8 +4,8 @@ use strict;
 use warnings;
 use FindBin qw/ $Bin /;
 use lib "$Bin/../lib";
-use lib '/home/public/cgi/lib';
-use SayCheese;
+use SayCheese::ConfigLoader;
+use SayCheese::Schema;
 use Digest::MD5 qw/ md5_hex /;
 use Getopt::Long;
 use Pod::Usage;
@@ -21,12 +21,12 @@ GetOptions(
 );
 pod2usage( 1 ) if $help;
 
-my $config = SayCheese->config;
+my $config = SayCheese::ConfigLoader->new->config;
 my $schema = SayCheese::Schema->connect( @{$config->{'Model::DBIC::SayCheese'}->{connect_info}} );
 $schema->storage->debug( 1 ) if $debug;
 
 $schema->storage->txn_begin;
-my $itr_thumbnail = $schema->resultset('SayCheese::Schema::Thumbnail')->search;
+my $itr_thumbnail = $schema->resultset('Thumbnail')->search;
 my $coderef = sub {
     while ( my $thumbnail = $itr_thumbnail->next ) {
         $thumbnail->digest( md5_hex( $thumbnail->url ) );

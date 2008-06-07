@@ -6,8 +6,6 @@ use SayCheese::Utils;
 use Config::Any;
 use File::Spec;
 
-use Data::Dumper;
-
 =head1 NAME
 
 SayCheese::ConfigLoader - The SayCheese ConfigLoader
@@ -30,6 +28,7 @@ sub new {
     my $self = {};
     bless $self , $class;
     $self->{config} = $self->load;
+
     return $self;
 }
 
@@ -44,12 +43,7 @@ sub app_name { 'SayCheese' }
 
 =cut
 
-sub prefix {
-    my $self = shift;
-
-    my $prefix = SayCheese::Utils::appprefix( $self->app_name );
-    return $prefix;
-}
+sub prefix { SayCheese::Utils::appprefix( shift->app_name ) }
 
 =head2 config
 
@@ -152,7 +146,7 @@ sub get_config_path {
 sub get_config_local_suffix {
     my $self = shift;
 
-    my $suffix = SayCheese::Utils::env_value( $self->app_name, 'CONFIG_LOCAL_SUFFIX' ) || "local";
+    my $suffix = SayCheese::Utils::env_value( $self->app_name, 'CONFIG_LOCAL_SUFFIX' ) || 'local';
     return $suffix;
 }
 

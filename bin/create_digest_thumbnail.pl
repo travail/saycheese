@@ -4,15 +4,15 @@ use strict;
 use warnings;
 use FindBin qw/ $Bin /;
 use lib "$FindBin::Bin/../lib";
-use lib '/home/public/cgi/lib';
-use SayCheese;
+use SayCheese::ConfigLoader;
 use SayCheese::Utils qw/ url2thmubpath /;
+use SayCheese::Schema;
 use SayCheese::FileHandle;
 
-my $config = SayCheese->config;
+my $config = SayCheese::ConfigLoader->new->config;
 my $schema = SayCheese::Schema->connect( @{$config->{'Model::DBIC::SayCheese'}->{connect_info}} );
 $schema->storage->debug( 1 );
-my $itr_thumbnail = $schema->resultset('SayCheese::Schema::Thumbnail')->search;
+my $itr_thumbnail = $schema->resultset('Thumbnail')->search;
 while ( my $thumbnail = $itr_thumbnail->next ) {
     foreach my $size ( qw/ original large medium small / ) {
         my $filename = url2thmbpath( $thumbnail->url, $size );

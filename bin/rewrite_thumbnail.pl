@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use FindBin qw/ $Bin /;
 use lib "$Bin/../lib";
-use lib '/home/public/cgi/lib';
-use File::Spec;
 use SayCheese::Utils qw/ url2thumbpath /;
 
 $| = 1;

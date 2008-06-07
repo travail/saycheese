@@ -2,12 +2,11 @@
 
 use strict;
 use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../lib";
-use lib '/home/public/cgi/lib';
-use SayCheese::Utils qw/ saycheese_config /;
+use FindBin qw/ $Bin /;
+use lib "$Bin/../lib";
+use SayCheese::ConfigLoader;
 
-my $config = saycheese_config();
+my $config = SayCheese::ConfigLoader->new->config;
 $ENV{DISPLAY} = $config->{DISPLAY};
 my $cmd = 'firefox';
 my $r   = system $cmd;
