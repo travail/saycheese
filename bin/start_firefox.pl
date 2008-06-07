@@ -2,12 +2,9 @@
 
 use strict;
 use warnings;
-use FindBin qw/ $Bin /;
-use lib "$Bin/../lib";
-use SayCheese::ConfigLoader;
+use Data::Dumper;
 
-my $config = SayCheese::ConfigLoader->new->config;
-$ENV{DISPLAY} = $config->{DISPLAY};
+warn Dumper( \%ENV );
 my $cmd = 'firefox';
 my $r   = system $cmd;
 warn "Execute command $cmd.\n";
