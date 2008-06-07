@@ -4,8 +4,7 @@ use warnings;
 use strict;
 use FindBin qw/ $Bin /;
 use lib "$Bin/../lib";
-use lib '/home/public/cgi/lib';
-use SayCheese::Utils qw/ saycheese_config /;
+use SayCheese::ConfigLoader;
 use SayCheese::Constants;
 use SayCheese::Schema;
 use LWP::UserAgent;
@@ -15,7 +14,7 @@ use Image::Magick;
 use Gearman::Worker;
 use Data::Dumper;
 
-my $config = saycheese_config();
+my $config = SayCheese::ConfigLoader->new->config;
 my $worker = Gearman::Worker->new( job_servers => $config->{job_servers} );
 my $ff     = 'firefox';
 my $ext    = $config->{thumbnail}->{extension};

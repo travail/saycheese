@@ -3,7 +3,8 @@ package SayCheese::Schema::Thumbnail;
 use strict;
 use warnings;
 use base 'DBIx::Class';
-use SayCheese::Utils qw/ saycheese_config url2thumbpath /;
+use SayCheese::Utils qw/ url2thumbpath /;
+use SayCheese::ConfigLoader;
 
 __PACKAGE__->load_components( qw/
     ResultSetManager
@@ -42,7 +43,7 @@ See L<SayCheese>.
 sub as_hashref {
     my $self = shift;
 
-    my $config = saycheese_config();
+    my $config = SayCheese::ConfigLoader->new->config;
     return {
         id          => $self->id,
         created_on  => sprintf( q{%s %s}, $self->created_on->ymd, $self->created_on->hms ),
@@ -60,7 +61,7 @@ sub as_hashref {
 sub index_thumbnails : ResultSet {
     my ( $class, %args ) = @_;
 
-    my $config = saycheese_config();
+    my $config = SayCheese::ConfigLoader->new->config;
     my %wheres = ();
     $wheres{url} = { LIKE => sprintf q{%s%%}, $args{url} } if $args{url};
     return $class->search(

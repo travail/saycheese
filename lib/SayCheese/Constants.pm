@@ -3,7 +3,7 @@ package SayCheese::Constants;
 use strict;
 use warnings;
 use base qw/ Exporter /;
-use SayCheese::Utils qw/ saycheese_config /;
+use SayCheese::ConfigLoader;
 
 our @EXPORT = qw/
     CONFIG SUCCESS FAIL
@@ -31,7 +31,7 @@ SayCheese config as C<HASHREF>.
 
 =cut
 
-use constant CONFIG => saycheese_config();
+use constant CONFIG => SayCheese::ConfigLoader->new->config;
 
 use constant SUCCESS => 1;
 use constant FAIL    => 0;
