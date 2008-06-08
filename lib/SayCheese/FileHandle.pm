@@ -18,7 +18,7 @@ See L<SayCheese>.
 
 =head2 slurp
 
-    Returns a scalar containing the contents of the temporary file.
+Returns a scalar containing the contents of the temporary file.
 
 =cut
 

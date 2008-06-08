@@ -46,7 +46,6 @@ use constant SMALL_WIDTH     => CONFIG->{thumbnail}->{size}->{small}->{width};
 use constant SMALL_HEIGHT    => CONFIG->{thumbnail}->{size}->{small}->{height};
 
 
-
 =head1 AUTHOR
 
 travail, C<travail@travail.jp>

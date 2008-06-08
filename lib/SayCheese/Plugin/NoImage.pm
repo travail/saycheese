@@ -50,7 +50,7 @@ sub setup {
 
 =head2 no_image
 
-    Return no image. Default size is 'medium'.
+Returns no image. Default size is 'medium'.
 
 =cut
 
@@ -63,7 +63,7 @@ sub no_image {
 
 =head2 large
 
-    Return large size no image.
+Returns large size no image.
 
 =cut
 
@@ -71,7 +71,7 @@ sub large { shift->_large }
 
 =head2 medium
 
-    Return medium size no image.
+Returns medium size no image.
 
 =cut
 
@@ -79,7 +79,7 @@ sub medium { shift->_medium }
 
 =head2 small
 
-    Return small size no image.
+Returns small size no image.
 
 =cut
 

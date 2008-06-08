@@ -128,7 +128,7 @@ sub search_url : Local {
 
 =head large
 
-    Return large size thumbnail.
+Returns large size thumbnail.
 
 =cut
 
@@ -166,7 +166,7 @@ sub large : PathPart('large') Chained('') Args('') {
 
 =head medium
 
-    Return medium size thumbnail.
+Returns medium size thumbnail.
 
 =cut
 
@@ -204,7 +204,7 @@ sub medium : PathPart('medium') Chained('') Args('') {
 
 =head small
 
-    Return small size thumbnail.
+Returns small size thumbnail.
 
 =cut
 
@@ -242,7 +242,7 @@ sub small : PathPart('small') Chained('') Args('') {
 
 =head2 post_process
 
-    Post Processor. Set Content-Type, stash 'thumbnail.inc' and thumbnail, and out put file.
+Post Processor. Set Content-Type, stash 'thumbnail.inc' and thumbnail, and out put file.
 
 =cut
 
@@ -257,7 +257,7 @@ sub post_process : Private {
 
 =head2 set_http_header
 
-    Set Expires, Last-Modified, Content-Length for cache
+Set Expires, Last-Modified, Content-Length for cache
 
 =cut
 
@@ -273,7 +273,7 @@ sub set_http_header : Private {
 
 =head2 set_content_type
 
-    Set Contet-Type for image
+Set Contet-Type for image
 
 =cut
 

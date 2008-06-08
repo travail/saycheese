@@ -78,11 +78,7 @@ sub index_thumbnails : ResultSet {
 
 =cut
 
-sub find_by_url : ResultSet {
-    my ( $class, $url ) = @_;
-
-    return $class->single( { url => $url } );
-}
+sub find_by_url : ResultSet { shift->single( { url => shift } ) }
 
 =head2 find_by_url_like
 
