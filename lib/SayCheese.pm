@@ -20,14 +20,9 @@ use Catalyst qw/
     Static::Simple
     Cache::Memcached
     FillInForm
-    DateTime::Constructor
-    DBIC::Profiler
-    +SayCheese::Plugin::UserAgent
     +SayCheese::Plugin::NoImage
     View
-    Dumper
 /;
-#    Log::Colorful
 
 our $VERSION = '0.01';
 

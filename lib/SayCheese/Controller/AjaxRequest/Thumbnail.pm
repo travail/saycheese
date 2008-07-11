@@ -3,8 +3,10 @@ package SayCheese::Controller::AjaxRequest::Thumbnail;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use SayCheese::Utils qw/ url2thumbpath unescape_uri /;
+use SayCheese::DateTime;
 use SayCheese::FileHandle;
+use SayCheese::UserAgent;
+use SayCheese::Utils qw/ url2thumbpath unescape_uri /;
 use Digest::MD5 qw/ md5_hex /;
 use Gearman::Client;
 use DateTime::Format::HTTP;
@@ -35,7 +37,8 @@ sub create : Local {
         return;
     }
 
-    my $res = $c->ua->get( $url );
+    my $ua  = SayCheese::UserAgent->new;
+    my $res = $ua->get( $url );
     unless ( $res->is_success ) {
         $c->stash->{json_data} = {};
         $c->output_json;
@@ -264,9 +267,10 @@ Set Expires, Last-Modified, Content-Length for cache
 sub set_http_header : Private {
     my ( $self, $c, $content_length ) = @_;
 
+    my $dt = SayCheese::DateTime->now;
     $c->res->headers->header(
-        'Expires'        => DateTime::Format::HTTP->format_datetime( $c->dt->add( seconds => $c->config->{cache}->{expires} ) ),
-        'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $c->dt ),
+        'Expires'        => DateTime::Format::HTTP->format_datetime( $dt->clone->add( seconds => $c->config->{cache}->{expires} ) ),
+        'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $dt ),
         'Content-Length' => $content_length,
     );
 }

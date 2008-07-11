@@ -1,15 +1,15 @@
 #!/usr/bin/perl
 
-use warnings;
 use strict;
+use warnings;
 use FindBin qw/ $Bin /;
 use lib "$Bin/../lib";
 use SayCheese::ConfigLoader;
 use SayCheese::Constants;
+use SayCheese::DateTime;
 use SayCheese::Schema;
-use LWP::UserAgent;
+use SayCheese::UserAgent;
 use Digest::MD5 qw/ md5_hex /;
-use DateTime;
 use Image::Magick;
 use Gearman::Worker;
 use Data::Dumper;
@@ -19,12 +19,7 @@ my $worker = Gearman::Worker->new( job_servers => $config->{job_servers} );
 my $ff     = 'firefox';
 my $ext    = $config->{thumbnail}->{extension};
 my $sleep  = 15;
-my $ua     = LWP::UserAgent->new(
-    agent   => $config->{user_agent}->{agent},
-    from    => $config->{user_agent}->{from},
-    timeout => $config->{user_agent}->{timeout},
-);
-$ua->default_header( Accept => [ qw(text/html text/plain image/*) ] );
+my $ua     = SayCheese::UserAgent->new;
 $ENV{DISPLAY} = $config->{DISPLAY};
 
 $worker->register_function(
@@ -98,9 +93,10 @@ $worker->register_function(
             return FAIL;
         }
 
+        my $now = SayCheese::DateTime->now;
         $obj = $schema->resultset('Thumbnail')->update_or_create( {
-            created_on  => DateTime->now( time_zone => $config->{time_zone} ),
-            modified_on => DateTime->now( time_zone => $config->{time_zone} ),
+            created_on  => $now,
+            modified_on => $now,
             url         => $url,
             digest      => md5_hex( $url ),
         }, 'unique_url' );
@@ -137,7 +133,7 @@ $worker->register_function(
         unlink $tmp;
         warn "UNLINK :$tmp.\n";
 
-        ## Return id, or FAIL(0)
+        ## return id, or FAIL(0)
         if ( $obj ) {
             $obj->is_finished( 1 );
             $obj->update;

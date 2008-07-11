@@ -3,8 +3,8 @@ package SayCheese::Schema::Thumbnail;
 use strict;
 use warnings;
 use base 'DBIx::Class';
-use SayCheese::Utils qw/ url2thumbpath /;
 use SayCheese::ConfigLoader;
+use SayCheese::Utils qw/ url2thumbpath /;
 
 __PACKAGE__->load_components( qw/
     ResultSetManager
@@ -134,7 +134,3 @@ the same terms as Perl itself.
 =cut
 
 1;
-
-
-
-
