@@ -3,7 +3,7 @@ DEBUG: all
 
 name: SayCheese@Local
 
-service_url: http://saycheese.dev.travail.jp/
+service_url: http://saycheese.local.travail.jp/
 
 Model::DBIC::SayCheese:
   schema_class: SayCheese::Schema
