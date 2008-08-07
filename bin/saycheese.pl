@@ -110,25 +110,29 @@ $worker->register_function(
 
         ## original size
         $img->Write( $obj->original_path );
-        warn sprintf qq{WRITING THUMBNAIL :original size tumbnail, %d x %d.\n}, ORIGINAL_WIDTH, ORIGINAL_HEIGHT;
+        warn sprintf qq{WRITING THUMBNAIL :original size (%d x %d), %s.\n},
+            ORIGINAL_WIDTH, ORIGINAL_HEIGHT, $obj->original_path;
 
         ## large size
         my $l = $img->Clone;
         $l->Scale( width => LARGE_WIDTH, height => LARGE_HEIGHT );
         $l->Write( $obj->large_path );
-        warn sprintf qq{WRITING THUMBNAIL :large size thumbnail, %d x %d.\n}, LARGE_WIDTH, LARGE_HEIGHT;
+        warn sprintf qq{WRITING THUMBNAIL :large size (%d x %d), %s.\n},
+            LARGE_WIDTH, LARGE_HEIGHT, $obj->large_path;
 
         ## medium size
         my $m = $img->Clone;
         $m->Scale( width => MEDIUM_WIDTH, height => MEDIUM_HEIGHT );
         $m->Write( $obj->medium_path );
-        warn sprintf qq{WRITING THUMBNAIL :medium size thumbnail, %d x %d.\n}, MEDIUM_WIDTH, MEDIUM_HEIGHT;
+        warn sprintf qq{WRITING THUMBNAIL :medium size (%d x %d), %s.\n},
+            MEDIUM_WIDTH, MEDIUM_HEIGHT, $obj->medium_path;
 
         ## small size
         my $s = $img->Clone;
         $s->Scale( width => SMALL_WIDTH, height => SMALL_HEIGHT );
         $s->Write( $obj->small_path );
-        warn sprintf qq{WRITING THUMBNAIL :small size thumbnail, %d x %d.\n}, SMALL_WIDTH, SMALL_HEIGHT;
+        warn sprintf qq{WRITING THUMBNAIL :small size (%d x %d), %s.\n},
+            SMALL_WIDTH, SMALL_HEIGHT, $obj->small_path;
 
         unlink $tmp;
         warn "UNLINK :$tmp.\n";
