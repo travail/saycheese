@@ -3,7 +3,7 @@ package SayCheese::Utils;
 use strict;
 use warnings;
 use base qw/ Exporter /;
-use FindBin qw/ $Bin /;
+use SayCheese::ConfigLoader;
 use File::Basename qw/ dirname /;
 use File::Path qw/ mkpath /;
 use File::Spec;
@@ -12,9 +12,9 @@ use Path::Class;
 use URI;
 use Class::Inspector;
 use Carp qw/ croak /;
-use SayCheese::ConfigLoader;
 
 our @EXPORT_OK = ( qw/
+    connect_info
     digest2thumbpath url2thumbpath unescape_uri
 / );
 
@@ -29,6 +29,17 @@ See L<SayCheese>.
 =head1 DESCRIPTION
 
 =head1 METHODS
+
+=head2 connect_info
+
+Return connect_info
+
+=cut
+
+sub connect_info {
+    my $config = SayCheese::ConfigLoader->new->config;
+    return @{$config->{'Model::DBIC::SayCheese'}->{connect_info}};
+}
 
 =head2 digest2thumbpath( $digest, $size )
 

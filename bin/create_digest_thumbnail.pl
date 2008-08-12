@@ -3,21 +3,19 @@
 use strict;
 use warnings;
 use FindBin qw/ $Bin /;
-use lib "$FindBin::Bin/../lib";
-use SayCheese::ConfigLoader;
-use SayCheese::Utils qw/ url2thmubpath /;
+use lib "$Bin/../lib";
+use SayCheese::Utils qw//;
 use SayCheese::Schema;
 use SayCheese::FileHandle;
 
-my $config = SayCheese::ConfigLoader->new->config;
-my $schema = SayCheese::Schema->connect( @{$config->{'Model::DBIC::SayCheese'}->{connect_info}} );
-$schema->storage->debug( 1 );
+my $schema = SayCheese::Schema->connect(Shiori::Utils::connect_info);
+$schema->storage->debug(1);
 my $itr_thumbnail = $schema->resultset('Thumbnail')->search;
-while ( my $thumbnail = $itr_thumbnail->next ) {
-    foreach my $size ( qw/ original large medium small / ) {
-        my $filename = url2thmbpath( $thumbnail->url, $size );
-        my $fh = SayCheese::FileHandle->new( $filename, "w" );
-        $fh->print( $thumbnail->$size );
+while (my $thumbnail = $itr_thumbnail->next) {
+    foreach my $size (qw/original large medium small/) {
+        my $filename = SayCheese::Utils::url2thmbpath($thumbnail->url, $size);
+        my $fh = SayCheese::FileHandle->new($filename, "w");
+        $fh->print($thumbnail->$size);
         $fh->close;
     }
 }

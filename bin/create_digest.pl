@@ -4,8 +4,8 @@ use strict;
 use warnings;
 use FindBin qw/ $Bin /;
 use lib "$Bin/../lib";
-use SayCheese::ConfigLoader;
 use SayCheese::Schema;
+use SayCheese::Utils qw//;
 use Digest::MD5 qw/ md5_hex /;
 use Getopt::Long;
 use Pod::Usage;
@@ -19,27 +19,22 @@ GetOptions(
     'd|debug' => \$debug,
     'h|help'  => \$help,
 );
-pod2usage( 1 ) if $help;
+pod2usage(1) if $help;
 
-my $config = SayCheese::ConfigLoader->new->config;
-my $schema = SayCheese::Schema->connect( @{$config->{'Model::DBIC::SayCheese'}->{connect_info}} );
-$schema->storage->debug( 1 ) if $debug;
+my $schema = SayCheese::Schema->connect(SayCheese::Utils::connect_info);
+$schema->storage->debug(1) if $debug;
 
 $schema->storage->txn_begin;
 my $itr_thumbnail = $schema->resultset('Thumbnail')->search;
 my $coderef = sub {
-    while ( my $thumbnail = $itr_thumbnail->next ) {
-        $thumbnail->digest( md5_hex( $thumbnail->url ) );
+    while (my $thumbnail = $itr_thumbnail->next) {
+        $thumbnail->digest(md5_hex($thumbnail->url));
         $thumbnail->update;
     }
 };
-$schema->txn_do( $coderef );
-if ( $@ ) {
-    $schema->storage->txn_rollback;
-} else {
-    $exec ? $schema->storage->txn_commit : $schema->storage->txn_rollback;
-}
-
+$schema->txn_do($coderef);
+$@ ? $schema->storage->txn_rollback : $exec
+    ? $schema->storage->txn_commit : $schema->storage->txn_rollback;
 exit;
 
 __END__
