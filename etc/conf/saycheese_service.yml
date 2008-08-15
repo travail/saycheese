@@ -33,3 +33,6 @@ View::File:
     - __path_to(root/static)__
   COMPILE_EXT: ttc
   COMPILE_DIR: /tmp
+
+job_servers:
+  - 192.168.1.1:7003

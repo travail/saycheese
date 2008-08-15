@@ -27,11 +27,12 @@ View::TT:
   WRAPPER: site/wrapper
   ERROR: error.tt2
   TIMER: 0,
-#  COMPILE_EXT: ttc
-#  COMPILE_DIR: /tmp
 
 View::File:
   INCLUDE_PATH:
     - __path_to(root/src)__
     - __path_to(root/lib)__
     - __path_to(root/static)__
+
+job_servers:
+  - 192.168.1.1:70030
