@@ -6,7 +6,7 @@ use base qw/ Exporter /;
 use SayCheese::ConfigLoader;
 
 our @EXPORT = qw/
-    CONFIG SUCCESS FAIL
+    CONFIG SUCCESS FAILULRE
     ORIGINAL_WIDTH ORIGINAL_HEIGHT
     LARGE_WIDTH LARGE_HEIGHT
     MEDIUM_WIDTH MEDIUM_HEIGHT
@@ -34,7 +34,7 @@ SayCheese config as C<HASHREF>.
 use constant CONFIG => SayCheese::ConfigLoader->new->config;
 
 use constant SUCCESS => 1;
-use constant FAIL    => 0;
+use constant FAILURE => 0;
 
 use constant ORIGINAL_WIDTH  => CONFIG->{thumbnail}->{size}->{original}->{width};
 use constant ORIGINAL_HEIGHT => CONFIG->{thumbnail}->{size}->{original}->{height};

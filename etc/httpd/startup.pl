@@ -7,11 +7,6 @@ use lib qw(
     /home/public/cgi/lib
 );
 
-use DBIx::Class;
-use Template;
-use DateTime;
 use SayCheese;
-
-use Catalyst;
 
 1;

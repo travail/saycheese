@@ -36,3 +36,8 @@ View::File:
 
 job_servers:
   - 192.168.1.1:70030
+
+user_agent: 
+  agent: SayCheese/1.0 (http://saycheese.local.travail.jp)
+  from: saycheese.local@travail.jp
+  timeout: 15

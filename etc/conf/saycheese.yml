@@ -44,11 +44,6 @@ thumbnail:
 
 DISPLAY: ':1.0'
 
-user_agent: 
-  agent: SayCheese/1.0 (http://saycheese.travail.jp)
-  from: saycheese@travail.jp
-  timeout: 5
-
 no_image:
   large: __path_to(root/static/images/no_image_l.gif)__
   medium: __path_to(root/static/images/no_image_m.gif)__

@@ -2,14 +2,14 @@
 
 use strict;
 use warnings;
-use FindBin qw/ $Bin /;
+use FindBin qw/$Bin/;
 use lib "$Bin/../lib";
 use SayCheese::ConfigLoader;
 use SayCheese::Constants;
 use SayCheese::DateTime;
 use SayCheese::Schema;
 use SayCheese::UserAgent;
-use Digest::MD5 qw/ md5_hex /;
+use Digest::MD5 qw//;
 use Image::Magick;
 use Gearman::Worker;
 use Data::Dumper;
@@ -34,16 +34,16 @@ $worker->register_function(
         $url =~ /^(.*:\/\/)/;
         if (grep {$1 eq $_} @{$config->{invalid_schema}}) {
             warn "WARN :$2 is invalid schema.\n";
-            warn "FAIL saycheese.pl\n\n";
-            return FAIL;
+            warn "FAILURE saycheese.pl\n\n";
+            return FAILURE;
         }
 
         ## valid extension?
         $url =~ /(.*)\.(.*)/;
         if (grep {$2 eq $_} @{$config->{invalid_extension}}) {
             warn "WARN :$2 is invalid extension.\n";
-            warn "FAIL saycheese.pl\n\n";
-            return FAIL;
+            warn "FAILURE saycheese.pl\n\n";
+            return FAILURE;
         }
 
         ## finished?
@@ -61,13 +61,12 @@ $worker->register_function(
         ## URL exists?
         warn "FETCHIGN DOCUMENT :$url\n";
         my $res = $ua->get($url);
-        if ($res->is_success) {
-            warn "OK :$url exists.\n";
-        } else {
+        unless ($res->is_success) {
             warn sprintf qq{ERROR :%s.\n}, $res->status_line;
-            warn "FAIL saycheese.pl\n\n";
-            return FAIL;
+            warn "FAILURE saycheese.pl\n\n";
+            return FAILURE;
         }
+        warn "OK :$url exists.\n";
 
         ## open URL
         my $tmp  = sprintf q{/tmp/%d-%d.%s}, time, $$, $ext;
@@ -76,8 +75,8 @@ $worker->register_function(
         warn "EXECUTE COMMAND :$cmd1\n";
         if ($r1) {
             warn "ERROR :Can't render, $cmd1 return $r1.\n";
-            warn "FAIL saycheese.pl\n\n";
-            return FAIL;
+            warn "FAILURE saycheese.pl\n\n";
+            return FAILURE;
         }
         warn "RENDERING :$url\n";
         warn "SLEEP :$sleep seconds\n";
@@ -89,8 +88,8 @@ $worker->register_function(
         warn "EXECUTE COMMAND :$cmd2\n";
         if ($r2) {
             warn "ERROR :Can't import, $cmd2 return $r2.\n";
-            warn "FAIL saycheese.pl\n\n";
-            return FAIL;
+            warn "FAILURE saycheese.pl\n\n";
+            return FAILURE;
         }
 
         my $now = SayCheese::DateTime->now;
@@ -98,8 +97,8 @@ $worker->register_function(
             created_on  => $now,
             modified_on => $now,
             url         => $url,
-            digest      => md5_hex($url),
-        }, 'unique_url');
+            digest      => Digest::MD5::md5_hex($url),
+        }, {key => 'unique_url'});
         warn sprintf qq{UPDATE OR CREATE :%s as id %d.\n}, $obj->url, $obj->id;
 
         ## make thumbnails
@@ -137,15 +136,15 @@ $worker->register_function(
         unlink $tmp;
         warn "UNLINK :$tmp.\n";
 
-        ## return id, or FAIL(0)
+        ## return id, or FAILURE(0)
         if ($obj) {
             $obj->is_finished(1);
             $obj->update;
             warn "FINISH saycheese.pl\n\n";
             return $obj->id;
         } else {
-            warn "FAIL saycheese.pl\n\n";
-            return FAIL;
+            warn "FAILURE saycheese.pl\n\n";
+            return FAILURE;
         }
     }
 );
