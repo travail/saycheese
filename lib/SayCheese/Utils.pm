@@ -110,7 +110,7 @@ sub is_valid_scheme {
     my $config = SayCheese::ConfigLoader->new->config;
     $string =~ /^(.*:\/\/)/;
 
-    return grep {$1 eq $_} @{$config->{invalid_scheme}}
+    return grep( {$1 eq $_} @{$config->{invalid_scheme}} )
         ? 0 : 1;
 }
 
@@ -126,7 +126,7 @@ sub is_valid_extension {
     my $config = SayCheese::ConfigLoader->new->config;
     $string =~ /(.*)\.(.*)/;
 
-    return grep {$2 eq $_} @{$config->{invalid_extension}}
+    return grep( {$2 eq $_} @{$config->{invalid_extension}} )
         ? 0 : 1;
 }
 

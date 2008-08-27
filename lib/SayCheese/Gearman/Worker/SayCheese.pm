@@ -65,7 +65,7 @@ sub saycheese {
 
     ## valid schema?
     unless ( SayCheese::Utils::is_valid_scheme( $url ) ) {
-        warn "WARN :$2 is invalid schema.\n";
+        warn "WARN :$2 is invalid scheme.\n";
         warn "FINISH saycheese\n\n";
         return FAILURE;
     }
