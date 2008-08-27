@@ -94,10 +94,10 @@ $worker->register_function(
 
         my $now = SayCheese::DateTime->now;
         $obj = $schema->resultset('Thumbnail')->update_or_create({
-            created_on  => $now,
-            modified_on => $now,
-            url         => $url,
-            digest      => Digest::MD5::md5_hex($url),
+            created_on  => $now                       || undef,
+            modified_on => $now                       || undef,
+            url         => $url                       || undef,
+            digest      => Digest::MD5::md5_hex($url) || undef,
         }, {key => 'unique_url'});
         warn sprintf qq{UPDATE OR CREATE :%s as id %d.\n}, $obj->url, $obj->id;
 
@@ -149,7 +149,7 @@ $worker->register_function(
     }
 );
 
-while ( 1 ) {
+while (1) {
     local $Data::Dumper::Terse = 1;
     warn "=== WORKER START ===\n";
     warn "ENV :" . Dumper(\%ENV);

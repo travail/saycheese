@@ -5,10 +5,9 @@ use warnings;
 use base 'Catalyst::Controller';
 use SayCheese::DateTime;
 use SayCheese::FileHandle;
+use SayCheese::Gearman::Client;
 use SayCheese::UserAgent;
 use SayCheese::Utils qw/ url2thumbpath unescape_uri /;
-use Digest::MD5 qw/ md5_hex /;
-use Gearman::Client;
 use DateTime::Format::HTTP;
 
 =head1 NAME
@@ -49,37 +48,13 @@ sub create : Local {
     if ( $obj ) {
         ## nothing to do.
     } else {
-        my $client = Gearman::Client->new( job_servers => $c->config->{job_servers} );
+        my $client = SayCheese::Gearman::Client->new;
         my $id = $client->do_task( 'saycheese', $url, {} );
         $obj   = $c->thumbnail->find( $$id );
     }
 
     $c->stash->{json_data} = $obj ? $obj->as_hashref : {};
     $c->output_json;
-}
-
-=haed2 update
-
-=cut
-
-sub update : Local {
-    my ( $self, $c ) = @_;
-
-    my $id = $c->req->param('id');
-    my $obj = $c->thumbnail->find( $id );
-    if ( $id ) {
-        my $cache = $c->cache->get( $obj->url );
-        if ( $cache ) {
-            $c->log->info('*** Cache Hit! ***');
-            $c->cache->delete( $obj->url );
-            $c->log->info('*** Delete Cache ***');
-        }
-        my $client = Gearman::Client->new( job_servers => $c->config->{job_servers} );
-        $client->do_task( 'saycheese', $obj->url, {} );
-        $c->cache->set( $obj->url, $obj );
-    }
-
-    $c->res->redirect('recent_thumbnails');
 }
 
 =head2 delete

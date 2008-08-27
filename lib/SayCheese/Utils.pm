@@ -7,11 +7,10 @@ use SayCheese::ConfigLoader;
 use File::Basename qw/ dirname /;
 use File::Path qw/ mkpath /;
 use File::Spec;
-use Digest::MD5 qw/ md5_hex /;
+use Digest::MD5 qw//;
 use Path::Class;
 use URI;
 use Class::Inspector;
-use Carp qw/ croak /;
 
 our @EXPORT_OK = ( qw/
     connect_info
@@ -75,7 +74,7 @@ sub url2thumbpath {
 
     my $config = SayCheese::ConfigLoader->new->config;
     $size ||= $config->{thumbnail}->{default_size};
-    my $thumbpath = digest2thumbpath( md5_hex( $url ), $size );
+    my $thumbpath = digest2thumbpath( Digest::MD5::md5_hex( $url ), $size );
     my $dir = dirname( $thumbpath );
     mkpath( $dir ) unless -d $dir;
 
@@ -97,6 +96,38 @@ sub unescape_uri {
     $uri =~ s{%23}{#}i;
 
     return $uri;
+}
+
+=head2 is_valid_scheme( $string )
+
+Returns 1 if $string is valid scheme, or returns undef.
+
+=cut
+
+sub is_valid_scheme {
+    my $string = shift;
+
+    my $config = SayCheese::ConfigLoader->new->config;
+    $string =~ /^(.*:\/\/)/;
+
+    return grep {$1 eq $_} @{$config->{invalid_schema}}
+        ? 0 : 1;
+}
+
+=head2 is_valid_extension( $string )
+
+Returns 1 if $string is valid extension, or returns undef.
+
+=cut
+
+sub is_valid_extension {
+    my $string = shift;
+
+    my $config = SayCheese::ConfigLoader->new->config;
+    $string =~ /(.*)\.(.*)/;
+
+    return grep {$2 eq $_} @{$config->{invalid_extension}}
+        ? 0 : 1;
 }
 
 =head2 appprefix
