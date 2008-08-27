@@ -163,7 +163,7 @@ sub tmpfile {
         return $self->{tmpfile};
     } else {
         $self->{tmpfile}
-            = sprintf q{/tmp/%d-%d.%s}, time, $$, $self->config->{thumbnail}->{extension};
+            = sprintf q{%d-%d.%s}, time, $$, $self->config->{thumbnail}->{extension};
     }
 }
 
