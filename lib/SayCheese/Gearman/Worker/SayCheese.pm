@@ -164,6 +164,7 @@ sub tmpfile {
     } else {
         $self->{tmpfile}
             = sprintf q{%d-%d.%s}, time, $$, $self->config->{thumbnail}->{extension};
+        return $self->{tmpfile};
     }
 }
 
