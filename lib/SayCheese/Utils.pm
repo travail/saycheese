@@ -110,7 +110,7 @@ sub is_valid_scheme {
     my $config = SayCheese::ConfigLoader->new->config;
     $string =~ /^(.*:\/\/)/;
 
-    return grep {$1 eq $_} @{$config->{invalid_schema}}
+    return grep {$1 eq $_} @{$config->{invalid_scheme}}
         ? 0 : 1;
 }
 
