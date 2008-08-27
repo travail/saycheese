@@ -40,10 +40,11 @@ sub new {
     $args{wait} ||= 15;
 
     my $self = bless {
-        browser    => $args{browser},
-        config     => $args{config},
-        user_agent => $args{user_agent},
-        wait       => $args{wait},
+        browser      => $args{browser},
+        config       => $args{config},
+        tmpfile      => undef,
+        user_agent   => $args{user_agent},
+        wait         => $args{wait},
     }, $class;
 
     $ENV{DISPLAY} = $self->config->{DISPLAY};
@@ -151,11 +152,26 @@ sub saycheese {
     }
 }
 
+=head2 tmpfile
+
+=cut
+
+sub tmpfile {
+    my $self = shift;
+
+    if ( defined $self->{tmpfile} ) {
+        return $self->{tmpfile};
+    } else {
+        $self->{tmpfile}
+            = sprintf q{/tmp/%d-%d.%s}, time, $$, shift->config->{thumbnail}->{extension};
+    }
+}
+
 =head2 tmpfile_path
 
 =cut
 
-sub tmpfile_path { sprintf q{/tmp/%d-%d.%s}, time, $$, shift->config->{thumbnail}->{extension} }
+sub tmpfile_path { sprintf q{/tmp/%s}, shift->tmpfile }
 
 =head2 unlink_tmpfile
 
@@ -233,7 +249,9 @@ sub create_thumbnail {
 sub saycheese_free {
     my $self = shift;
 
+    warn "CLEAN UP img(), tmpfile().\n";
     $self->img( undef );
+    $self->tmpfile( undef );
 }
 
 =head1 AUTHOR
