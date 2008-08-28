@@ -47,7 +47,7 @@ sub work {
         foreach @{$self->{worker}->functions};
 
     while (1) {
-        $worker->{worker}->on_work;
+        $self->{worker}->on_work;
         $worker->work;
     }
 }
