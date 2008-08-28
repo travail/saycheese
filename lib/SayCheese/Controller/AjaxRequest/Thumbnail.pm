@@ -9,6 +9,7 @@ use SayCheese::Gearman::Client;
 use SayCheese::UserAgent;
 use SayCheese::Utils qw/ url2thumbpath unescape_uri /;
 use DateTime::Format::HTTP;
+use Storable qw//;
 
 =head1 NAME
 
@@ -49,7 +50,7 @@ sub create : Local {
         ## nothing to do.
     } else {
         my $client = SayCheese::Gearman::Client->new;
-        my $id = $client->do_task( 'saycheese', $url, {} );
+        my $id = $client->do_task( 'saycheese', Storable::freeze( $url ), {} );
         $obj   = $c->thumbnail->find( $$id );
     }
 

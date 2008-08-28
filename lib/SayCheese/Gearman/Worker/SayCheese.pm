@@ -60,6 +60,7 @@ sub new {
 sub on_work {
     my $self = shift;
 
+    warn "STARTING saycheese\n";
     warn Dumper( \%ENV );
 }
 
@@ -71,8 +72,6 @@ sub saycheese {
     my ( $self, $job ) = @_;
 
     my $url = $job->arg;
-
-    warn "STARTING saycheese\n";
     warn "URL :$url\n";
 
     ## valid schema?

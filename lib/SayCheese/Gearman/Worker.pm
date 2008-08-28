@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp qw//;
 use Gearman::Worker;
+use Storable qw//;
 
 =head1 NAME
 
@@ -43,10 +44,11 @@ sub work {
 
     my $worker
         = Gearman::Worker->new( job_servers => $self->config->{job_servers} );
-    $worker->register_function( $_ => sub { $self->{worker}->$_( shift ) } )
-        foreach @{$self->{worker}->functions};
+    foreach my $func ( @{$self->{worker}->functions} ) {
+        $worker->register_function( $func => sub { $self->{worker}->$func( Storable::thaw( shift ) ) } );
+    }
 
-    while (1) {
+    while ( 1 ) {
         $self->{worker}->on_work;
         $worker->work;
     }
