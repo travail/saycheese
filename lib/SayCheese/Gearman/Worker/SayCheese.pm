@@ -70,7 +70,7 @@ sub on_work {
 =cut
 
 sub saycheese {
-    my ( $self, $job ) = @_;
+    my ( $self, $freezed_job ) = @_;
 
     my $job = Storable::thaw( $freezed_job->arg );
     my $url = $job->arg;
