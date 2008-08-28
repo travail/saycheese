@@ -26,8 +26,8 @@ sub new {
 
     Carp::croak "worker is required.\n" unless $args{worker_class};
     my $self = bless {
-        _worker_class => $args{worker_class},
-        _worker       => undef,
+        worker_class => $args{worker_class},
+        worker       => undef,
     }, $class;
     $self->_create_worker;
 
@@ -41,25 +41,35 @@ sub new {
 sub work {
     my $self = shift;
 
-    my $worker = Gearman::Worker->new( job_servers => $self->{_worker}->config->{job_servers} );
-    my $functions = $self->{_worker}->functions;
-    foreach my $function ( @{$functions} ) {
-        $worker->register_function( $function => sub { $self->{_worker}->$function( shift ) } );
-    }
+    my $worker
+        = Gearman::Worker->new( job_servers => $self->config->{job_servers} );
+    $worker->register_function( $_ => sub { $self->{worker}->$_( shift ) } )
+        foreach @{$self->{worker}->functions};
 
-    $worker->work while 1;
+    while (1) {
+        $worker->{worker}->on_work;
+        $worker->work;
+    }
 }
 
-=head2 create_worker
+=head2 config
+
+=cut
+
+sub config { ref $_[0]->{worker} ? $_[0]->{worker}->config : undef }
+
+=head2 _create_worker
 
 =cut
 
 sub _create_worker {
     my $self = shift;
 
-    my $worker_class = sprintf q{%s::%s}, ref $self, $self->{_worker_class};
+    my $worker_class = sprintf q{%s::%s}, ref $self, $self->{worker_class};
     eval "require $worker_class";
-    $self->{_worker} = $worker_class->new;
+    Carp::croak $@ if $@;
+
+    $self->{worker} = $worker_class->new;
 }
 
 

@@ -8,9 +8,9 @@ use SayCheese::Constants;
 use SayCheese::DateTime;
 use SayCheese::Schema;
 use SayCheese::UserAgent;
+use Data::Dumper;
 use Digest::MD5 qw//;
 use Image::Magick;
-use Data::Dumper;
 
 __PACKAGE__->mk_accessors( qw/ browser config user_agent img wait / );
 __PACKAGE__->functions( [ qw/ saycheese / ] );
@@ -42,6 +42,7 @@ sub new {
     my $self = bless {
         browser      => $args{browser},
         config       => $args{config},
+        img          => undef,
         tmpfile      => undef,
         user_agent   => $args{user_agent},
         wait         => $args{wait},
@@ -50,6 +51,16 @@ sub new {
     $ENV{DISPLAY} = $self->config->{DISPLAY};
 
     return $self;
+}
+
+=head2 on_work
+
+=cut
+
+sub on_work {
+    my $self = shift;
+
+    warn Dumper( \%ENV );
 }
 
 =head2 saycheese

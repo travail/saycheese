@@ -18,6 +18,12 @@ SayCheese Worker
 
 =cut
 
+=head2 on_work
+
+=cut
+
+sub on_work {}
+
 
 =head1 AUTHOR
 
