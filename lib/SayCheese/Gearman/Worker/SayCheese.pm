@@ -73,7 +73,7 @@ sub saycheese {
     my ( $self, $freezed_job ) = @_;
 
     my $job = Storable::thaw( $freezed_job->arg );
-    my $url = $job->arg;
+    my $url = $job->{url};
     warn "URL :$url\n";
 
     ## valid schema?
