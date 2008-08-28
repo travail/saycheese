@@ -7,7 +7,7 @@ use SayCheese::DateTime;
 use SayCheese::FileHandle;
 use SayCheese::Gearman::Client;
 use SayCheese::UserAgent;
-use SayCheese::Utils qw/ url2thumbpath unescape_uri /;
+use SayCheese::Utils qw//;
 use DateTime::Format::HTTP;
 use Storable qw//;
 
@@ -50,7 +50,7 @@ sub create : Local {
         ## nothing to do.
     } else {
         my $client = SayCheese::Gearman::Client->new;
-        my $id = $client->do_task( 'saycheese', Storable::freeze( $url ), {} );
+        my $id = $client->do_task( 'saycheese', Storable::freeze( { url => $url } ), {} );
         $obj   = $c->thumbnail->find( $$id );
     }
 
@@ -116,7 +116,7 @@ sub large : PathPart('large') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s{^/large/}{};
-    $url = unescape_uri( $url );
+    $url = SayCheese::Utils::unescape_uri( $url );
 
     my $thumbnail = $c->cache->get( $url );
     if ( $thumbnail ) {
@@ -124,7 +124,7 @@ sub large : PathPart('large') Chained('') Args('') {
         $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
     } else {
         $c->log->info('*** Cache Not Hit... ***');
-        my $thumbpath = url2thumbpath( $url, 'large' );
+        my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'large' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
             my $obj = $c->thumbnail->find_by_url_like( $url );
@@ -154,7 +154,7 @@ sub medium : PathPart('medium') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s{^/medium/}{};
-    $url = unescape_uri( $url );
+    $url = SayCheese::Utils::unescape_uri( $url );
 
     my $thumbnail = $c->cache->get( $url );
     if ( $thumbnail ) {
@@ -162,7 +162,7 @@ sub medium : PathPart('medium') Chained('') Args('') {
         $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
     } else {
         $c->log->info('*** Cache Not Hit... ***');
-        my $thumbpath = url2thumbpath( $url, 'medium' );
+        my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'medium' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
             my $obj = $c->thumbnail->find_by_url_like( $url );
@@ -192,7 +192,7 @@ sub small : PathPart('small') Chained('') Args('') {
 
     my $url = $c->req->uri->path_query;
     $url =~ s{^/small/}{};
-    $url = unescape_uri( $url );
+    $url = SayCheese::Utils::unescape_uri( $url );
 
     my $thumbnail = $c->cache->get( $url );
     if ( $thumbnail ) {
@@ -200,7 +200,7 @@ sub small : PathPart('small') Chained('') Args('') {
         $c->forward( 'set_http_header', [ length( $thumbnail ) ] );
     } else {
         $c->log->info('*** Cache Not Hit... ***');
-        my $thumbpath = url2thumbpath( $url, 'small' );
+        my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'small' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
             my $obj = $c->thumbnail->find_by_url_like( $url );

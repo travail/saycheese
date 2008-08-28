@@ -11,6 +11,7 @@ use SayCheese::UserAgent;
 use Data::Dumper;
 use Digest::MD5 qw//;
 use Image::Magick;
+use Storable qw//;
 
 __PACKAGE__->mk_accessors( qw/ browser config user_agent img wait / );
 __PACKAGE__->functions( [ qw/ saycheese / ] );
@@ -60,7 +61,7 @@ sub new {
 sub on_work {
     my $self = shift;
 
-    warn "STARTING saycheese\n";
+    warn "=== STARTING saycheese ===\n";
     warn Dumper( \%ENV );
 }
 
@@ -71,6 +72,7 @@ sub on_work {
 sub saycheese {
     my ( $self, $job ) = @_;
 
+    my $job = Storable::thaw( $freezed_job->arg );
     my $url = $job->arg;
     warn "URL :$url\n";
 
