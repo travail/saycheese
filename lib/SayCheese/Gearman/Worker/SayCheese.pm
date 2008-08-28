@@ -61,6 +61,7 @@ sub new {
 sub on_work {
     my $self = shift;
 
+    $Data::Dumper::Terse = 1;
     warn "=== STARTING saycheese ===\n";
     warn Dumper( \%ENV );
 }
