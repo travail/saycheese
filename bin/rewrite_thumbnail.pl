@@ -21,7 +21,15 @@ while (my $url = <>) {
         if ($thumbnail) {
             print sprintf qq{%s\n}, $thumbnail->thumbnail_path(size => $size);
         } else {
-            print sprintf qq{%s\n}, SayCheese::Utils::no_image_path($size);
+            if ($size eq 'small') {
+                print "/static/images/no_image_s.gif\n";
+            } elsif ($size eq 'medium') {
+                print "/static/images/no_image_m.gif\n";
+            } elsif ($size eq 'large') {
+                print "/static/images/no_image_l.gif\n";
+            } else {
+                print "/static/images/no_image_m.gif\n";
+            }
         }
     }
 }
