@@ -21,15 +21,17 @@ while (my $url = <>) {
         if ($thumbnail) {
             print sprintf qq{%s\n}, $thumbnail->thumbnail_path(size => $size);
         } else {
+            my $no_image_path = undef;
             if ($size eq 'small') {
-                print "/static/images/no_image_s.gif\n";
+                $no_image_path =  "/static/images/no_image_s.gif";
             } elsif ($size eq 'medium') {
-                print "/static/images/no_image_m.gif\n";
+                $no_image_path = "/static/images/no_image_m.gif";
             } elsif ($size eq 'large') {
-                print "/static/images/no_image_l.gif\n";
+                $no_image_path = "/static/images/no_image_l.gif";
             } else {
-                print "/static/images/no_image_m.gif\n";
+                $no_image_path = "/static/images/no_image_m.gif";
             }
+            return "$no_image_path\n";
         }
     }
 }
