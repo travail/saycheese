@@ -81,6 +81,19 @@ sub url2thumbpath {
     return $thumbpath;
 }
 
+=head2 no_image_path
+
+=cut
+
+sub no_image_path {
+    my $size = shift;
+
+    $size ||= 'medium';
+    my $config = SayCheese::ConfigLoader->new->config;
+
+    return $config->{no_image}->{$size};
+}
+
 =head2 unescape_uri( $escaped_uri )
 
 Unescape URI especialy %7E and %23.

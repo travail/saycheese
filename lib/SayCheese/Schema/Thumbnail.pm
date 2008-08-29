@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'DBIx::Class';
 use SayCheese::ConfigLoader;
-use SayCheese::Utils qw/ url2thumbpath /;
+use SayCheese::Utils qw//;
 
 __PACKAGE__->load_components( qw/
     ResultSetManager
@@ -90,13 +90,26 @@ sub find_by_url_like : ResultSet {
     return $class->single( { url => { LIKE => sprintf q{%s%%}, $url } } );
 }
 
+=head2 thumbnail_path
+
+=cut
+
+sub thumbnail_path {
+    my ( $self, %args ) = @_;
+
+    $args{size} ||= 'medium';
+    my $method = $args{size} . '_path';
+
+    return $self->$method;
+}
+
 =head2 original_path
 
 Returns path to original size thumbnail.
 
 =cut
 
-sub original_path { url2thumbpath( shift->url, 'original' ) }
+sub original_path { SayCheese::Utils::url2thumbpath( shift->url, 'original' ) }
 
 =head2 large_path
 
@@ -104,7 +117,7 @@ Returns path to large size thumbnail.
 
 =cut
 
-sub large_path { url2thumbpath( shift->url, 'large' ) }
+sub large_path { SayCheese::Utils::url2thumbpath( shift->url, 'large' ) }
 
 =head2 medium_path
 
@@ -112,7 +125,7 @@ Returns path to medium size thumbnail.
 
 =cut
 
-sub medium_path { url2thumbpath( shift->url, 'medium' ) }
+sub medium_path { SayCheese::Utils::url2thumbpath( shift->url, 'medium' ) }
 
 =head2 small_path
 
@@ -120,7 +133,7 @@ Returns path to small size thumbnail.
 
 =cut
 
-sub small_path { url2thumbpath( shift->url, 'small' ) }
+sub small_path { SayCheese::Utils::url2thumbpath( shift->url, 'small' ) }
 
 =head1 AUTHOR
 

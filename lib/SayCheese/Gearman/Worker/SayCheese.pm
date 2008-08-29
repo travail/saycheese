@@ -13,7 +13,7 @@ use Digest::MD5 qw//;
 use Image::Magick;
 use Storable qw//;
 
-__PACKAGE__->mk_accessors( qw/ browser config user_agent img wait / );
+__PACKAGE__->mk_accessors( qw/ browser config user_agent img / );
 __PACKAGE__->functions( [ qw/ saycheese / ] );
 
 =head1 NAME
@@ -41,12 +41,12 @@ sub new {
     $args{wait} ||= 15;
 
     my $self = bless {
-        browser      => $args{browser},
-        config       => $args{config},
-        img          => undef,
-        tmpfile      => undef,
-        user_agent   => $args{user_agent},
-        wait         => $args{wait},
+        browser    => $args{browser},
+        config     => $args{config},
+        img        => undef,
+        tmpfile    => undef,
+        user_agent => $args{user_agent},
+        wait       => $args{wait},
     }, $class;
 
     $ENV{DISPLAY} = $self->config->{DISPLAY};
@@ -121,10 +121,7 @@ sub saycheese {
         warn "FAILURE saycheese\n\n";
         return FAILURE;
     }
-
     warn "RENDERING :$url\n";
-    warn sprintf "WAIT... :%d seconds\n", $self->wait;
-    sleep $self->wait;
 
     ## make original size thumbnail
     my $r2 = $self->import_display;
@@ -135,20 +132,20 @@ sub saycheese {
     }
 
     my $now = SayCheese::DateTime->now;
-    $obj = $schema->resultset('Thumbnail')->update_or_create( {
-        created_on  => $now                       || undef,
-        modified_on => $now                       || undef,
-        url         => $url                       || undef,
-        digest      => Digest::MD5::md5_hex($url) || undef,
-    }, {key => 'unique_url'} );
-    warn sprintf qq{UPDATE OR CREATE :%s as id %d.\n}, $obj->url, $obj->id;
+    $obj = $schema->resultset('Thumbnail')->create( {
+        created_on  => $now                         || undef,
+        modified_on => $now                         || undef,
+        url         => $url                         || undef,
+        digest      => Digest::MD5::md5_hex( $url ) || undef,
+    }, { key => 'unique_url' } );
+    warn sprintf qq{CREATE thumbnail:%s as id %d.\n}, $obj->url, $obj->id;
 
     ## make thumbnails
     $self->create_img( path => $self->tmpfile_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
-    $self->create_thumbnail( path => $obj->original_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
-    $self->create_thumbnail( path => $obj->large_path,    width => LARGE_WIDTH,    height => LARGE_HEIGHT    );
-    $self->create_thumbnail( path => $obj->medium_path,   width => MEDIUM_WIDTH,   height => MEDIUM_HEIGHT   );
-    $self->create_thumbnail( path => $obj->small_path,    width => SMALL_WIDTH,    height => SMALL_HEIGHT    );
+    $self->write_thumbnail( path => $obj->original_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
+    $self->write_thumbnail( path => $obj->large_path,    width => LARGE_WIDTH,    height => LARGE_HEIGHT    );
+    $self->write_thumbnail( path => $obj->medium_path,   width => MEDIUM_WIDTH,   height => MEDIUM_HEIGHT   );
+    $self->write_thumbnail( path => $obj->small_path,    width => SMALL_WIDTH,    height => SMALL_HEIGHT    );
 
     $self->unlink_tmpfile;
     $self->saycheese_free;
@@ -199,6 +196,17 @@ sub unlink_tmpfile {
         or warn sprintf "ERROR :Can't unlink tmpfile %s", $self->tmpfile_path;
 }
 
+=head2 wait
+
+=cut
+
+sub wait {
+    my $self = shift;
+
+    warn sprintf "WAIT... :%d seconds\n", $self->{wait};
+    sleep $self->{wait};
+}
+
 =head2 open_url
 
 =cut
@@ -242,11 +250,11 @@ sub create_img {
     $self->img( $img );
 }
 
-=head2 create_thumbnail
+=head2 write_thumbnail
 
 =cut
 
-sub create_thumbnail {
+sub write_thumbnail {
     my ( $self, %args ) = @_;
 
     my $clone = $self->img->Clone;
@@ -254,6 +262,15 @@ sub create_thumbnail {
     $clone->Write( $args{path} );
     warn sprintf qq{WRITING THUMBNAIL :large size (%d x %d), %s.\n},
         $args{width}, $args{height}, $args{path};
+}
+
+=head2 create_thmubnail
+
+=cut
+
+sub create_thumbnail {
+    my $self = shift;
+
 }
 
 =head2 saycheese_free
