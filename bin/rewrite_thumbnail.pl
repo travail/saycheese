@@ -31,7 +31,7 @@ while (my $url = <>) {
             } else {
                 $no_image_path = "/static/images/no_image_m.gif";
             }
-            return "$no_image_path\n";
+            print "$no_image_path\n";
         }
     }
 }
