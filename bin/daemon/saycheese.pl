@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use FindBin qw//;
-use lib "$FindBin::Bin/../lib";
+use lib "$FindBin::Bin/../../lib";
 use SayCheese::ConfigLoader;
 use SayCheese::Gearman::Worker;
 
