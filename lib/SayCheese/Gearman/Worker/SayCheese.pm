@@ -122,6 +122,7 @@ sub saycheese {
         return FAILURE;
     }
     warn "RENDERING :$url\n";
+    $self->wait;
 
     ## make original size thumbnail
     my $r2 = $self->import_display;
