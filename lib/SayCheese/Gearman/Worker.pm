@@ -45,7 +45,7 @@ sub work {
     my $worker
         = Gearman::Worker->new( job_servers => $self->config->{job_servers} );
     foreach my $func ( @{$self->{worker}->functions} ) {
-        $worker->register_function( $func => sub { $self->{worker}->$func( Storable::thaw( shift ) ) } );
+        $worker->register_function( $func => sub { $self->{worker}->$func( shift ) } );
     }
 
     while ( 1 ) {
