@@ -20,3 +20,20 @@ GetOptions(
 
 my $worker = SayCheese::Gearman::Worker->new(worker_class => 'SayCheese');
 $worker->work while 1;
+
+__END__
+
+=head1 NAME
+
+saycheesed.pl - SayCheese daemon script
+
+=head1 SYNOPSIS
+
+saycheesed.pl [option]
+
+ Optionss:
+
+  -d --debug     debug mode
+  -h --help      show this message
+
+=cut
