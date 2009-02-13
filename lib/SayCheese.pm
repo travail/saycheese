@@ -17,11 +17,9 @@ use Catalyst::Runtime '5.70';
 use Catalyst qw/
     -Debug
     ConfigLoader
-    Static::Simple
     Cache::Memcached
     FillInForm
     +SayCheese::Plugin::NoImage
-    View
 /;
 
 our $VERSION = '0.01';
@@ -43,22 +41,63 @@ __PACKAGE__->setup;
 
 =head2 thumbnail
 
+  Arial for $c->model('DBIC::SayCheese::Thumbnail')
+
 =cut
 
-sub thumbnail : Private { shift->model('DBIC::SayCheese::Thumbnail') }
+sub thumbnail { shift->model('DBIC::SayCheese::Thumbnail') }
 
 =head2 slurp_thumnail
 
-    Slurp thumbnail.
+  Slurp thumbnail.
 
 =cut
 
-sub slurp_thumbnail : Private {
+sub slurp_thumbnail {
     my ( $c, $path ) = @_;
 
     my $fh = SayCheese::FileHandle->new( $path, 'r' );
     return $fh ? $fh->slurp : undef;
 }
+
+=head2 load_template
+
+=cut
+
+sub load_template {
+    my ( $c, $template ) = @_;
+
+    if ( $template || $c->action ) {
+        $c->stash->{template} = $template || $c->action->reverse . '.tt';
+    } else {
+        $c->log->warn("No template loaded");
+    }
+}
+
+=head2 output_file
+
+=cut
+
+sub output_file {
+    my ( $c, %args ) = @_;
+
+    $c->load_template( $args{file} ) if $args{file};
+    my $method = $args{detach} ? 'detach' : 'forward';
+    $c->$method('View::File');
+}
+
+=head2 output_json
+
+=cut
+
+sub output_json {
+    my ( $c, %args ) = @_;
+
+    $c->load_template( $args{file} ) if $args{file};
+    my $method = $args{detach} ? 'detach' : 'forward';
+    $c->$method('View::JSON');
+}
+
 
 =head1 NAME
 
@@ -78,7 +117,7 @@ L<SayCheese::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 
-Catalyst developer
+  TRAVAIL
 
 =head1 LICENSE
 

@@ -3,7 +3,6 @@ package SayCheese::Utils;
 use strict;
 use warnings;
 use base qw/ Exporter /;
-use SayCheese::ConfigLoader;
 use File::Basename qw/ dirname /;
 use File::Path qw/ mkpath /;
 use File::Spec;
@@ -11,6 +10,7 @@ use Digest::MD5 qw//;
 use Path::Class;
 use URI;
 use Class::Inspector;
+use SayCheese::ConfigLoader;
 
 our @EXPORT_OK = ( qw/
     connect_info
@@ -268,10 +268,16 @@ sub home {
                 # clean up relative path:
                 # MyApp/script/.. -> MyApp
 
-                my ($lastdir) = $home->dir_list( -1, 1 );
-                if ( $lastdir eq '..' ) {
-                    $home = dir($home)->parent->parent;
+                my $dir;
+                my @dir_list = $home->dir_list();
+                while ( ( $dir = pop( @dir_list ) ) && $dir eq '..' ) {
+                    $home = dir( $home )->parent->parent;
                 }
+
+#                my ($lastdir) = $home->dir_list( -1, 1 );
+#                if ( $lastdir eq '..' ) {
+#                    $home = dir($home)->parent->parent;
+#                }
 
                 return $home->stringify;
             }

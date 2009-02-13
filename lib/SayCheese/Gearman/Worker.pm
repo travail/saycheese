@@ -2,9 +2,10 @@ package SayCheese::Gearman::Worker;
 
 use strict;
 use warnings;
-use Carp qw//;
+use Carp::Clan qw//;
 use Gearman::Worker;
 use Storable qw//;
+use UNIVERSAL::require;
 
 =head1 NAME
 
@@ -18,6 +19,7 @@ SayCheese Worker
 
 =cut
 
+
 =head2 new
 
 =cut
@@ -25,7 +27,7 @@ SayCheese Worker
 sub new {
     my ( $class, %args ) = @_;
 
-    Carp::croak "worker is required.\n" unless $args{worker_class};
+    Carp::Clan::croak "worker is required.\n" unless $args{worker_class};
     my $self = bless {
         worker_class => $args{worker_class},
         worker       => undef,
@@ -68,8 +70,8 @@ sub _create_worker {
     my $self = shift;
 
     my $worker_class = sprintf q{%s::%s}, ref $self, $self->{worker_class};
-    eval "require $worker_class";
-    Carp::croak $@ if $@;
+    $worker_class->require;
+    Carp::Clan::croak $@ if $@;
 
     $self->{worker} = $worker_class->new;
 }

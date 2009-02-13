@@ -23,29 +23,32 @@ SayCheese::Controller::Root - Root Controller for SayCheese
 
 =cut
 
+
 =head2 default
 
 =cut
 
-sub index : Private {
+sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $req = $c->req;
+    my $url  = $c->req->param('url')  || '';
+    my $rows = $c->req->param('rows') || '';
+    my $page = $c->req->param('page') || '';
     my $itr_thumbnail = $c->thumbnail->index_thumbnails(
-        url  => $req->param('url') || undef,
-        rows => $req->param('rows') || $c->config->{default_rows},
-        page => $req->param('page') || 1,
+        url  => $url,
+        rows => $rows,
+        page => $page,
     );
 
     $c->stash->{itr_thumbnail} = $itr_thumbnail;
-    $c->stash->{fillform} = { url => $req->param('url') || undef };
+    $c->stash->{fillform} = { url => $url };
 }
 
 =head2 default
 
 =cut
 
-sub default : Private {
+sub default :Private {
     my ( $self, $c ) = @_;
 
     $c->log->info('*** SayCheese::Controller::Root::default ***');
@@ -58,13 +61,10 @@ sub default : Private {
 
 =cut
 
-sub render : ActionClass('RenderView') {
+sub render :ActionClass('RenderView') {
     my ( $self, $c ) = @_;
 
     $c->log->info('*** SayCheese::Controller::Root::render ***');
-
-    return if $c->stash->{only_file};
-    return if $c->stash->{only_json};
 
     $c->load_template unless $c->stash->{template};
 }
@@ -75,7 +75,7 @@ Attempt to render a view, if needed.
 
 =cut 
 
-sub end : Private {
+sub end :Private {
     my ( $self, $c ) = @_;
 
     $c->log->info('*** SayCheese::Controller::Root::end ***');
@@ -84,9 +84,10 @@ sub end : Private {
     $c->fillform( $c->stash->{fillform} ) if $c->stash->{fillform};
 }
 
+
 =head1 AUTHOR
 
-Catalyst developer
+TRAVAIL
 
 =head1 LICENSE
 

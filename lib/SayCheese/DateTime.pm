@@ -2,8 +2,8 @@ package SayCheese::DateTime;
 
 use strict;
 use warnings;
-use SayCheese::ConfigLoader;
 use DateTime;
+use SayCheese::ConfigLoader;
 
 =head1 NAME
 

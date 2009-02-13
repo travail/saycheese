@@ -2,8 +2,8 @@ package SayCheese::UserAgent;
 
 use strict;
 use warnings;
-use SayCheese::ConfigLoader;
 use LWP::UserAgent;
+use SayCheese::ConfigLoader;
 
 
 =head1 NAME
@@ -27,8 +27,8 @@ sub new {
 
     my $config = SayCheese::ConfigLoader->new->config;
     my $self = LWP::UserAgent->new(
-        agent   => $args{agent} || $config->{user_agent}->{agent},
-        from    => $args{from} || $config->{user_agent}->{from},
+        agent   => $args{agent}   || $config->{user_agent}->{agent},
+        from    => $args{from}    || $config->{user_agent}->{from},
         timeout => $args{timeout} || $config->{user_agent}->{timeout},
     );
     $self->default_header( Accept => [ qw(text/html text/plain image/*) ] );

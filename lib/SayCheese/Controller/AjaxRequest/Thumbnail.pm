@@ -3,13 +3,13 @@ package SayCheese::Controller::AjaxRequest::Thumbnail;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use DateTime::Format::HTTP;
+use Storable qw//;
 use SayCheese::DateTime;
 use SayCheese::FileHandle;
 use SayCheese::Gearman::Client;
 use SayCheese::UserAgent;
 use SayCheese::Utils qw//;
-use DateTime::Format::HTTP;
-use Storable qw//;
 
 =head1 NAME
 
@@ -27,11 +27,11 @@ Catalyst Controller.
 
 =cut
 
-sub create : Local {
+sub create :Path('create') :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $url = $c->req->param('url');
-    unless ( $url ) {
+    my $url = $c->req->param('url') || '';
+    if ( !$url ) {
         $c->stash->{json_data} = {};
         $c->output_json;
         return;
@@ -39,7 +39,7 @@ sub create : Local {
 
     my $ua  = SayCheese::UserAgent->new;
     my $res = $ua->get( $url );
-    unless ( $res->is_success ) {
+    if ( !$res->is_success ) {
         $c->stash->{json_data} = {};
         $c->output_json;
         return;
@@ -48,7 +48,8 @@ sub create : Local {
     my $obj = $c->model('DBIC::SayCheese::Thumbnail')->find_by_url( $url );
     if ( $obj ) {
         ## nothing to do.
-    } else {
+    }
+    else {
         my $client = SayCheese::Gearman::Client->new;
         my $id = $client->do_task( 'saycheese', Storable::freeze( { url => $url } ), {} );
         $obj   = $c->thumbnail->find( $$id );
@@ -62,10 +63,10 @@ sub create : Local {
 
 =cut
 
-sub delete : Local {
+sub delete :Path('delete') :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $id  = $c->req->param('id');
+    my $id  = $c->req->param('id') || '';
     my $obj = $c->thumbnail->find( $id );
     $obj->delete if $obj;
 
@@ -76,10 +77,9 @@ sub delete : Local {
 
 =cut
 
-sub recent_thumbnails : Local {
+sub recent_thumbnails :Path('recent_thumbnails') :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $req = $c->req;
     my $itr_thumbnail = $c->thumbnail->index_thumbnails;
 
     $c->stash->{template}      = 'include/thumbnails.inc';
@@ -91,10 +91,10 @@ sub recent_thumbnails : Local {
 
 =cut
 
-sub search_url : Local {
+sub search_url :Path('search_url') :Args(0) {
     my ( $self, $c ) = @_;
 
-    my $url = $c->req->param('url');
+    my $url = $c->req->param('url') || '';
     my $itr_thumbnail = $c->thumbnail->search(
         { url => { LIKE => sprintf q{%s%%}, $url } },
         { order_by => 'url ASC' },
@@ -111,7 +111,7 @@ Returns large size thumbnail.
 
 =cut
 
-sub large : PathPart('large') Chained('') Args('') {
+sub large :PathPart('large') Chained('') Args('') {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
@@ -149,7 +149,7 @@ Returns medium size thumbnail.
 
 =cut
 
-sub medium : PathPart('medium') Chained('') Args('') {
+sub medium :PathPart('medium') Chained('') Args('') {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
@@ -187,7 +187,7 @@ Returns small size thumbnail.
 
 =cut
 
-sub small : PathPart('small') Chained('') Args('') {
+sub small :PathPart('small') Chained('') Args('') {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
@@ -225,7 +225,7 @@ Post Processor. Set Content-Type, stash 'thumbnail.inc' and thumbnail, and out p
 
 =cut
 
-sub post_process : Private {
+sub post_process :Private {
     my ( $self, $c, $thumbnail ) = @_;
 
     $c->forward('set_content_type');
@@ -240,12 +240,13 @@ Set Expires, Last-Modified, Content-Length for cache
 
 =cut
 
-sub set_http_header : Private {
+sub set_http_header :Private {
     my ( $self, $c, $content_length ) = @_;
 
     my $dt = SayCheese::DateTime->now;
+    my $expires = $dt->clone->add( seconds => $c->config->{cache}->{expires} );
     $c->res->headers->header(
-        'Expires'        => DateTime::Format::HTTP->format_datetime( $dt->clone->add( seconds => $c->config->{cache}->{expires} ) ),
+        'Expires'        => DateTime::Format::HTTP->format_datetime( $expires ),
         'Last-Modified'  => DateTime::Format::HTTP->format_datetime( $dt ),
         'Content-Length' => $content_length,
     );
@@ -257,7 +258,7 @@ Set Contet-Type for image
 
 =cut
 
-sub set_content_type : Private {
+sub set_content_type :Private {
     my ( $self, $c ) = @_;
 
     $c->res->content_type( qw( image/jpeg image/gif image/png ) );
@@ -265,7 +266,7 @@ sub set_content_type : Private {
 
 =head1 AUTHOR
 
-travail
+TRAVAIL
 
 =head1 LICENSE
 

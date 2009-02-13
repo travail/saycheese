@@ -3,17 +3,17 @@ package SayCheese::Gearman::Worker::SayCheese;
 use strict;
 use warnings;
 use base qw/ SayCheese::Gearman::Worker::Root /;
+use Data::Dumper;
+use Digest::MD5 qw//;
+use Image::Magick;
+use Storable qw//;
 use SayCheese::ConfigLoader;
 use SayCheese::Constants;
 use SayCheese::DateTime;
 use SayCheese::Schema;
 use SayCheese::UserAgent;
-use Data::Dumper;
-use Digest::MD5 qw//;
-use Image::Magick;
-use Storable qw//;
 
-__PACKAGE__->mk_accessors( qw/ browser config user_agent img / );
+__PACKAGE__->mk_accessors( qw/ browser config debug user_agent img / );
 __PACKAGE__->functions( [ qw/ saycheese / ] );
 
 =head1 NAME
@@ -28,6 +28,7 @@ SayCheese Worker
 
 =cut
 
+
 =head2 new
 
 =cut
@@ -35,18 +36,19 @@ SayCheese Worker
 sub new {
     my ( $class, %args ) = @_;
 
-    $args{browser} ||= 'firefox';
-    $args{config} ||= SayCheese::ConfigLoader->new->config;
+    $args{browser}    ||= 'firefox';
+    $args{config}     ||= SayCheese::ConfigLoader->new->config;
     $args{user_agent} ||= SayCheese::UserAgent->new;
-    $args{wait} ||= 15;
+    $args{wait}       ||= 15;
 
     my $self = bless {
-        browser    => $args{browser},
-        config     => $args{config},
+        browser    => $args{browser}    || undef,
+        config     => $args{config}     || undef,
+        debug      => $args{debug}      || undef,
         img        => undef,
         tmpfile    => undef,
-        user_agent => $args{user_agent},
-        wait       => $args{wait},
+        user_agent => $args{user_agent} || undef,
+        wait       => $args{wait}       || undef,
     }, $class;
 
     $ENV{DISPLAY} = $self->config->{DISPLAY};
@@ -63,7 +65,7 @@ sub on_work {
 
     $Data::Dumper::Terse = 1;
     warn "=== STARTING saycheese ===\n";
-    warn Dumper( \%ENV );
+    warn Dumper( \%ENV ) if $self->{debug};
 }
 
 =head2 saycheese
@@ -75,17 +77,17 @@ sub saycheese {
 
     my $job = Storable::thaw( $freezed_job->arg );
     my $url = $job->{url};
-    warn "URL :$url\n";
+    warn "URL :$url\n" if $self->{debug};
 
     ## valid schema?
-    unless ( SayCheese::Utils::is_valid_scheme( $url ) ) {
+    if ( !SayCheese::Utils::is_valid_scheme( $url ) ) {
         warn "WARN :$2 is invalid scheme.\n";
         warn "FINISH saycheese\n\n";
         return FAILURE;
     }
 
     ## valid extension?
-    unless ( SayCheese::Utils::is_valid_extension( $url ) ) {
+    if ( !SayCheese::Utils::is_valid_extension( $url ) ) {
         warn "WARN :$2 is invalid extension.\n";
         warn "FINISH saycheese\n\n";
         return FAILURE;
@@ -95,19 +97,21 @@ sub saycheese {
     my $schema = SayCheese::Schema->connect( SayCheese::Utils::connect_info );
     my $obj    = $schema->resultset('Thumbnail')->find_by_url( $url );
     if ( $obj ) {
-        warn sprintf qq{EXISTS :%s exists as id %d.\n}, $obj->url, $obj->id;
+        warn sprintf qq{EXISTS :%s exists as id %d.\n}, $obj->url, $obj->id if $self->{debug};
         if ( $obj->is_finished ) {
-            warn sprintf qq{FINISHED :%s is already finished as id %d.\n},
-                $obj->url, $obj->id;
-            warn "FINISH saycheesel\n\n";
+            if ( $self->{debug} ) {
+                warn sprintf qq{FINISHED :%s is already finished as id %d.\n},
+                    $obj->url, $obj->id;
+                warn "FINISH saycheesel\n\n";
+            }
             return $obj->id;
         }
     }
 
     ## URL exists?
-    warn "FETCHIGN DOCUMENT :$url\n";
+    warn "FETCHIGN DOCUMENT :$url\n" if $self->{debug};
     my $res = $self->user_agent->get( $url );
-    unless ( $res->is_success ) {
+    if ( !$res->is_success ) {
         warn sprintf qq{ERROR :%s.\n}, $res->status_line;
         warn "FAILURE saycheese\n\n";
         return FAILURE;
@@ -121,7 +125,7 @@ sub saycheese {
         warn "FAILURE saycheese\n\n";
         return FAILURE;
     }
-    warn "RENDERING :$url\n";
+    warn "RENDERING :$url\n" if $self->{debug};
     $self->wait;
 
     ## make original size thumbnail
@@ -139,7 +143,7 @@ sub saycheese {
         url         => $url                         || undef,
         digest      => Digest::MD5::md5_hex( $url ) || undef,
     }, { key => 'unique_url' } );
-    warn sprintf qq{CREATE thumbnail:%s as id %d.\n}, $obj->url, $obj->id;
+    warn sprintf qq{CREATE thumbnail:%s as id %d.\n}, $obj->url, $obj->id if $self->{debug};
 
     ## make thumbnails
     $self->create_img( path => $self->tmpfile_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
@@ -157,7 +161,8 @@ sub saycheese {
         $obj->update;
         warn "FINISH saycheese\n\n";
         return $obj->id;
-    } else {
+    }
+    else {
         warn "FAILURE saycheese\n\n";
         return FAILURE;
     }
@@ -172,7 +177,8 @@ sub tmpfile {
 
     if ( defined $self->{tmpfile} ) {
         return $self->{tmpfile};
-    } else {
+    }
+    else {
         $self->{tmpfile}
             = sprintf q{%d-%d.%s}, time, $$, $self->config->{thumbnail}->{extension};
         return $self->{tmpfile};
@@ -192,7 +198,7 @@ sub tmpfile_path { sprintf q{/tmp/%s}, shift->tmpfile }
 sub unlink_tmpfile {
     my $self = shift;
 
-    warn sprintf "UNLINK :%s.\n", $self->tmpfile_path;
+    warn sprintf "UNLINK :%s.\n", $self->tmpfile_path if $self->{debug};
     unlink $self->tmpfile_path
         or warn sprintf "ERROR :Can't unlink tmpfile %s", $self->tmpfile_path;
 }
@@ -204,7 +210,7 @@ sub unlink_tmpfile {
 sub wait {
     my $self = shift;
 
-    warn sprintf "WAIT... :%d seconds\n", $self->{wait};
+    warn sprintf "WAIT... :%d seconds\n", $self->{wait} if $self->{debug};
     sleep $self->{wait};
 }
 
@@ -216,7 +222,7 @@ sub open_url {
     my ( $self, $url ) = @_;
 
     my $cmd = sprintf q{%s -remote "openURL(%s)"}, $self->browser, $url;
-    warn "EXECUTE COMMAND :$cmd\n";
+    warn "EXECUTE COMMAND :$cmd\n" if $self->{debug};
 
     return system $cmd;
 }
@@ -230,7 +236,7 @@ sub import_display {
 
     my $cmd = sprintf "import -display %s -window root -silent %s",
         $ENV{DISPLAY}, $self->tmpfile_path;
-    warn "EXECUTE COMMAND :$cmd\n";
+    warn "EXECUTE COMMAND :$cmd\n" if $self->{debug};
 
     return system $cmd;
 }
@@ -262,10 +268,10 @@ sub write_thumbnail {
     $clone->Scale( width => $args{width}, height => $args{height} );
     $clone->Write( $args{path} );
     warn sprintf qq{WRITING THUMBNAIL :large size (%d x %d), %s.\n},
-        $args{width}, $args{height}, $args{path};
+        $args{width}, $args{height}, $args{path} if $self->{debug};
 }
 
-=head2 create_thmubnail
+=head2 create_thumbnail
 
 =cut
 
@@ -281,7 +287,7 @@ sub create_thumbnail {
 sub saycheese_free {
     my $self = shift;
 
-    warn "CLEAN UP img(), tmpfile().\n";
+    warn "CLEAN UP img(), tmpfile().\n" if $self->{debug};
     $self->img( undef );
     $self->tmpfile( undef );
 }

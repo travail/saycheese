@@ -2,9 +2,9 @@ package SayCheese::ConfigLoader;
 
 use strict;
 use warnings;
-use SayCheese::Utils;
 use Config::Any;
 use File::Spec;
+use SayCheese::Utils;
 
 =head1 NAME
 
