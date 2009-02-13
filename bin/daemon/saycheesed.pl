@@ -18,7 +18,10 @@ GetOptions(
     'h|help'  => \$help,
 );
 
-my $worker = SayCheese::Gearman::Worker->new(worker_class => 'SayCheese');
+my $worker = SayCheese::Gearman::Worker->new(
+    debug        => $debug,
+    worker_class => 'SayCheese',
+);
 $worker->work while 1;
 
 __END__
