@@ -1,17 +1,16 @@
-  <div id="beta">
-  <div id="content">
-    <div id="saycheese">
-<!--
-      <strong>URL:</strong><input id="form_url" type="text" name="url" size="48" value="[% url %]" onkeyup="SearchURL($F('form_url'));" />
--->
-      <div id="form_url_text">URL:<input id="form_url" type="text" name="url" size="48" value="[% url %]" /></div>
-      <form id="form_saycheese" action="/" method="POST">
-      <input id="form_search" type="button" name="search" value="Search" onclick="SearchThumbnail($F('form_url'))" />
-      <input id="form_request" type="button" name="request" value="Say Cheese!" onclick="Thumbnail($F('form_url'))" />
-      </form>
-      <div id="search_url_results"></div>
-      <div id="thumbnail"></div>
-    </div>
-    <div id="thumbnails">[% PROCESS include/thumbnails.inc %]</div>
-  </div>
-  </div>
+<div id="beta">
+<div id="content">
+
+<div id="saycheese">
+<div id="form_url_text">URL:<input id="form_url" type="text" name="url" size="48" value="[% url %]" /></div>
+<form id="form_saycheese" action="/" method="POST">
+<input id="form_search" type="button" name="search" value="Search" onclick="SearchThumbnail($F('form_url'))" />
+<input id="form_request" type="button" name="request" value="Say Cheese!" onclick="Thumbnail($F('form_url'))" />
+</form>
+<div id="search_url_results"></div>
+<div id="thumbnail"></div>
+</div>
+<div id="thumbnails">[% PROCESS include/thumbnails.inc %]</div>
+
+</div>
+</div>

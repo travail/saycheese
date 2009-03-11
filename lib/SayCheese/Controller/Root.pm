@@ -2,7 +2,7 @@ package SayCheese::Controller::Root;
 
 use strict;
 use warnings;
-use base 'Catalyst::Controller';
+use parent 'Catalyst::Controller';
 use SayCheese::Constants;
 
 #
@@ -28,19 +28,19 @@ SayCheese::Controller::Root - Root Controller for SayCheese
 
 =cut
 
-sub index :Path :Args(0) {
+sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
     my $url  = $c->req->param('url')  || '';
     my $rows = $c->req->param('rows') || '';
     my $page = $c->req->param('page') || '';
-    my $itr_thumbnail = $c->thumbnail->index_thumbnails(
-        url  => $url,
-        rows => $rows,
-        page => $page,
+    my $iter_thumbnail = $c->thumbnail->index_thumbnails(
+        url  => $url  || undef,
+        rows => $rows || undef,
+        page => $page || undef,
     );
 
-    $c->stash->{itr_thumbnail} = $itr_thumbnail;
+    $c->stash->{iter_thumbnail} = $iter_thumbnail;
     $c->stash->{fillform} = { url => $url };
 }
 
@@ -48,7 +48,7 @@ sub index :Path :Args(0) {
 
 =cut
 
-sub default :Private {
+sub default : Private {
     my ( $self, $c ) = @_;
 
     $c->log->info('*** SayCheese::Controller::Root::default ***');
@@ -61,7 +61,7 @@ sub default :Private {
 
 =cut
 
-sub render :ActionClass('RenderView') {
+sub render : ActionClass('RenderView') {
     my ( $self, $c ) = @_;
 
     $c->log->info('*** SayCheese::Controller::Root::render ***');
@@ -75,7 +75,7 @@ Attempt to render a view, if needed.
 
 =cut 
 
-sub end :Private {
+sub end : Private {
     my ( $self, $c ) = @_;
 
     $c->log->info('*** SayCheese::Controller::Root::end ***');
