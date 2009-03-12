@@ -14,13 +14,13 @@ use Catalyst::Runtime '5.70';
 # Static::Simple: will serve static files from the application's root 
 #                 directory
 
-use Catalyst qw/
+use Catalyst qw(
     -Debug
     ConfigLoader
     Cache::Memcached
     FillInForm
     +SayCheese::Plugin::NoImage
-/;
+);
 
 our $VERSION = '0.01';
 
@@ -69,7 +69,8 @@ sub load_template {
 
     if ( $template || $c->action ) {
         $c->stash->{template} = $template || $c->action->reverse . '.tt';
-    } else {
+    }
+    else {
         $c->log->warn("No template loaded");
     }
 }
