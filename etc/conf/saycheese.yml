@@ -15,10 +15,10 @@ time_zone: Asia/Tokyo
 default_rows: 10
 
 cache:
-  expires: 31536000
   servers:
     - 192.168.1.1:11211 
     - 192.168.1.2:11211
+  namespace: SayCheese
 
 thumbnail:
   extension: jpg
