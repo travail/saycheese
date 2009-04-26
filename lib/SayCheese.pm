@@ -15,7 +15,6 @@ use Catalyst::Runtime '5.70';
 #                 directory
 
 use Catalyst qw(
-    -Debug
     ConfigLoader
     Cache::Memcached::Fast
     FillInForm
@@ -99,6 +98,8 @@ sub output_json {
     $c->$method('View::JSON');
 }
 
+sub use_stats {1}
+sub debug {1}
 
 =head1 NAME
 
