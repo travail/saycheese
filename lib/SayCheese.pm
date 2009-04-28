@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use NEXT;
 
-use Catalyst::Runtime '5.70';
+use Catalyst::Runtime '5.80';
 
 # Set flags and add plugins for the application
 #
