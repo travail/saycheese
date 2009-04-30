@@ -2,7 +2,7 @@ package SayCheese::Gearman::Worker::Root;
 
 use strict;
 use warnings;
-use base qw/ Class::Accessor::Fast Class::Data::Inheritable /;
+use base qw( Class::Accessor::Fast Class::Data::Inheritable );
 
 __PACKAGE__->mk_classdata( functions => [] );
 

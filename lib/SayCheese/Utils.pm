@@ -2,20 +2,20 @@ package SayCheese::Utils;
 
 use strict;
 use warnings;
-use base qw/ Exporter /;
-use File::Basename qw/ dirname /;
-use File::Path qw/ mkpath /;
+use base qw( Exporter );
+use File::Basename qw( dirname );
+use File::Path qw( mkpath );
 use File::Spec;
-use Digest::MD5 qw//;
+use Digest::MD5 qw();
 use Path::Class;
 use URI;
 use Class::Inspector;
-use SayCheese::ConfigLoader;
+use SayCheese::Config;
 
-our @EXPORT_OK = ( qw/
+our @EXPORT_OK = ( qw(
     connect_info
     digest2thumbpath url2thumbpath unescape_uri
-/ );
+) );
 
 =head1 NAME
 
@@ -36,7 +36,7 @@ Return connect_info
 =cut
 
 sub connect_info {
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     return @{$config->{'Model::DBIC::SayCheese'}->{connect_info}};
 }
 
@@ -51,7 +51,7 @@ sub digest2thumbpath {
 
     return unless $digest;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $size ||= $config->{thumbnail}->{default_size};
     return sprintf q{%s/%s/%s/%s.%s},
         $config->{thumbnail}->{dir}->{$size},
@@ -72,7 +72,7 @@ sub url2thumbpath {
 
     return unless $url;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $size ||= $config->{thumbnail}->{default_size};
     my $thumbpath = digest2thumbpath( Digest::MD5::md5_hex( $url ), $size );
     my $dir = dirname( $thumbpath );
@@ -89,7 +89,7 @@ sub no_image_path {
     my $size = shift;
 
     $size ||= 'medium';
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
 
     return $config->{no_image}->{$size};
 }
@@ -120,7 +120,7 @@ Returns 1 if $string is valid scheme, or returns undef.
 sub is_valid_scheme {
     my $string = shift;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $string =~ /^(.*:\/\/)/;
 
     return grep( {$1 eq $_} @{$config->{invalid_scheme}} )
@@ -136,7 +136,7 @@ Returns 1 if $string is valid extension, or returns undef.
 sub is_valid_extension {
     my $string = shift;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $string =~ /(.*)\.(.*)/;
 
     return grep( {$2 eq $_} @{$config->{invalid_extension}} )

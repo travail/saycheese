@@ -2,19 +2,19 @@ package SayCheese::Gearman::Worker::SayCheese;
 
 use strict;
 use warnings;
-use base qw/ SayCheese::Gearman::Worker::Root /;
+use base qw( SayCheese::Gearman::Worker::Root );
 use Data::Dumper;
-use Digest::MD5 qw//;
+use Digest::MD5 qw();
 use Image::Magick;
-use Storable qw//;
-use SayCheese::ConfigLoader;
+use Storable qw();
+use SayCheese::Config;
 use SayCheese::Constants;
 use SayCheese::DateTime;
 use SayCheese::Schema;
 use SayCheese::UserAgent;
 
-__PACKAGE__->mk_accessors( qw/ browser config debug user_agent img / );
-__PACKAGE__->functions( [ qw/ saycheese / ] );
+__PACKAGE__->mk_accessors( qw( browser config debug user_agent img ) );
+__PACKAGE__->functions( [ qw( saycheese ) ] );
 
 =head1 NAME
 
@@ -37,7 +37,7 @@ sub new {
     my ( $class, %args ) = @_;
 
     $args{browser}    ||= 'firefox';
-    $args{config}     ||= SayCheese::ConfigLoader->new->config;
+    $args{config}     ||= SayCheese::Config->instance->config;
     $args{user_agent} ||= SayCheese::UserAgent->new;
     $args{wait}       ||= 15;
 

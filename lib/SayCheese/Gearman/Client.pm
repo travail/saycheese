@@ -3,7 +3,7 @@ package SayCheese::Gearman::Client;
 use strict;
 use warnings;
 use base 'Gearman::Client';
-use SayCheese::ConfigLoader;
+use SayCheese::Config;
 
 =head1 NAME
 
@@ -25,7 +25,7 @@ SayCheese Client
 sub new {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{job_servers} ||= $config->{job_servers};
     my $self = $class->SUPER::new( %args );
 

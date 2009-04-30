@@ -3,7 +3,7 @@ package SayCheese::DateTime;
 use strict;
 use warnings;
 use DateTime;
-use SayCheese::ConfigLoader;
+use SayCheese::Config;
 
 =head1 NAME
 
@@ -24,7 +24,7 @@ SayCheese DateTime
 sub new {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{time_zone} ||= $config->{time_zone};
     my $self = DateTime->new( %args );
 
@@ -38,7 +38,7 @@ sub new {
 sub now {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{time_zone} ||= $config->{time_zone};
     my $self = DateTime->now( %args );
 
@@ -52,7 +52,7 @@ sub now {
 sub from_epoch {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{time_zone} ||= $config->{time_zone};
     my $self = DateTime->from_epoch( %args );
 
@@ -66,7 +66,7 @@ sub from_epoch {
 sub today {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{time_zone} ||= $config->{time_zone};
     my $self = DateTime->today( %args );
 
@@ -80,7 +80,7 @@ sub today {
 sub from_object {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{time_zone} ||= $config->{time_zone};
     my $self = DateTime->from_object( %args );
 
@@ -94,7 +94,7 @@ sub from_object {
 sub last_day_of_month {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{time_zone} ||= $config->{time_zone};
     my $self = DateTime->last_day_of_month( %args );
 
@@ -108,7 +108,7 @@ sub last_day_of_month {
 sub from_day_of_year {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     $args{time_zone} ||= $config->{time_zone};
     my $self = DateTime->from_day_of_year( %args );
 

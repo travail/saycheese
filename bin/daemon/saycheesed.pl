@@ -2,11 +2,10 @@
 
 use strict;
 use warnings;
-use FindBin qw//;
+use FindBin qw();
 use lib "$FindBin::Bin/../../lib";
 use Getopt::Long;
 use Pod::Usage;
-use SayCheese::ConfigLoader;
 use SayCheese::Gearman::Worker;
 
 my $debug = '';

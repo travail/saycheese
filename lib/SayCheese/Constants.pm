@@ -2,16 +2,16 @@ package SayCheese::Constants;
 
 use strict;
 use warnings;
-use base qw/ Exporter /;
-use SayCheese::ConfigLoader;
+use base qw( Exporter );
+use SayCheese::Config;
 
-our @EXPORT = qw/
+our @EXPORT = qw(
     CONFIG SUCCESS FAILURE
     ORIGINAL_WIDTH ORIGINAL_HEIGHT
     LARGE_WIDTH LARGE_HEIGHT
     MEDIUM_WIDTH MEDIUM_HEIGHT
     SMALL_WIDTH SMALL_HEIGHT
-/;
+);
 
 =head1 NAME
 
@@ -31,7 +31,7 @@ SayCheese config as C<HASHREF>.
 
 =cut
 
-use constant CONFIG => SayCheese::ConfigLoader->new->config;
+use constant CONFIG => SayCheese::Config->instance->config;
 
 use constant SUCCESS => 1;
 use constant FAILURE => 0;

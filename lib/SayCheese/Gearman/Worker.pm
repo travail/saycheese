@@ -2,9 +2,9 @@ package SayCheese::Gearman::Worker;
 
 use strict;
 use warnings;
-use Carp::Clan qw//;
+use Carp::Clan qw();
 use Gearman::Worker;
-use Storable qw//;
+use Storable qw();
 use UNIVERSAL::require;
 
 =head1 NAME

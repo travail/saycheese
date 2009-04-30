@@ -3,7 +3,7 @@ package SayCheese::UserAgent;
 use strict;
 use warnings;
 use LWP::UserAgent;
-use SayCheese::ConfigLoader;
+use SayCheese::Config;
 
 
 =head1 NAME
@@ -25,7 +25,7 @@ SayCheese UserAgent
 sub new {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     my $self = LWP::UserAgent->new(
         agent   => $args{agent}   || $config->{user_agent}->{agent},
         from    => $args{from}    || $config->{user_agent}->{from},

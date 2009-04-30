@@ -3,15 +3,15 @@ package SayCheese::Schema::Thumbnail;
 use strict;
 use warnings;
 use base 'DBIx::Class';
-use SayCheese::ConfigLoader;
-use SayCheese::Utils qw//;
+use SayCheese::Config;
+use SayCheese::Utils qw();
 
-__PACKAGE__->load_components( qw/
+__PACKAGE__->load_components( qw(
     ResultSetManager
     InflateColumn::DateTime
     InflateColumn::URI
     Core
-/ );
+) );
 __PACKAGE__->table('thumbnail');
 __PACKAGE__->add_columns(
     'id',
@@ -22,7 +22,7 @@ __PACKAGE__->add_columns(
     'is_finished',
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->add_unique_constraint( unique_url => [ qw/ url / ] );
+__PACKAGE__->add_unique_constraint( unique_url => [ qw( url ) ] );
 
 =head1 NAME
 
@@ -43,7 +43,7 @@ See L<SayCheese>.
 sub as_hashref {
     my $self = shift;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     return {
         id          => $self->id,
         created_on  => sprintf( q{%s %s}, $self->created_on->ymd, $self->created_on->hms ),
@@ -61,7 +61,7 @@ sub as_hashref {
 sub index_thumbnails : ResultSet {
     my ( $class, %args ) = @_;
 
-    my $config = SayCheese::ConfigLoader->new->config;
+    my $config = SayCheese::Config->instance->config;
     my %wheres = ();
     $wheres{url} = { LIKE => sprintf q{%s%%}, $args{url} } if $args{url};
     return $class->search(
