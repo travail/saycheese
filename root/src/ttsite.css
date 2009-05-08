@@ -79,7 +79,7 @@ div.thumbnail-content {
 div.thumbnail-title {
   padding: 0.3em 0.5em;
   font-size: 1.2em;
-  background: url([% base %]static/images/stripe_3_3.png);
+  background: url(/static/images/stripe_3_3.png);
 }
 
 .thumbnail-title a {
@@ -162,7 +162,7 @@ span.active-page-num {
 #header {
   padding: 20px;
 /*  color: [% site.rgb.white %];*/
-/*  background: url([% base %]static/images/stripe_2_2.png);*/
+/*  background: url(/static/images/stripe_2_2.png);*/
   text-align: center;
 }
 
@@ -179,6 +179,6 @@ h1 {
   clear: both;
   overflow: hidden;
   border-top: 1px solid [% site.col.line %];
-  background-image: url([% base %]static/images/stripe_2_2.png);
+  background-image: url(/static/images/stripe_2_2.png);
   background-repeat: repeat-x repeat-y;
 }
