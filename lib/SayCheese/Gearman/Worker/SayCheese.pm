@@ -114,7 +114,6 @@ sub saycheese {
         warn "INFO: finish saycheese\n\n";
         return FAILURE;
     }
-    warn "INFO: $url exists.\n";
 
     ## open URL
     my $r1 = $self->open_url( $url );
