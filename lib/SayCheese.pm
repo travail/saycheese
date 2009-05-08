@@ -37,15 +37,6 @@ __PACKAGE__->config( 'Plugin::ConfigLoader' => { file => __PACKAGE__->path_to('e
 # Start the application
 __PACKAGE__->setup;
 
-
-=head2 thumbnail
-
-  Arial for $c->model('DBIC::SayCheese::Thumbnail')
-
-=cut
-
-sub thumbnail { shift->model('DBIC::SayCheese::Thumbnail') }
-
 =head2 slurp_thumnail
 
   Slurp thumbnail.

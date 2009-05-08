@@ -3,6 +3,7 @@ package SayCheese::Controller::Root;
 use strict;
 use warnings;
 use parent 'Catalyst::Controller';
+use SayCheese::API::Thumbnail;
 use SayCheese::Constants;
 
 #
@@ -34,10 +35,13 @@ sub index : Path : Args(0) {
     my $url  = $c->req->param('url')  || '';
     my $rows = $c->req->param('rows') || '';
     my $page = $c->req->param('page') || '';
-    my $iter_thumbnail = $c->thumbnail->index_thumbnails(
-        url  => $url  || undef,
-        rows => $rows || undef,
-        page => $page || undef,
+    my $api  = SayCheese::API::Thumbnail->new;
+    my $iter_thumbnail = $api->index_thumbnails(
+        { url => $url || undef },
+        {
+            rows => $rows || 20,
+            page => $page || 1,
+        }
     );
 
     $c->stash->{iter_thumbnail} = $iter_thumbnail;

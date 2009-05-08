@@ -5,6 +5,7 @@ use warnings;
 use parent 'Catalyst::Controller';
 use DateTime::Format::HTTP;
 use Storable qw();
+use SayCheese::API::Thumbnail;
 use SayCheese::DateTime;
 use SayCheese::FileHandle;
 use SayCheese::Gearman::Client;
@@ -45,7 +46,8 @@ sub create : Path('create') : Args(0) {
         return;
     }
 
-    my $obj = $c->model('DBIC::SayCheese::Thumbnail')->find_by_url($url);
+    my $api = SayCheese::API::Thumbnail->new;
+    my $obj = $api->find_by_url($url);
     if ($obj) {
         ## nothing to do.
     }
@@ -53,7 +55,7 @@ sub create : Path('create') : Args(0) {
         my $client = SayCheese::Gearman::Client->new;
         my $id     = $client->do_task( 'saycheese',
             Storable::freeze( { url => $url } ), {} );
-        $obj = $c->thumbnail->find($$id);
+        $obj = $api->find($$id);
     }
 
     $c->stash->{json_data} = $obj ? $obj->as_hashref : {};
@@ -67,8 +69,9 @@ sub create : Path('create') : Args(0) {
 sub delete : Path('delete') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $id = $c->req->param('id') || '';
-    my $obj = $c->thumbnail->find($id);
+    my $id  = $c->req->param('id') || '';
+    my $api = SayCheese::API::Thumbnail->new;
+    my $obj = $api->find($id);
     $obj->delete if $obj;
 
     $c->res->redirect('resent_thumbnails');
@@ -81,7 +84,8 @@ sub delete : Path('delete') : Args(0) {
 sub recent_thumbnails : Path('recent_thumbnails') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $iter_thumbnail = $c->thumbnail->index_thumbnails;
+    my $api            = SayCheese::API::Thumbnail->new;
+    my $iter_thumbnail = $api->index_thumbnails;
 
     $c->stash->{template}       = 'include/thumbnails.inc';
     $c->stash->{iter_thumbnail} = $iter_thumbnail;
@@ -95,8 +99,9 @@ sub recent_thumbnails : Path('recent_thumbnails') : Args(0) {
 sub search_url : Path('search_url') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $url = $c->req->param('url') || '';
-    my $iter_thumbnail = $c->thumbnail->search(
+    my $url            = $c->req->param('url') || '';
+    my $api            = SayCheese::API::Thumbnail->new;
+    my $iter_thumbnail = $api->search(
         { url      => { LIKE => sprintf q{%s%%}, $url } },
         { order_by => 'url ASC' },
     );
@@ -129,7 +134,8 @@ sub large : PathPart('large') Chained('') Args('') {
         my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'large' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
-            my $obj = $c->thumbnail->find_by_url_like($url);
+            my $api = SayCheese::API::Thumbnail->new;
+            my $obj = $api->find_by_url_like($url);
             $thumbpath = $obj->large_path if $obj;
         }
         if ( -e $thumbpath ) {
@@ -169,7 +175,8 @@ sub medium : PathPart('medium') Chained('') Args('') {
         my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'medium' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
-            my $obj = $c->thumbnail->find_by_url_like($url);
+            my $api = SayCheese::API::Thumbnail->new;
+            my $obj = $api->find_by_url_like($url);
             $thumbpath = $obj->medium_path if $obj;
         }
         if ( -e $thumbpath ) {
@@ -209,7 +216,8 @@ sub small : PathPart('small') Chained('') Args('') {
         my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'small' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
-            my $obj = $c->thumbnail->find_by_url_like($url);
+            my $api = SayCheese::API::Thumbnail->new;
+            my $obj = $api->find_by_url_like($url);
             $thumbpath = $obj->small_path if $obj;
         }
         if ( -e $thumbpath ) {
