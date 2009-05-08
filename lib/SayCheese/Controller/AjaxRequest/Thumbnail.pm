@@ -117,7 +117,7 @@ Returns large size thumbnail.
 
 =cut
 
-sub large : PathPart('large') Chained('') Args('') {
+sub large : PathPart('large') Chained('') Args(0) {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
@@ -158,7 +158,7 @@ Returns medium size thumbnail.
 
 =cut
 
-sub medium : PathPart('medium') Chained('') Args('') {
+sub medium : PathPart('medium') Chained('') Args(0) {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
@@ -199,7 +199,7 @@ Returns small size thumbnail.
 
 =cut
 
-sub small : PathPart('small') Chained('') Args('') {
+sub small : PathPart('small') Chained('') Args(0) {
     my ( $self, $c ) = @_;
 
     my $url = $c->req->uri->path_query;
