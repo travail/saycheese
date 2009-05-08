@@ -119,7 +119,7 @@ L<SayCheese::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 
-  TRAVAIL
+TRAVAIL
 
 =head1 LICENSE
 

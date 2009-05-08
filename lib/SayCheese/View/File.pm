@@ -19,7 +19,7 @@ TT View for SayCheese.
 
 L<SayCheese>
 
-A clever guy
+TRAVAIL
 
 =head1 LICENSE
 

@@ -44,13 +44,17 @@ sub as_hashref {
     my $self = shift;
 
     my $config = SayCheese::Config->instance->config;
+    my $created_on = sprintf q{%s %s}, $self->created_on->ymd,
+        $self->created_on->hms;
+    my $modified_on = sprintf q{%s %s}, $self->modified_on->ymd,
+        $self->modified_on->hms;
     return {
-        id          => $self->id,
-        created_on  => sprintf( q{%s %s}, $self->created_on->ymd, $self->created_on->hms ),
-        modified_on => sprintf( q{%s %s}, $self->modified_on->ymd, $self->modified_on->hms ),
-        url         => $self->url,
-        digest      => $self->digest,
-        extension   => $config->{thumbnail}->{extension},
+        id          => $self->id                         || undef,
+        created_on  => $created_on                       || undef,
+        modified_on => $modified_on                      || undef,
+        url         => $self->url                        || undef,
+        digest      => $self->digest                     || undef,
+        extension   => $config->{thumbnail}->{extension} || undef,
     };
 }
 
@@ -65,7 +69,7 @@ sub index_thumbnails : ResultSet {
     my %wheres = ();
     $wheres{url} = { LIKE => sprintf q{%s%%}, $args{url} } if $args{url};
     return $class->search(
-        { %wheres },
+        {%wheres},
         {
             order_by => 'id DESC',
             rows     => $args{rows} || $config->{default_rows},
@@ -137,7 +141,7 @@ sub small_path { SayCheese::Utils::url2thumbpath( shift->url, 'small' ) }
 
 =head1 AUTHOR
 
-travail, C<travail@travail.jp>
+TRAVAIL
 
 =head1 COPYRIGHT
 

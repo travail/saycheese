@@ -17,7 +17,7 @@ Catalyst JSON View.
 
 =head1 AUTHOR
 
-A clever guy
+TRAVAIL
 
 =head1 LICENSE
 

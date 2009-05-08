@@ -153,7 +153,7 @@ sub get_config_local_suffix {
 
 =head1 AUTHOR
 
-travail, C<travail@travail.jp>
+TRAVAIL
 
 =head1 COPYRIGHT
 

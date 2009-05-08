@@ -45,7 +45,7 @@ sub setup {
     __PACKAGE__->_medium( $mdata );
     __PACKAGE__->_small( $sdata );
 
-    $c->NEXT::setup( @_ );
+    $c->next::method( @_ );
 }
 
 =head2 no_image
@@ -88,7 +88,7 @@ sub small { shift->_small }
 
 =head1 AUTHOR
 
-travail
+TRAVAIL
 
 =head1 LICENSE
 

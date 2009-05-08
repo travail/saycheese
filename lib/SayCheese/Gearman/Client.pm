@@ -35,7 +35,7 @@ sub new {
 
 =head1 AUTHOR
 
-travail
+TRAVAIL
 
 =head1 LICENSE
 

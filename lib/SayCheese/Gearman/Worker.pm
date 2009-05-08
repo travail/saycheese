@@ -27,7 +27,7 @@ SayCheese Worker
 sub new {
     my ( $class, %args ) = @_;
 
-    Carp::Clan::croak "worker is required.\n" unless $args{worker_class};
+    Carp::Clan::croak("Np 'worker_class' specified") if !$args{worker_class};
     my $self = bless {
         worker_class => $args{worker_class},
         worker       => undef,
@@ -46,11 +46,12 @@ sub work {
 
     my $worker
         = Gearman::Worker->new( job_servers => $self->config->{job_servers} );
-    foreach my $func ( @{$self->{worker}->functions} ) {
-        $worker->register_function( $func => sub { $self->{worker}->$func( shift ) } );
+    foreach my $func ( @{ $self->{worker}->functions } ) {
+        $worker->register_function(
+            $func => sub { $self->{worker}->$func(shift) } );
     }
 
-    while ( 1 ) {
+    while (1) {
         $self->{worker}->on_work;
         $worker->work;
     }
@@ -76,10 +77,9 @@ sub _create_worker {
     $self->{worker} = $worker_class->new;
 }
 
-
 =head1 AUTHOR
 
-travail
+TRAVAIL
 
 =head1 LICENSE
 

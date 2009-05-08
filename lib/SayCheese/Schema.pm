@@ -2,7 +2,7 @@ package SayCheese::Schema;
 
 use strict;
 use warnings;
-use base qw/ DBIx::Class::Schema /;
+use base qw( DBIx::Class::Schema );
 
 #__PACKAGE__->load_components( qw/ Schema::Slave / );
 #__PACKAGE__->slave_moniker('::Slave');
@@ -33,7 +33,7 @@ See L<SayCheese>.
 
 =head1 AUTHOR
 
-travail, C<travail@travail.jp>
+TRAVAIL
 
 =head1 COPYRIGHT
 

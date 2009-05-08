@@ -18,7 +18,7 @@ L<Catalyst::Model::DBIC::Schema> Model using schema L<SayCheese::Schema>
 
 =head1 AUTHOR
 
-A clever guy
+TRAVAIL
 
 =head1 LICENSE
 

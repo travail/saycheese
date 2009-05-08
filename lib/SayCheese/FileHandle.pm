@@ -33,7 +33,7 @@ sub slurp {
 
 =head1 AUTHOR
 
-travail, C<travail@travail.jp>
+TRAVAIL
 
 =head1 COPYRIGHT
 

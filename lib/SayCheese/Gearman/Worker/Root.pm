@@ -24,10 +24,9 @@ SayCheese Worker
 
 sub on_work {}
 
-
 =head1 AUTHOR
 
-travail
+TRAVAIL
 
 =head1 LICENSE
 

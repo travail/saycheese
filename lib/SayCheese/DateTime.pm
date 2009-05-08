@@ -117,7 +117,7 @@ sub from_day_of_year {
 
 =head1 AUTHOR
 
-travail
+TRAVAIL
 
 =head1 LICENSE
 

@@ -48,7 +48,7 @@ use constant SMALL_HEIGHT    => CONFIG->{thumbnail}->{size}->{small}->{height};
 
 =head1 AUTHOR
 
-travail, C<travail@travail.jp>
+TRAVAIL
 
 =head1 COPYRIGHT
 

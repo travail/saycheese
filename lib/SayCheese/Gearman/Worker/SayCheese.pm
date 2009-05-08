@@ -77,19 +77,19 @@ sub saycheese {
 
     my $job = Storable::thaw( $freezed_job->arg );
     my $url = $job->{url};
-    warn "URL :$url\n";
+    warn "INFO: URL is $url\n";
 
-    ## valid schema?
+    ## valid scheme?
     if ( !SayCheese::Utils::is_valid_scheme( $url ) ) {
-        warn "WARN :$2 is invalid scheme.\n";
-        warn "FINISH saycheese\n\n";
+        warn "WARN: $url is invalid scheme.\n";
+        warn "WARN: finish saycheese\n\n";
         return FAILURE;
     }
 
     ## valid extension?
     if ( !SayCheese::Utils::is_valid_extension( $url ) ) {
-        warn "WARN :$2 is invalid extension.\n";
-        warn "FINISH saycheese\n\n";
+        warn "WARN: $url is invalid extension.\n";
+        warn "WARN: finish saycheese\n\n";
         return FAILURE;
     }
 
@@ -97,40 +97,40 @@ sub saycheese {
     my $schema = SayCheese::Schema->connect( SayCheese::Utils::connect_info );
     my $obj    = $schema->resultset('Thumbnail')->find_by_url( $url );
     if ( $obj ) {
-        warn sprintf qq{EXISTS :%s exists as id %d.\n}, $obj->url, $obj->id;
+        warn sprintf qq{INFO: %s exists as id %d.\n}, $obj->url, $obj->id;
         if ( $obj->is_finished ) {
-            warn sprintf qq{FINISHED :%s is already finished as id %d.\n},
+            warn sprintf qq{INFO: %s is already finished as id %d.\n},
                 $obj->url, $obj->id;
-            warn "FINISH saycheesel\n\n";
+            warn "INFO: finish saycheesel\n\n";
             return $obj->id;
         }
     }
 
     ## URL exists?
-    warn "FETCHIGN DOCUMENT :$url\n";
+    warn "INFO: fetching document $url\n";
     my $res = $self->user_agent->get( $url );
     if ( !$res->is_success ) {
-        warn sprintf qq{ERROR :%s.\n}, $res->status_line;
-        warn "FAILURE saycheese\n\n";
+        warn sprintf qq{ERROR: %s.\n}, $res->status_line;
+        warn "INFO: finish saycheese\n\n";
         return FAILURE;
     }
-    warn "OK :$url exists.\n";
+    warn "INFO: $url exists.\n";
 
     ## open URL
     my $r1 = $self->open_url( $url );
     if ( $r1 ) {
-        warn "ERROR :Can't open url, open_url() returned $r1.\n";
-        warn "FAILURE saycheese\n\n";
+        warn "ERROR: Can't open url, open_url() returned $r1.\n";
+        warn "WARN: finish saycheese\n\n";
         return FAILURE;
     }
-    warn "RENDERING :$url\n";
+    warn "INFO: rendering $url\n";
     $self->wait;
 
     ## make original size thumbnail
     my $r2 = $self->import_display;
     if ( $r2 ) {
-        warn "ERROR :Can't import, import_display() returned $r2.\n";
-        warn "FAILURE saycheese\n\n";
+        warn "ERROR: Can't import, import_display() returned $r2.\n";
+        warn "WARN: finish  saycheese\n\n";
         return FAILURE;
     }
 
@@ -141,7 +141,7 @@ sub saycheese {
         url         => $url                         || undef,
         digest      => Digest::MD5::md5_hex( $url ) || undef,
     }, { key => 'unique_url' } );
-    warn sprintf qq{CREATE thumbnail:%s as id %d.\n}, $obj->url, $obj->id;
+    warn sprintf qq{INFO: create thumbnail:%s as id %d.\n}, $obj->url, $obj->id;
 
     ## make thumbnails
     $self->create_img( path => $self->tmpfile_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
@@ -157,11 +157,11 @@ sub saycheese {
     if ( $obj ) {
         $obj->is_finished( 1 );
         $obj->update;
-        warn "FINISH saycheese\n\n";
+        warn "INFO: finish saycheese\n\n";
         return $obj->id;
     }
     else {
-        warn "FAILURE saycheese\n\n";
+        warn "ERROR: finish saycheese\n\n";
         return FAILURE;
     }
 }
@@ -198,7 +198,7 @@ sub unlink_tmpfile {
 
     warn sprintf "UNLINK :%s.\n", $self->tmpfile_path;
     unlink $self->tmpfile_path
-        or warn sprintf "ERROR :Can't unlink tmpfile %s", $self->tmpfile_path;
+        or warn sprintf "ERROR: Can't unlink tmpfile %s", $self->tmpfile_path;
 }
 
 =head2 wait
@@ -208,7 +208,7 @@ sub unlink_tmpfile {
 sub wait {
     my $self = shift;
 
-    warn sprintf "WAIT... :%d seconds\n", $self->{wait};
+    warn sprintf "INFO: wait... %d seconds\n", $self->{wait};
     sleep $self->{wait};
 }
 
@@ -220,7 +220,7 @@ sub open_url {
     my ( $self, $url ) = @_;
 
     my $cmd = sprintf q{%s -remote "openURL(%s)"}, $self->browser, $url;
-    warn "EXECUTE COMMAND :$cmd\n";
+    warn "INFO: execute command $cmd\n";
 
     return system $cmd;
 }
@@ -234,7 +234,7 @@ sub import_display {
 
     my $cmd = sprintf "import -display %s -window root -silent %s",
         $ENV{DISPLAY}, $self->tmpfile_path;
-    warn "EXECUTE COMMAND :$cmd\n";
+    warn "INFO: execute command $cmd\n";
 
     return system $cmd;
 }
@@ -265,7 +265,7 @@ sub write_thumbnail {
     my $clone = $self->img->Clone;
     $clone->Scale( width => $args{width}, height => $args{height} );
     $clone->Write( $args{path} );
-    warn sprintf qq{WRITING THUMBNAIL :large size (%d x %d), %s.\n},
+    warn sprintf qq{INFO: writing thumbnail (%d x %d), %s.\n},
         $args{width}, $args{height}, $args{path};
 }
 
@@ -285,14 +285,14 @@ sub create_thumbnail {
 sub saycheese_free {
     my $self = shift;
 
-    warn "CLEAN UP img(), tmpfile().\n";
+    warn "INFO: clean up img(), tmpfile().\n";
     $self->img( undef );
     $self->tmpfile( undef );
 }
 
 =head1 AUTHOR
 
-travail
+TRAVAIL
 
 =head1 LICENSE
 
