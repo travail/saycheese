@@ -7,6 +7,7 @@ use Data::Dumper;
 use Digest::MD5 qw();
 use Image::Magick;
 use Storable qw();
+use SayCheese::API::Thumbnail;
 use SayCheese::Config;
 use SayCheese::Constants;
 use SayCheese::DateTime;
@@ -94,8 +95,8 @@ sub saycheese {
     }
 
     ## finished?
-    my $schema = SayCheese::Schema->connect( SayCheese::Utils::connect_info );
-    my $obj    = $schema->resultset('Thumbnail')->find_by_url( $url );
+    my $api = SayCheese::API::Thumbnail->new;
+    my $obj = $api->find_by_url( $url );
     if ( $obj ) {
         warn sprintf qq{INFO: %s exists as id %d.\n}, $obj->url, $obj->id;
         if ( $obj->is_finished ) {
@@ -134,7 +135,7 @@ sub saycheese {
     }
 
     my $now = SayCheese::DateTime->now;
-    $obj = $schema->resultset('Thumbnail')->create( {
+    $obj = $api->create( {
         created_on  => $now                         || undef,
         modified_on => $now                         || undef,
         url         => $url                         || undef,
