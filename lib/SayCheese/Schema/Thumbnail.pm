@@ -7,7 +7,6 @@ use SayCheese::Config;
 use SayCheese::Utils qw();
 
 __PACKAGE__->load_components( qw(
-    ResultSetManager
     InflateColumn::DateTime
     InflateColumn::URI
     Core
@@ -56,42 +55,6 @@ sub as_hashref {
         digest      => $self->digest                     || undef,
         extension   => $config->{thumbnail}->{extension} || undef,
     };
-}
-
-=head2 index_thumbnails
-
-=cut
-
-sub index_thumbnails : ResultSet {
-    my ( $class, %args ) = @_;
-
-    my $config = SayCheese::Config->instance->config;
-    my %wheres = ();
-    $wheres{url} = { LIKE => sprintf q{%s%%}, $args{url} } if $args{url};
-    return $class->search(
-        {%wheres},
-        {
-            order_by => 'id DESC',
-            rows     => $args{rows} || $config->{default_rows},
-            page     => $args{page} || 1,
-        },
-    );
-}
-
-=head2 find_by_url
-
-=cut
-
-sub find_by_url : ResultSet { shift->single( { url => shift } ) }
-
-=head2 find_by_url_like
-
-=cut
-
-sub find_by_url_like : ResultSet {
-    my ( $class, $url ) = @_;
-
-    return $class->single( { url => { LIKE => sprintf q{%s%%}, $url } } );
 }
 
 =head2 thumbnail_path
