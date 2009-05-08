@@ -196,7 +196,7 @@ sub tmpfile_path { sprintf q{/tmp/%s}, shift->tmpfile }
 sub unlink_tmpfile {
     my $self = shift;
 
-    warn sprintf "UNLINK :%s.\n", $self->tmpfile_path;
+    warn sprintf "INFO: unlink file %s.\n", $self->tmpfile_path;
     unlink $self->tmpfile_path
         or warn sprintf "ERROR: Can't unlink tmpfile %s", $self->tmpfile_path;
 }
