@@ -12,8 +12,6 @@ service_url: http://saycheese.travail.jp/
 
 time_zone: Asia/Tokyo
 
-default_rows: 10
-
 cache:
   servers:
     - 192.168.1.1:11211 
