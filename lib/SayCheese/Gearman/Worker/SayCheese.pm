@@ -38,7 +38,7 @@ sub new {
     $args{browser}    ||= 'firefox';
     $args{config}     ||= SayCheese::Config->instance->config;
     $args{user_agent} ||= SayCheese::UserAgent->new;
-    $args{wait}       ||= 15;
+    $args{wait}       ||= 10;
 
     my $self = bless {
         browser    => $args{browser}    || undef,
