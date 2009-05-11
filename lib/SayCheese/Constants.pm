@@ -7,6 +7,7 @@ use SayCheese::Config;
 
 our @EXPORT = qw(
     CONFIG SUCCESS FAILURE
+    ROWS CACHE_FOR
     ORIGINAL_WIDTH ORIGINAL_HEIGHT
     LARGE_WIDTH LARGE_HEIGHT
     MEDIUM_WIDTH MEDIUM_HEIGHT
@@ -35,6 +36,9 @@ use constant CONFIG => SayCheese::Config->instance->config;
 
 use constant SUCCESS => 1;
 use constant FAILURE => 0;
+
+use constant ROWS => 20;
+use constant CACHE_FOR => 60 * 60;
 
 use constant ORIGINAL_WIDTH  => CONFIG->{thumbnail}->{size}->{original}->{width};
 use constant ORIGINAL_HEIGHT => CONFIG->{thumbnail}->{size}->{original}->{height};

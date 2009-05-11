@@ -11,11 +11,10 @@ use SayCheese::API::Thumbnail;
 use SayCheese::Config;
 use SayCheese::Constants;
 use SayCheese::DateTime;
-use SayCheese::Schema;
 use SayCheese::UserAgent;
 
-__PACKAGE__->mk_accessors( qw( browser config debug user_agent img ) );
-__PACKAGE__->functions( [ qw( saycheese ) ] );
+__PACKAGE__->mk_accessors(qw( browser config debug user_agent img ));
+__PACKAGE__->functions( [qw( saycheese )] );
 
 =head1 NAME
 
@@ -28,7 +27,6 @@ SayCheese Worker
 =head1 METHODS
 
 =cut
-
 
 =head2 new
 
@@ -65,7 +63,7 @@ sub on_work {
     my $self = shift;
 
     $Data::Dumper::Terse = 1;
-    warn "=== STARTING saycheese ===\n";
+    warn "=== STARTING saycheesed ===\n";
     warn Dumper( \%ENV );
 }
 
@@ -80,70 +78,73 @@ sub saycheese {
     my $url = $job->{url};
     warn "INFO: URL is $url\n";
 
-    ## valid scheme?
+    # valid scheme?
     if ( !SayCheese::Utils::is_valid_scheme( $url ) ) {
         warn "WARN: $url is invalid scheme.\n";
-        warn "WARN: finish saycheese\n\n";
+        warn "WARN: Finish saycheese\n\n";
         return FAILURE;
     }
 
-    ## valid extension?
+    # valid extension?
     if ( !SayCheese::Utils::is_valid_extension( $url ) ) {
         warn "WARN: $url is invalid extension.\n";
-        warn "WARN: finish saycheese\n\n";
+        warn "WARN: Finish saycheese\n\n";
         return FAILURE;
     }
 
-    ## finished?
+    # finished?
     my $api = SayCheese::API::Thumbnail->new;
-    my $obj = $api->find_by_url( $url );
-    if ( $obj ) {
+    my $obj = $api->find_by_url($url);
+    if ($obj) {
         warn sprintf qq{INFO: %s exists as id %d.\n}, $obj->url, $obj->id;
         if ( $obj->is_finished ) {
-            warn sprintf qq{INFO: %s is already finished as id %d.\n},
-                $obj->url, $obj->id;
-            warn "INFO: finish saycheesel\n\n";
+            warn sprintf qq{INFO: %s is already finished.\n}, $obj->url;
+            warn "INFO: Finish saycheesel\n\n";
             return $obj->id;
         }
     }
 
-    ## URL exists?
-    warn "INFO: fetching document $url\n";
+    # URL exists?
+    warn "INFO: Fetching document $url\n";
     my $res = $self->user_agent->get( $url );
     if ( !$res->is_success ) {
         warn sprintf qq{ERROR: %s.\n}, $res->status_line;
-        warn "INFO: finish saycheese\n\n";
+        warn "INFO: Finish saycheese\n\n";
         return FAILURE;
     }
 
-    ## open URL
+    # open URL
     my $r1 = $self->open_url( $url );
     if ( $r1 ) {
-        warn "ERROR: Can't open url, open_url() returned $r1.\n";
-        warn "WARN: finish saycheese\n\n";
+        warn "ERROR: Can't open URL, open_url() returned $r1.\n";
+        warn "WARN: Finish saycheese\n\n";
         return FAILURE;
     }
-    warn "INFO: rendering $url\n";
+    warn "INFO: Rendering $url\n";
     $self->wait;
 
-    ## make original size thumbnail
+    # make original size thumbnail
     my $r2 = $self->import_display;
     if ( $r2 ) {
         warn "ERROR: Can't import, import_display() returned $r2.\n";
-        warn "WARN: finish  saycheese\n\n";
+        warn "WARN: Finish  saycheese\n\n";
         return FAILURE;
     }
 
     my $now = SayCheese::DateTime->now;
-    $obj = $api->create( {
-        created_on  => $now                         || undef,
-        modified_on => $now                         || undef,
-        url         => $url                         || undef,
-        digest      => Digest::MD5::md5_hex( $url ) || undef,
-    }, { key => 'unique_url' } );
-    warn sprintf qq{INFO: create thumbnail:%s as id %d.\n}, $obj->url, $obj->id;
+    $obj = $api->create(
+        {
+            created_on  => $now                       || undef,
+            modified_on => $now                       || undef,
+            url         => $url                       || undef,
+            digest      => Digest::MD5::md5_hex($url) || undef,
+        },
+        { key => 'unique_url' }
+    );
+    warn sprintf qq{INFO: Create thumbnail %s as id %d.\n}, $obj->url,
+        $obj->id;
 
-    ## make thumbnails
+    # make thumbnails
     $self->create_img( path => $self->tmpfile_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
     $self->write_thumbnail( path => $obj->original_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
     $self->write_thumbnail( path => $obj->large_path,    width => LARGE_WIDTH,    height => LARGE_HEIGHT    );
@@ -153,15 +154,15 @@ sub saycheese {
     $self->unlink_tmpfile;
     $self->saycheese_free;
 
-    ## return id, or FAILURE(0)
-    if ( $obj ) {
-        $obj->is_finished( 1 );
+    # return thumbnail id, or FAILURE(0)
+    if ($obj) {
+        $obj->is_finished(1);
         $obj->update;
-        warn "INFO: finish saycheese\n\n";
+        warn "INFO: Finish saycheese\n\n";
         return $obj->id;
     }
     else {
-        warn "ERROR: finish saycheese\n\n";
+        warn "ERROR: Finish saycheese\n\n";
         return FAILURE;
     }
 }
@@ -177,8 +178,8 @@ sub tmpfile {
         return $self->{tmpfile};
     }
     else {
-        $self->{tmpfile}
-            = sprintf q{%d-%d.%s}, time, $$, $self->config->{thumbnail}->{extension};
+        $self->{tmpfile} = sprintf q{%d-%d.%s}, time, $$,
+            $self->config->{thumbnail}->{extension};
         return $self->{tmpfile};
     }
 }
@@ -208,7 +209,7 @@ sub unlink_tmpfile {
 sub wait {
     my $self = shift;
 
-    warn sprintf "INFO: wait... %d seconds\n", $self->{wait};
+    warn sprintf "INFO: Wait %d seconds...\n", $self->{wait};
     sleep $self->{wait};
 }
 
@@ -220,7 +221,7 @@ sub open_url {
     my ( $self, $url ) = @_;
 
     my $cmd = sprintf q{%s -remote "openURL(%s)"}, $self->browser, $url;
-    warn "INFO: execute command $cmd\n";
+    warn "INFO: Execute command $cmd\n";
 
     return system $cmd;
 }
@@ -234,7 +235,7 @@ sub import_display {
 
     my $cmd = sprintf "import -display %s -window root -silent %s",
         $ENV{DISPLAY}, $self->tmpfile_path;
-    warn "INFO: execute command $cmd\n";
+    warn "INFO: Execute command $cmd\n";
 
     return system $cmd;
 }
@@ -251,8 +252,13 @@ sub create_img {
     my $img = Image::Magick->new;
     $img->Read( $args{path} );
     $img->Set( quality => $args{quality} );
-    $img->Crop( width => $args{width}, height => $args{height}, x => 7, y => 116 );
-    $self->img( $img );
+    $img->Crop(
+        width  => $args{width},
+        height => $args{height},
+        x      => 7,
+        y      => 116
+    );
+    $self->img($img);
 }
 
 =head2 write_thumbnail
@@ -265,17 +271,8 @@ sub write_thumbnail {
     my $clone = $self->img->Clone;
     $clone->Scale( width => $args{width}, height => $args{height} );
     $clone->Write( $args{path} );
-    warn sprintf qq{INFO: writing thumbnail (%d x %d), %s.\n},
+    warn sprintf qq{INFO: Writing thumbnail (%d x %d), %s.\n},
         $args{width}, $args{height}, $args{path};
-}
-
-=head2 create_thumbnail
-
-=cut
-
-sub create_thumbnail {
-    my $self = shift;
-
 }
 
 =head2 saycheese_free
@@ -285,9 +282,9 @@ sub create_thumbnail {
 sub saycheese_free {
     my $self = shift;
 
-    warn "INFO: clean up img(), tmpfile().\n";
-    $self->img( undef );
-    $self->tmpfile( undef );
+    warn "INFO: Clean up img(), tmpfile().\n";
+    $self->img(undef);
+    $self->tmpfile(undef);
 }
 
 =head1 AUTHOR

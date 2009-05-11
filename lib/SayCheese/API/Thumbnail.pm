@@ -2,15 +2,17 @@ package SayCheese::API::Thumbnail;
 
 use Moose;
 use SayCheese::Config;
+use SayCheese::Constants qw( ROWS );
 
-has 'moniker' => (
-    is       => 'ro',
-    isa      => 'Str',
-    required => 1,
+with 'SayCheese::API::DBIC::Schema';
+
+has '+moniker' => (
     default  => 'Thumbnail',
 );
 
-with 'SayCheese::API::DBIC::Schema';
+#__PACKAGE__->meta->make_immutable;
+
+no Moose;
 
 =head1 NAME
 
@@ -53,7 +55,7 @@ sub index_thumbnails {
         {%wheres},
         {
             order_by => 'id DESC',
-            rows     => $attrs->{rows} || 20,
+            rows     => $attrs->{rows} || ROWS,
             page     => $attrs->{page} || 1,
         },
     );
@@ -70,4 +72,4 @@ it under the same terms as Perl itself.
 
 =cut
 
-#__PACKAGE__->meta->make_immutable;
+1;

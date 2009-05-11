@@ -5,6 +5,12 @@ use Moose::Role;
 use SayCheese::Schema;
 use SayCheese::Utils qw();
 
+has 'moniker' => (
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
+);
+
 has 'schema' => (
     is      => 'ro',
     isa     => 'SayCheese::Schema',
@@ -14,7 +20,6 @@ has 'schema' => (
         return $schema;
     },
 );
-
 no Moose::Role;
 
 =head1 NAME

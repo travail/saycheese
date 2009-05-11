@@ -3,6 +3,8 @@ package SayCheese::DateTime;
 use strict;
 use warnings;
 use DateTime;
+use DateTime::Format::HTTP;
+use DateTime::Format::MySQL;
 use SayCheese::Config;
 
 =head1 NAME
@@ -113,6 +115,55 @@ sub from_day_of_year {
     my $self = DateTime->from_day_of_year( %args );
 
     return $self;
+}
+
+=head2 parse_http
+
+=cut
+
+sub parse_http {
+    my ( $class, $str ) = @_;
+
+    my $dt = DateTime::Format::HTTP->parse_datetime($str);
+
+    return $dt;
+}
+
+=head2 format_http
+
+=cut
+
+sub format_http {
+    my ( $class, $dt ) = @_;
+
+    my $str = DateTime::Format::HTTP->format_datetime($dt);
+
+    return $str;
+}
+
+=head2 parse_mysql
+
+=cut
+
+sub parse_mysql {
+    my ( $class, $str ) = @_;
+
+    $str =~ s{T}{ };
+    my $dt = DateTime::Format::MySQL->parse_datetime($str);
+
+    return $dt;
+}
+
+=head2 format_mysql
+
+=cut
+
+sub format_mysql {
+    my ( $class, $dt ) = @_;
+
+    my $str = DateTime::Format::MySQL->format_datetime($dt);
+
+    return $str;
 }
 
 =head1 AUTHOR

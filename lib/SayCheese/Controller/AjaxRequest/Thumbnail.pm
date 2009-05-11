@@ -6,6 +6,7 @@ use parent 'Catalyst::Controller';
 use DateTime::Format::HTTP;
 use Storable qw();
 use SayCheese::API::Thumbnail;
+use SayCheese::Constants qw( CACHE_FOR );
 use SayCheese::DateTime;
 use SayCheese::FileHandle;
 use SayCheese::Gearman::Client;
@@ -111,26 +112,82 @@ sub search_url : Path('search_url') : Args(0) {
     $c->output_file;
 }
 
+=head original
+
+Returns original size thumbnail.
+
+=cut
+
+sub original : PathPart('original') Chained('') Args() {
+    my ( $self, $c ) = @_;
+
+    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    $c->res->content_type(qw( image/jpeg image/gif image/png ));
+    $c->stash->{template} = 'include/thumbnail.inc';
+    if ($thumbnail) {
+        $c->log->info('*** Cache Hit! ***');
+        $c->stash->{thumbnail} = $thumbnail;
+        $c->output_file;
+        $c->http_cache(
+            content_type   => 'image/jpeg',
+            content_length => length $c->res->body
+        );
+    }
+    else {
+        $c->log->info('*** Cache Not Hit... ***');
+        my $url = $c->req->uri->path_query;
+        $url =~ s{^/original/}{};
+        $url = SayCheese::Utils::unescape_uri($url);
+        my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'original' );
+        if ( !-e $thumbpath ) {
+            $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
+            my $api = SayCheese::API::Thumbnail->new;
+            my $obj = $api->find_by_url_like($url);
+            $thumbpath = $obj->original_path if $obj;
+        }
+        if ( -e $thumbpath ) {
+            $c->log->info("*** Thumbnail Found! $thumbpath ***");
+            $thumbnail = $c->slurp_thumbnail($thumbpath);
+            $c->stash->{thumbnail} = $thumbnail;
+            $c->output_file;
+            $c->http_cache(
+                content_type   => 'image/jpeg',
+                content_length => length $c->res->body
+            );
+            $c->cache->set( $c->req->uri->path_query, $thumbnail );
+        }
+        else {
+            $c->forward( 'no_image', [qw( medium )] );
+        }
+    }
+}
+
 =head large
 
 Returns large size thumbnail.
 
 =cut
 
-sub large : PathPart('large') Chained('') Args(0) {
+sub large : PathPart('large') Chained('') Args() {
     my ( $self, $c ) = @_;
 
-    my $url = $c->req->uri->path_query;
-    $url =~ s{^/large/}{};
-    $url = SayCheese::Utils::unescape_uri($url);
-
-    my $thumbnail = $c->cache->get($url);
+    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    $c->res->content_type(qw( image/jpeg image/gif image/png ));
+    $c->stash->{template} = 'include/thumbnail.inc';
     if ($thumbnail) {
         $c->log->info('*** Cache Hit! ***');
-        $c->forward( 'set_http_header', [ length($thumbnail) ] );
+        $c->stash->{thumbnail} = $thumbnail;
+        $c->output_file;
+        $c->http_cache(
+            content_type   => 'image/jpeg',
+            content_length => length $c->res->body
+        );
     }
     else {
         $c->log->info('*** Cache Not Hit... ***');
+        my $url = $c->req->uri->path_query;
+        $url =~ s{^/large/}{};
+        $url = SayCheese::Utils::unescape_uri($url);
         my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'large' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
@@ -141,15 +198,18 @@ sub large : PathPart('large') Chained('') Args(0) {
         if ( -e $thumbpath ) {
             $c->log->info("*** Thumbnail Found! $thumbpath ***");
             $thumbnail = $c->slurp_thumbnail($thumbpath);
-            $c->cache->set( $url, $thumbnail );
-            $c->forward( 'set_http_header', [ length($thumbnail) ] );
+            $c->stash->{thumbnail} = $thumbnail;
+            $c->output_file;
+            $c->http_cache(
+                content_type   => 'image/jpeg',
+                content_length => length $c->res->body
+            );
+            $c->cache->set( $c->req->uri->path_query, $thumbnail );
         }
         else {
-            $thumbnail = $c->no_image('medium');
+            $c->forward( 'no_image', [qw( medium )] );
         }
     }
-
-    $c->forward( 'post_process', [$thumbnail] );
 }
 
 =head medium
@@ -158,20 +218,26 @@ Returns medium size thumbnail.
 
 =cut
 
-sub medium : PathPart('medium') Chained('') Args(0) {
+sub medium : PathPart('medium') Chained('') Args() {
     my ( $self, $c ) = @_;
 
-    my $url = $c->req->uri->path_query;
-    $url =~ s{^/medium/}{};
-    $url = SayCheese::Utils::unescape_uri($url);
-
-    my $thumbnail = $c->cache->get($url);
+    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    $c->res->content_type(qw( image/jpeg image/gif image/png ));
+    $c->stash->{template} = 'include/thumbnail.inc';
     if ($thumbnail) {
         $c->log->info('*** Cache Hit! ***');
-        $c->forward( 'set_http_header', [ length($thumbnail) ] );
+        $c->stash->{thumbnail} = $thumbnail;
+        $c->output_file;
+        $c->http_cache(
+            content_type   => 'image/jpeg',
+            content_length => length $c->res->body
+        );
     }
     else {
         $c->log->info('*** Cache Not Hit... ***');
+        my $url = $c->req->uri->path_query;
+        $url =~ s{^/medium/}{};
+        $url = SayCheese::Utils::unescape_uri($url);
         my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'medium' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
@@ -182,15 +248,18 @@ sub medium : PathPart('medium') Chained('') Args(0) {
         if ( -e $thumbpath ) {
             $c->log->info("*** Thumbnail Found! $thumbpath ***");
             $thumbnail = $c->slurp_thumbnail($thumbpath);
-            $c->cache->set( $url, $thumbnail );
-            $c->forward( 'set_http_header', [ length($thumbnail) ] );
+            $c->stash->{thumbnail} = $thumbnail;
+            $c->output_file;
+            $c->http_cache(
+                content_type   => 'image/jpeg',
+                content_length => length $c->res->body
+            );
+            $c->cache->set( $c->req->uri->path_query, $thumbnail );
         }
         else {
-            $thumbnail = $c->no_image('medium');
+            $c->forward( 'no_image', [qw( medium )] );
         }
     }
-
-    $c->forward( 'post_process', [$thumbnail] );
 }
 
 =head small
@@ -199,20 +268,26 @@ Returns small size thumbnail.
 
 =cut
 
-sub small : PathPart('small') Chained('') Args(0) {
+sub small : PathPart('small') Chained('') Args() {
     my ( $self, $c ) = @_;
 
-    my $url = $c->req->uri->path_query;
-    $url =~ s{^/small/}{};
-    $url = SayCheese::Utils::unescape_uri($url);
-
-    my $thumbnail = $c->cache->get($url);
+    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    $c->res->content_type(qw( image/jpeg image/gif image/png ));
+    $c->stash->{template} = 'include/thumbnail.inc';
     if ($thumbnail) {
         $c->log->info('*** Cache Hit! ***');
-        $c->forward( 'set_http_header', [ length($thumbnail) ] );
+        $c->stash->{thumbnail} = $thumbnail;
+        $c->output_file;
+        $c->http_cache(
+            content_type   => 'image/jpeg',
+            content_length => length $c->res->body
+        );
     }
     else {
         $c->log->info('*** Cache Not Hit... ***');
+        my $url = $c->req->uri->path_query;
+        $url =~ s{^/small/}{};
+        $url = SayCheese::Utils::unescape_uri($url);
         my $thumbpath = SayCheese::Utils::url2thumbpath( $url, 'small' );
         if ( !-e $thumbpath ) {
             $c->log->info("*** Thumbnail Not Found... $thumbpath ***");
@@ -223,60 +298,32 @@ sub small : PathPart('small') Chained('') Args(0) {
         if ( -e $thumbpath ) {
             $c->log->info("*** Thumbnail Found! $thumbpath ***");
             $thumbnail = $c->slurp_thumbnail($thumbpath);
-            $c->cache->set( $url, $thumbnail );
-            $c->forward( 'set_http_header', [ length($thumbnail) ] );
+            $c->stash->{thumbnail} = $thumbnail;
+            $c->output_file;
+            $c->http_cache(
+                content_type   => 'image/jpeg',
+                content_length => length $c->res->body
+            );
+            $c->cache->set( $c->req->uri->path_query, $thumbnail );
         }
         else {
-            $thumbnail = $c->no_image('small');
+            $c->forward( 'no_image', [qw( small )] );
         }
     }
-
-    $c->forward( 'post_process', [$thumbnail] );
 }
 
-=head2 post_process
+=head2 no_image
 
-Post Processor. Set Content-Type, stash 'thumbnail.inc' and thumbnail, and out put file.
+Returns NO IMAGE.
 
 =cut
 
-sub post_process :Private {
-    my ( $self, $c, $thumbnail ) = @_;
+sub no_image : Private {
+    my ( $self, $c, $size ) = @_;
 
-    $c->forward('set_content_type');
-    $c->stash->{template}  = 'include/thumbnail.inc';
-    $c->stash->{thumbnail} = $thumbnail;
+    $c->stash->{template} = 'include/thumbnail.inc';
+    $c->stash->{thumbnail} = $c->no_image($size);
     $c->output_file;
-}
-
-=head2 set_http_header
-
-Set Expires, Last-Modified, Content-Length for cache
-
-=cut
-
-sub set_http_header : Private {
-    my ( $self, $c, $content_length ) = @_;
-
-    my $now = SayCheese::DateTime->now;
-    my $exp = $now->clone->add( seconds => $c->config->{cache}->{expires} );
-    $c->res->headers->header(
-        'Expires'        => DateTime::Format::HTTP->format_datetime($exp),
-        'Last-Modified'  => DateTime::Format::HTTP->format_datetime($now),
-        'Content-Length' => $content_length,
-    );
-}
-
-=head2 set_content_type
-
-Set Contet-Type for image
-
-=cut
-
-sub set_content_type :Private {
-    my ( $self, $c ) = @_;
-
-    $c->res->content_type( qw( image/jpeg image/gif image/png ) );
 }
 
 =head1 AUTHOR

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use parent 'Catalyst::Controller';
 use SayCheese::API::Thumbnail;
-use SayCheese::Constants;
+use SayCheese::Constants qw( ROWS );
 
 #
 # Sets the actions in this controller to be registered with no prefix
@@ -39,7 +39,7 @@ sub index : Path : Args(0) {
     my $iter_thumbnail = $api->index_thumbnails(
         { url => $url || undef },
         {
-            rows => $rows || 20,
+            rows => $rows || ROWS,
             page => $page || 1,
         }
     );

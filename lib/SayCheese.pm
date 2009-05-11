@@ -2,9 +2,10 @@ package SayCheese;
 
 use strict;
 use warnings;
-use NEXT;
 
-use Catalyst::Runtime '5.80';
+use Catalyst::Runtime;
+use SayCheese::Constants qw( CACHE_FOR );
+use SayCheese::DateTime;
 
 # Set flags and add plugins for the application
 #
@@ -87,6 +88,27 @@ sub output_json {
     $c->load_template( $args{file} ) if $args{file};
     my $method = $args{detach} ? 'detach' : 'forward';
     $c->$method('View::JSON');
+}
+
+=head2 http_cache
+
+=cut
+
+sub http_cache {
+    my ( $c, %args ) = @_;
+
+    my $content_type   = $args{content_type}   || 'text/html';
+    my $content_length = $args{content_length} || 0;
+    my $expires        = $args{expires}        || CACHE_FOR;
+
+    my $now = SayCheese::DateTime->now;
+    my $exp = $now->clone->add( seconds => $expires );
+    $c->res->content_type($content_type);
+    $c->res->headers->header(
+        'Expires'        => SayCheese::DateTime->format_http($exp),
+        'Last-Modified'  => SayCheese::DateTime->format_http($now),
+        'Content-Length' => $content_length,
+    );
 }
 
 sub use_stats {1}
