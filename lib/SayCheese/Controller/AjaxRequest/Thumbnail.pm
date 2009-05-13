@@ -1,8 +1,9 @@
 package SayCheese::Controller::AjaxRequest::Thumbnail;
 
-use strict;
-use warnings;
-use parent 'Catalyst::Controller';
+use Moose;
+BEGIN { extends 'Catalyst::Controller' }
+no Moose;
+
 use DateTime::Format::HTTP;
 use Storable qw();
 use SayCheese::API::Thumbnail;
@@ -49,14 +50,11 @@ sub create : Path('create') : Args(0) {
 
     my $api = SayCheese::API::Thumbnail->new;
     my $obj = $api->find_by_url($url);
-    if ($obj) {
-        ## nothing to do.
-    }
-    else {
+    if ( !$obj ) {
         my $client = SayCheese::Gearman::Client->new;
         my $id     = $client->do_task( 'saycheese',
             Storable::freeze( { url => $url } ), {} );
-        $obj = $api->find($$id);
+        $obj = $api->find($$id) if $$id;
     }
 
     $c->stash->{json_data} = $obj ? $obj->as_hashref : {};
@@ -121,17 +119,11 @@ Returns original size thumbnail.
 sub original : PathPart('original') Chained('') Args() {
     my ( $self, $c ) = @_;
 
-    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
-    $c->res->content_type(qw( image/jpeg image/gif image/png ));
-    $c->stash->{template} = 'include/thumbnail.inc';
+#    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    my $thumbnail = '';
     if ($thumbnail) {
         $c->log->info('*** Cache Hit! ***');
-        $c->stash->{thumbnail} = $thumbnail;
-        $c->output_file;
-        $c->http_cache(
-            content_type   => 'image/jpeg',
-            content_length => length $c->res->body
-        );
+        $c->output_thumbnail($thumbnail);
     }
     else {
         $c->log->info('*** Cache Not Hit... ***');
@@ -148,16 +140,11 @@ sub original : PathPart('original') Chained('') Args() {
         if ( -e $thumbpath ) {
             $c->log->info("*** Thumbnail Found! $thumbpath ***");
             $thumbnail = $c->slurp_thumbnail($thumbpath);
-            $c->stash->{thumbnail} = $thumbnail;
-            $c->output_file;
-            $c->http_cache(
-                content_type   => 'image/jpeg',
-                content_length => length $c->res->body
-            );
-            $c->cache->set( $c->req->uri->path_query, $thumbnail );
+            $c->output_thumbnail($thumbnail);
+#            $c->cache->set( $c->req->uri->path_query, $thumbnail );
         }
         else {
-            $c->forward( 'no_image', [qw( medium )] );
+            $c->output_no_image( size => 'medium' );
         }
     }
 }
@@ -171,17 +158,11 @@ Returns large size thumbnail.
 sub large : PathPart('large') Chained('') Args() {
     my ( $self, $c ) = @_;
 
-    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
-    $c->res->content_type(qw( image/jpeg image/gif image/png ));
-    $c->stash->{template} = 'include/thumbnail.inc';
+#    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    my $thumbnail = '';
     if ($thumbnail) {
         $c->log->info('*** Cache Hit! ***');
-        $c->stash->{thumbnail} = $thumbnail;
-        $c->output_file;
-        $c->http_cache(
-            content_type   => 'image/jpeg',
-            content_length => length $c->res->body
-        );
+        $c->output_thumbnail($thumbnail);
     }
     else {
         $c->log->info('*** Cache Not Hit... ***');
@@ -198,16 +179,11 @@ sub large : PathPart('large') Chained('') Args() {
         if ( -e $thumbpath ) {
             $c->log->info("*** Thumbnail Found! $thumbpath ***");
             $thumbnail = $c->slurp_thumbnail($thumbpath);
-            $c->stash->{thumbnail} = $thumbnail;
-            $c->output_file;
-            $c->http_cache(
-                content_type   => 'image/jpeg',
-                content_length => length $c->res->body
-            );
-            $c->cache->set( $c->req->uri->path_query, $thumbnail );
+            $c->output_thumbnail($thumbnail);
+#            $c->cache->set( $c->req->uri->path_query, $thumbnail );
         }
         else {
-            $c->forward( 'no_image', [qw( medium )] );
+            $c->output_no_image( size => 'medium' );
         }
     }
 }
@@ -221,17 +197,11 @@ Returns medium size thumbnail.
 sub medium : PathPart('medium') Chained('') Args() {
     my ( $self, $c ) = @_;
 
-    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
-    $c->res->content_type(qw( image/jpeg image/gif image/png ));
-    $c->stash->{template} = 'include/thumbnail.inc';
+#    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    my $thumbnail = '';
     if ($thumbnail) {
         $c->log->info('*** Cache Hit! ***');
-        $c->stash->{thumbnail} = $thumbnail;
-        $c->output_file;
-        $c->http_cache(
-            content_type   => 'image/jpeg',
-            content_length => length $c->res->body
-        );
+        $c->output_thumbnail($thumbnail);
     }
     else {
         $c->log->info('*** Cache Not Hit... ***');
@@ -248,16 +218,11 @@ sub medium : PathPart('medium') Chained('') Args() {
         if ( -e $thumbpath ) {
             $c->log->info("*** Thumbnail Found! $thumbpath ***");
             $thumbnail = $c->slurp_thumbnail($thumbpath);
-            $c->stash->{thumbnail} = $thumbnail;
-            $c->output_file;
-            $c->http_cache(
-                content_type   => 'image/jpeg',
-                content_length => length $c->res->body
-            );
-            $c->cache->set( $c->req->uri->path_query, $thumbnail );
+            $c->output_thumbnail($thumbnail);
+#            $c->cache->set( $c->req->uri->path_query, $thumbnail );
         }
         else {
-            $c->forward( 'no_image', [qw( medium )] );
+            $c->output_no_image( size => 'medium' );
         }
     }
 }
@@ -271,17 +236,11 @@ Returns small size thumbnail.
 sub small : PathPart('small') Chained('') Args() {
     my ( $self, $c ) = @_;
 
-    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
-    $c->res->content_type(qw( image/jpeg image/gif image/png ));
-    $c->stash->{template} = 'include/thumbnail.inc';
-    if ($thumbnail) {
+#    my $thumbnail = $c->cache->get( $c->req->uri->path_query );
+    my $thumbnail = '';
+    if ( $thumbnail ) {
         $c->log->info('*** Cache Hit! ***');
-        $c->stash->{thumbnail} = $thumbnail;
-        $c->output_file;
-        $c->http_cache(
-            content_type   => 'image/jpeg',
-            content_length => length $c->res->body
-        );
+        $c->output_thumbnail($thumbnail);
     }
     else {
         $c->log->info('*** Cache Not Hit... ***');
@@ -298,32 +257,13 @@ sub small : PathPart('small') Chained('') Args() {
         if ( -e $thumbpath ) {
             $c->log->info("*** Thumbnail Found! $thumbpath ***");
             $thumbnail = $c->slurp_thumbnail($thumbpath);
-            $c->stash->{thumbnail} = $thumbnail;
-            $c->output_file;
-            $c->http_cache(
-                content_type   => 'image/jpeg',
-                content_length => length $c->res->body
-            );
-            $c->cache->set( $c->req->uri->path_query, $thumbnail );
+            $c->output_thumbnail($thumbnail);
+#            $c->cache->set( $c->req->uri->path_query, $thumbnail );
         }
         else {
-            $c->forward( 'no_image', [qw( small )] );
+            $c->output_no_image( size => 'small' );
         }
     }
-}
-
-=head2 no_image
-
-Returns NO IMAGE.
-
-=cut
-
-sub no_image : Private {
-    my ( $self, $c, $size ) = @_;
-
-    $c->stash->{template} = 'include/thumbnail.inc';
-    $c->stash->{thumbnail} = $c->no_image($size);
-    $c->output_file;
 }
 
 =head1 AUTHOR

@@ -1,9 +1,9 @@
 package SayCheese;
 
-use strict;
-use warnings;
+use Moose;
+use Catalyst;
+extends 'Catalyst';
 
-use Catalyst::Runtime;
 use SayCheese::Constants qw( CACHE_FOR );
 use SayCheese::DateTime;
 
@@ -15,12 +15,8 @@ use SayCheese::DateTime;
 # Static::Simple: will serve static files from the application's root 
 #                 directory
 
-use Catalyst qw(
-    ConfigLoader
-    Cache::Memcached::Fast
-    FillInForm
-    +SayCheese::Plugin::NoImage
-);
+#use Catalyst qw(
+#);
 
 our $VERSION = '0.01';
 
@@ -33,10 +29,16 @@ our $VERSION = '0.01';
 # with a external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( 'Plugin::ConfigLoader' => { file => __PACKAGE__->path_to('etc/conf/') } );
+__PACKAGE__->config(
+    'Plugin::ConfigLoader' => { file => __PACKAGE__->path_to('etc/conf/') } );
 
 # Start the application
-__PACKAGE__->setup;
+__PACKAGE__->setup(qw(
+    ConfigLoader
+    FillInForm
+    +SayCheese::Plugin::NoImage
+));
+#    Cache::Memcached::Fast
 
 =head2 slurp_thumnail
 
@@ -88,6 +90,47 @@ sub output_json {
     $c->load_template( $args{file} ) if $args{file};
     my $method = $args{detach} ? 'detach' : 'forward';
     $c->$method('View::JSON');
+}
+
+=head2 output_thumbnail
+
+=cut
+
+sub output_thumbnail {
+    my ( $c, $thumbnail ) = @_;
+
+    $c->res->body($thumbnail);
+    $c->http_cache(
+        content_type   => 'image/jpeg',
+        content_length => length $c->res->body
+    );
+}
+
+=head2 output_no_image
+
+Returns NO IMAGE.
+
+=cut
+
+sub output_no_image {
+    my ( $c, %args ) = @_;
+
+    $c->res->body( $c->no_image( $args{size} ) );
+    $c->res->content_type('image/jpeg');
+    $c->res->status(404);
+}
+
+=head2 not_found
+
+Returns 404
+
+=cut
+
+sub not_found {
+    my $c = shift;
+
+    $c->res->status(404);
+    $c->output_file(file => 'not_found.tt');
 }
 
 =head2 http_cache

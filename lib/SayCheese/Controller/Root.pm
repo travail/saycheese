@@ -1,8 +1,9 @@
 package SayCheese::Controller::Root;
 
-use strict;
-use warnings;
-use parent 'Catalyst::Controller';
+use Moose;
+BEGIN { extends 'Catalyst::Controller' }
+no Moose;
+
 use SayCheese::API::Thumbnail;
 use SayCheese::Constants qw( ROWS );
 
@@ -24,12 +25,11 @@ SayCheese::Controller::Root - Root Controller for SayCheese
 
 =cut
 
-
 =head2 default
 
 =cut
 
-sub index : Path : Args(0) {
+sub index : Path('/') {
     my ( $self, $c ) = @_;
 
     my $url  = $c->req->param('url')  || '';
@@ -57,8 +57,7 @@ sub default : Private {
 
     $c->log->info('*** SayCheese::Controller::Root::default ***');
 
-    $c->load_template('index.tt');
-    $c->forward('index');
+    $c->not_found;
 }
 
 =head2 render
@@ -70,7 +69,7 @@ sub render : ActionClass('RenderView') {
 
     $c->log->info('*** SayCheese::Controller::Root::render ***');
 
-    $c->load_template unless $c->stash->{template};
+    $c->load_template if !$c->stash->{template};
 }
 
 =head2 end
