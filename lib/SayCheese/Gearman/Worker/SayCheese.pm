@@ -209,7 +209,7 @@ sub unlink_tmpfile {
 sub wait {
     my $self = shift;
 
-    warn sprintf {INFO: Wait %d seconds...\n}, $self->{wait};
+    warn sprintf qq{INFO: Wait %d seconds...\n}, $self->{wait};
     sleep $self->{wait};
 }
 
