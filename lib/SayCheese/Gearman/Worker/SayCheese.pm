@@ -13,7 +13,7 @@ use SayCheese::Constants;
 use SayCheese::DateTime;
 use SayCheese::UserAgent;
 
-__PACKAGE__->mk_accessors(qw( browser config debug user_agent img ));
+__PACKAGE__->mk_accessors(qw( browser config debug thumbnail user_agent img ));
 __PACKAGE__->functions( [qw( saycheese )] );
 
 =head1 NAME
@@ -94,7 +94,7 @@ sub saycheese {
     }
 
     # finished?
-    my $obj = $self->thumbnail->find_by_url($url);
+    my $obj = $self->{thumbnail}->find_by_url($url);
     if ($obj) {
         warn sprintf qq{INFO: %s exists as id %d\n}, $obj->url, $obj->id;
         if ( $obj->is_finished ) {
@@ -132,7 +132,7 @@ sub saycheese {
     }
 
     my $now = SayCheese::DateTime->now;
-    $obj = $self->thumbnail->create(
+    $obj = $self->{thumbnail}->create(
         {
             created_on  => $now                       || undef,
             modified_on => $now                       || undef,
