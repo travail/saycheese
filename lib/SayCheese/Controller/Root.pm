@@ -33,14 +33,14 @@ sub index : Path('/') {
     my ( $self, $c ) = @_;
 
     my $url  = $c->req->param('url')  || '';
-    my $rows = $c->req->param('rows') || '';
-    my $page = $c->req->param('page') || '';
+    my $rows = $c->req->param('rows') || ROWS;
+    my $page = $c->req->param('page') || 1;
     my $api  = SayCheese::API::Thumbnail->new;
     my $iter_thumbnail = $api->index_thumbnails(
-        { url => $url || undef },
+        { url => $url },
         {
-            rows => $rows || ROWS,
-            page => $page || 1,
+            rows => $rows,
+            page => $page,
         }
     );
 
