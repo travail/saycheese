@@ -9,7 +9,6 @@ use Storable qw();
 use SayCheese::API::Thumbnail;
 use SayCheese::Constants qw( CACHE_FOR );
 use SayCheese::DateTime;
-use SayCheese::FileHandle;
 use SayCheese::Gearman::Client;
 use SayCheese::UserAgent;
 use SayCheese::Utils qw();

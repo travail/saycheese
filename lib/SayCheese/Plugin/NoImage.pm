@@ -3,7 +3,7 @@ package SayCheese::Plugin::NoImage;
 use strict;
 use warnings;
 use base 'Class::Data::Inheritable';
-use SayCheese::FileHandle;
+use Path::Class::File;
 
 __PACKAGE__->mk_classdata('_large');
 __PACKAGE__->mk_classdata('_medium');
@@ -31,21 +31,20 @@ sub setup {
     my $c = shift;
 
     my $config = $c->config;
-    my ( $lfh, $mfh, $sfh );
-#    $lfh = SayCheese::FileHandle->new( $config->{no_image}->{large}, 'r' );
-    $mfh = SayCheese::FileHandle->new( $config->{no_image}->{medium}, 'r' );
-    $sfh = SayCheese::FileHandle->new( $config->{no_image}->{small}, 'r' );
+#    my $lfile  = Path::Class::File->new( $config->{no_image}->{large} );
+    my $mfile  = Path::Class::File->new( $config->{no_image}->{medium} );
+    my $sfile  = Path::Class::File->new( $config->{no_image}->{small} );
 
-    my ( $ldata, $mdata, $sdata );
-#    $ldata .= $lfh->slurp;
-    $mdata .= $mfh->slurp;
-    $sdata .= $sfh->slurp;
+    my ( $mdata, $sdata )
+        = ( $mfile->slurp, $sfile->slurp );
 
-#    __PACKAGE__->_large( $ldata );
-    __PACKAGE__->_medium( $mdata );
-    __PACKAGE__->_small( $sdata );
+    #    __PACKAGE__->_large($ldata);
+    __PACKAGE__->_medium($mdata);
+    __PACKAGE__->_small($sdata);
 
-    $c->next::method( @_ );
+    use Data::Dumper;
+    warn Dumper(__PACKAGE__->_medium);
+    $c->next::method(@_);
 }
 
 =head2 no_image

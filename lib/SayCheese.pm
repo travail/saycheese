@@ -5,6 +5,7 @@ use Catalyst;
 extends 'Catalyst';
 no Moose;
 
+use Path::Class::File;
 use SayCheese::Constants qw( CACHE_FOR );
 use SayCheese::DateTime;
 
@@ -54,8 +55,10 @@ __PACKAGE__->setup(qw(
 sub slurp_thumbnail {
     my ( $c, $path ) = @_;
 
-    my $fh = SayCheese::FileHandle->new( $path, 'r' );
-    return $fh ? $fh->slurp : undef;
+    my $file = Path::Class::File->new($path);
+    my $data = $file->slurp;
+
+    return $data;
 }
 
 =head2 load_template
