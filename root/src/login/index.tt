@@ -1,0 +1,29 @@
+[% title = 'SayCheese Login' %]
+
+<div id="content">
+<h2>[% title %]</h2>
+
+
+<form action="/login/authenticate" method="post">
+<div class="login-box">
+<dl>
+<dt>ユーザー名</dh>
+<dd><input id="login-member-id" type="text" name="member_id" size="24" value="" tabindex="1" />[% c.form_messages('member_id').0 %]</dd>
+<dt>パスワード</dt>
+<dd><input id="login-password" type="password" name="password" size="24" value="" tabindex="2" />[% c.form_messages('password').0 %]</dd>
+<dt><a href="/password/forget">パスワードを忘れてしまった方</a></dt>
+</dl>
+</div>
+
+<div class="submit-button">
+<input id="login-submit-button" type="submit" name="none" value=" ログイン " tabindex="3" /></dd>
+</div>
+</form>
+
+<a href="/join/" tabindex="4">アカウントを作る</a>
+
+</div>
+
+<script type="text/javascript">
+  $('#login-member-id').focus();
+</script>

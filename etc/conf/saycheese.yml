@@ -1,6 +1,8 @@
 ---
 name: SayCheese
 
+using_frontend_proxy: 1
+
 default_view: TT
 
 View::JSON:
@@ -9,6 +11,26 @@ View::JSON:
   encoding: utf8
 
 service_url: http://saycheese.travail.jp/
+
+authentication:
+  default_realm: member
+  realms:
+    member:
+      credential:
+        class: Password
+        password_field: password
+        password_type: clear
+      store:
+        class: DBIx::Class
+        user_class: DBIC::SayCheese::Member
+        id_field: member_id
+
+session:
+  cookie_name: shiori_local_session
+  expires: 1314000
+  servers:
+    - 192.168.1.1:11211
+    - 192.168.1.2:11211
 
 time_zone: Asia/Tokyo
 
