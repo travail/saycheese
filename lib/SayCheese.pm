@@ -3,6 +3,7 @@ package SayCheese;
 use Moose;
 use Catalyst;
 extends 'Catalyst';
+no Moose;
 
 use SayCheese::Constants qw( CACHE_FOR );
 use SayCheese::DateTime;
@@ -35,6 +36,10 @@ __PACKAGE__->config(
 # Start the application
 __PACKAGE__->setup(qw(
     ConfigLoader
+    Session
+    Session::State::Cookie
+    Session::Store::Memcached::Fast
+    Authentication
     FillInForm
     +SayCheese::Plugin::NoImage
 ));
