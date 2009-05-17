@@ -18,7 +18,7 @@ while ( my $url = <> ) {
     }
     else {
         my $api       = SayCheese::API::Thumbnail->new;
-        my $thumbnail = $api->find_by_url($url);
+        my $thumbnail = $api->find_by_url_like($url);
         if ($thumbnail) {
             print sprintf qq{%s\n},
                 $thumbnail->thumbnail_path( size => $size );
