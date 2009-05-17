@@ -1,7 +1,7 @@
 [% pager = iter_thumbnail.pager %]
-<div>Say Cheese [% pager.total_entries %] Times!</div>
+<div>[% pager.total_entries %] thumbnails</div>
 <div class="pager">
-[% limit_page = 15 %]
+[% limit_page = 9 %]
 [% middle_page = (limit_page - 1) / 2 + 1 %]
 [% side_page = middle_page - 1 %]
 [% IF pager.current_page <= middle_page %]
@@ -22,6 +22,7 @@
 [% END %]
 [% last_page = pager.last_page %]
 [% END %]
+[% IF pager.previous_page %]<a href="/?page=[% pager.previous_page %]&url=[% c.req.param('url') %]"><span class="page-num">&lt;</span></a>[% END %]
 [% FOREACH page = [first_page .. last_page] %]
 [% IF pager.current_page == page %]
 [% class = 'active-page-num' %]
@@ -31,4 +32,5 @@
 <a href="/?page=[% page %]&url=[% c.req.param('url') %]"><span class="[% class %]">[% page %]</span></a>
 [% END %]
 [% END %]
+[% IF pager.next_page %]<a href="/?page=[% pager.next_page %]&url=[% c.req.param('url') %]"><span class="page-num">&gt;</span></a>[% END %]
 </div>

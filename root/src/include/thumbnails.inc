@@ -25,10 +25,12 @@
 <tr>
 <td>Small</td><td><a href="[% service_url %]small/[% url %]" target="_blank">[% service_url %]small/[% url %]</a></td>
 </tr>
+[% IF c.user_exists %]
 <tr>
+<td><span id="thumb-update[% id %]" class="thumb-update" onclick="if(confirm('UPDATE?')){return true;}">UPDATE</span></td>
 <td><span id="thumb-delete[% id %]" class="thumb-delete" onclick="if(confirm('DELETE?')){DeleteThumbnail([% id %])}">DELETE</span></td>
-<td><!--<span id="thumb-update[% id %]" class="thumb-update" onclick="if(confirm('UPDATE?')){UpdateThumbnail([% id %])}">UPDATE</span>--></td>
 </tr>
+[% END %]
 <tr>
 <td colspan="2"><textarea id="api_path[% id %]" cols="70" rows="4" nowrap="nowrap" readonly="readonly"><a href="[% url %]"><img src="[% service_url %]medium/[% url %]" width="200" height="150" border="0" alt="[% url %]" /></a></textarea></td>
 </tr>

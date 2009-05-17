@@ -11,26 +11,6 @@ function ShowBouncing(id,pos) {
   $(position).innerHTML = '<img width="16" height="16" src="/static/images/loading-bouncing.gif" alt="Loading..." />';
 }
 
-function UpdateThumbnail(id) {
-  new Ajax.Request('/ajaxrequest/thumbnail/update', {
-    method: 'get',
-    parameters:     '&id=' + id,
-    onCreated:      ShowBouncing(id,'thumb-update'),
-    onAccepted:     ShowBouncing(id,'thumb-update'),
-    onLoading:      ShowBouncing(id,'thumb-update'),
-    onLoaded:       ShowBouncing(id,'thumb-update'),
-    onInterractive: ShowBouncing(id,'thumb-update'),
-    onComplete:     function(request) {
-      var param = '&page=1'
-      new Ajax.Updater('thumbnails', '/ajaxrequest/thumbnail/recent_thumbnails', {
-        method: 'get',
-        parameters: param,
-        asynchronous: true
-      });
-    }.bind(this)
-  })
-}
-
 function DeleteThumbnail(id) {
   new Ajax.Request('/ajaxrequest/thumbnail/delete', {
     method: 'get',
@@ -116,13 +96,4 @@ function SearchURL(url) {
 function SelectURL(url) {
   $('form_url').value = url;
   $('search_url_results').innerHTML = '';
-}
-
-function Paging(rows, page) {
-  var param = '&rows=' + rows + '&page=' + page;
-  new Ajax.Updater('thumbnails', '/ajaxrequest/thumbnail/recent_thumbnails', {
-    method: 'get',
-    parameters: param,
-    asynchronous: true
-  });
 }

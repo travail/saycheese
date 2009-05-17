@@ -1,4 +1,4 @@
-@charset "EUC-JP";
+@charset "UTF-8";
 
 * {
   margin: 0px;
@@ -48,7 +48,6 @@ body {
 
 .sidebar {
   width: 250px;
-/*  margin-top: 300px;*/
   float: right;
 }
 
@@ -135,6 +134,27 @@ div.search-result {
   margin-top: 30px;
 }
 
+.login-box {}
+
+.login-box dl {
+  padding: 0.5em;
+}
+
+.login-box dt {
+  font-size: 1.2em;
+}
+
+.login-box dd {
+  font-size: 1.5em;
+  padding: 0 0 0.5em 0;
+}
+
+div.submit-button {
+  padding: 0.5em;
+  font-size: 1.5em;
+  text-align: center;
+}
+
 #pager {
   text-align: center;
   font-weight: bold;
@@ -149,7 +169,6 @@ span.page-num {
 
 span.active-page-num {
   padding: 0 0.3em;
-/*  background: [% site.col.error %];*/
 }
 
 .error {
@@ -161,8 +180,6 @@ span.active-page-num {
 ---------------------------------------------------- */
 #header {
   padding: 20px;
-/*  color: [% site.rgb.white %];*/
-/*  background: url(/static/images/stripe_2_2.png);*/
   text-align: center;
 }
 
