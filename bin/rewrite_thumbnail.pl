@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use FindBin qw();
 use lib "$FindBin::Bin/../lib";
+use URI;
 use SayCheese::API::Thumbnail;
 use SayCheese::Utils qw();
 
@@ -11,7 +12,8 @@ $| = 1;
 while ( my $url = <> ) {
     chomp $url;
     my $size = 'medium';
-    ( $size, $url ) = split '/', $url, 2;
+    ( $size, $url ) = split( '/', $url, 2 );
+    $url = URI->new($url)->as_string;
     my $thumbpath = SayCheese::Utils::url2thumbpath( $url, $size );
     if ( -e $thumbpath ) {
         print "$thumbpath\n";
