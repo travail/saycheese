@@ -8,11 +8,13 @@ use URI;
 use SayCheese::API::Thumbnail;
 use SayCheese::Utils qw();
 
+use constant DEFAULT_SIZE => 'medium';
+
 $| = 1;
 while ( my $url = <> ) {
     chomp $url;
-    my $size = 'medium';
-    ( $size, $url ) = split( '/', $url, 2 );
+    my $size = DEFAULT_SIZE;
+    ( $size, $url ) = split '/', $url, 2;
     $url = URI->new($url)->as_string;
     my $thumbpath = SayCheese::Utils::url2thumbpath( $url, $size );
     if ( -e $thumbpath ) {
@@ -26,7 +28,7 @@ while ( my $url = <> ) {
                 $thumbnail->thumbnail_path( size => $size );
         }
         else {
-            my $no_image_path = undef;
+            my $no_image_path = '';
             if ( $size eq 'small' ) {
                 $no_image_path = "/static/images/no_image_s.gif";
             }
