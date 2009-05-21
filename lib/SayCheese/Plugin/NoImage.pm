@@ -42,8 +42,6 @@ sub setup {
     __PACKAGE__->_medium($mdata);
     __PACKAGE__->_small($sdata);
 
-    use Data::Dumper;
-    warn Dumper(__PACKAGE__->_medium);
     $c->next::method(@_);
 }
 
