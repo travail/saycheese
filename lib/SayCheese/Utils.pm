@@ -53,21 +53,6 @@ sub digest2thumbpath {
 
     my $config = SayCheese::Config->instance->config;
     $size ||= $config->{thumbnail}->{default_size};
-    return sprintf q{%s/%s/%s/%s.%s},
-        $config->{thumbnail}->{dir}->{$size},
-        substr( $digest, 0, 1 ),
-        substr( $digest, 1, 1 ),
-        $digest,
-        $config->{thumbnail}->{extension};
-}
-
-sub digest2thumbpath2 {
-    my ( $digest, $size ) = @_;
-
-    return unless $digest;
-
-    my $config = SayCheese::Config->instance->config;
-    $size ||= $config->{thumbnail}->{default_size};
     return sprintf q{%s/%s/%s/%s/%s.%s},
         $config->{thumbnail}->{dir}->{$size},
         substr( $digest, 0, 1 ),
