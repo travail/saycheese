@@ -4,6 +4,7 @@ DEBUG: all
 name: SayCheese@local
 
 service_url: http://saycheese.local.travail.jp/
+thumb_url: http://thumb.saycheese.local.travail.jp/
 
 Model::DBIC::SayCheese:
   schema_class: SayCheese::Schema
