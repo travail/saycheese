@@ -29,7 +29,7 @@ SayCheese::Controller::Root - Root Controller for SayCheese
 
 =cut
 
-sub index : Path('/') {
+sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
     my $url  = $c->req->param('url')  || '';
