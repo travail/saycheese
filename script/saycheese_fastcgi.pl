@@ -31,7 +31,7 @@ SayCheese->run(
         pidfile => $pidfile,
         manager => $manager,
         detach  => $detach,
-	keep_stderr => $keep_stderr,
+        keep_stderr => $keep_stderr,
     }
 );
 
