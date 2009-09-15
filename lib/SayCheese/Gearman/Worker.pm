@@ -27,7 +27,7 @@ SayCheese Worker
 sub new {
     my ( $class, %args ) = @_;
 
-    Carp::Clan::croak("Np 'worker_class' specified") if !$args{worker_class};
+    Carp::Clan::croak("No 'worker_class' specified") if !$args{worker_class};
     my $self = bless {
         worker_class => $args{worker_class},
         worker       => undef,
