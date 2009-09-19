@@ -82,6 +82,9 @@ invalid_extension:
   - mp4
   - wav
   - ppt
+  - doc
 
 invalid_host:
   - youtube.com
+  - www.youtube.com
+  - www.nicovideo.jp

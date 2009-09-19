@@ -130,7 +130,7 @@ sub is_valid_scheme {
 
 =head2 is_valid_extension( $string )
 
-Returns 1 if $string is valid extension, or returns undef.
+Returns 1 if $string is valid extension, or returns 0.
 
 =cut
 
@@ -140,8 +140,7 @@ sub is_valid_extension {
     my $config = SayCheese::Config->instance->config;
     $string =~ /(.*)\.(.*)/;
 
-    return grep( {$2 eq $_} @{$config->{invalid_extension}} )
-        ? 0 : 1;
+    return grep( { lc $2 eq $_ } @{ $config->{invalid_extension} } ) ? 0 : 1;
 }
 
 =head2 appprefix
