@@ -100,6 +100,11 @@ if ( $restart ) {
         start_sub => $runner,
         argv      => \@argv,
     );
+    $SIG{TERM} = sub {
+        warn "TERM!\n";
+        $restarter->_kill_child;
+        exit;
+    };
 
     $restarter->run_and_watch;
 }
