@@ -19,7 +19,7 @@ mkdir $DAEMON_PATH/env
 cat <<'EOF' > $DAEMON_PATH/env/PATH
 /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 EOF
-cat <<'EOF' > $DAEMON_PATH/env/CRAWLER_CONFIG_LOCAL_SUFFIX
+cat <<'EOF' > $DAEMON_PATH/env/SAYCHEESE_CONFIG_LOCAL_SUFFIX
 service
 EOF
 
