@@ -7,11 +7,11 @@ use SayCheese::Config;
 
 =head1 NAME
 
-SayCheese::Client - SayCheese Client
+SayCheese::Gearman::Client - SayCheese Gearman Client
 
 =head1 DESCRIPTION
 
-SayCheese Client
+SayCheese Gearman Client
 
 =head1 METHODS
 
