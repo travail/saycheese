@@ -83,6 +83,10 @@ invalid_extension:
   - wav
   - ppt
   - doc
+  - jpg
+  - jpeg
+  - gif
+  - png
 
 invalid_host:
   - youtube.com
