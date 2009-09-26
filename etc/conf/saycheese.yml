@@ -89,6 +89,7 @@ invalid_extension:
   - png
   - zip
   - lzh
+  - pls
 
 invalid_host:
   - youtube.com
