@@ -89,6 +89,7 @@ invalid_extension:
   - png
   - zip
   - lzh
+  - dmg
   - pls
 
 invalid_host:
