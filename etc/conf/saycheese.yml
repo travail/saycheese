@@ -83,14 +83,15 @@ invalid_extension:
   - wav
   - ppt
   - doc
+  - png
   - jpg
   - jpeg
   - gif
-  - png
   - zip
   - lzh
   - dmg
   - pls
+  - swf
 
 invalid_host:
   - youtube.com
