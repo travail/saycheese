@@ -79,6 +79,17 @@ sub saycheese {
     my $url = $job->{url};
     warn "INFO: URL is $url\n";
 
+    # finished?
+    my $obj = $self->{thumbnail}->find_by_url($url);
+    if ($obj) {
+        warn sprintf qq{INFO: %s exists as id %d\n}, $obj->url, $obj->id;
+        if ( $obj->is_finished ) {
+            warn sprintf qq{INFO: %s is already finished\n}, $obj->url;
+            warn "INFO: Finish saycheese\n\n";
+            return $obj->id;
+        }
+    }
+
     # valid scheme?
     if ( !SayCheese::Utils::is_valid_scheme( $url ) ) {
         warn "WARN: $url is invalid scheme\n";
@@ -93,17 +104,6 @@ sub saycheese {
         return FAILURE;
     }
 
-    # finished?
-    my $obj = $self->{thumbnail}->find_by_url($url);
-    if ($obj) {
-        warn sprintf qq{INFO: %s exists as id %d\n}, $obj->url, $obj->id;
-        if ( $obj->is_finished ) {
-            warn sprintf qq{INFO: %s is already finished\n}, $obj->url;
-            warn "INFO: Finish saycheese\n\n";
-            return $obj->id;
-        }
-    }
-
     # URL exists?
     warn "INFO: Fetching document $url\n";
     my $res = $self->user_agent->get( $url );
@@ -113,9 +113,17 @@ sub saycheese {
         return FAILURE;
     }
 
+    # valid Conetnt-Type?
+    my $content_type = $res->headers->header('content_type');
+    if ( !SayCheese::Utils::is_valid_content_type($content_type) ) {
+        warn sprintf qq{ERROR: %s is invalid content type\n}, $content_type;
+        warn "INFO: Finish saycheese\n\n";
+        return FAILURE;
+    }
+
     # open URL
-    my $r1 = $self->open_url( $url );
-    if ( $r1 ) {
+    my $r1 = $self->open_url($url);
+    if ($r1) {
         warn "ERROR: Can't open URL, open_url() returned $r1\n";
         warn "WARN: Finish saycheese\n\n";
         return FAILURE;

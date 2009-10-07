@@ -143,6 +143,20 @@ sub is_valid_extension {
     return grep( { lc $2 eq $_ } @{ $config->{invalid_extension} } ) ? 0 : 1;
 }
 
+=head2 is_valid_content_type( $content_type )
+
+Returns 1 if $string is valid content type, or returns 0.
+
+=cut
+
+sub is_valid_content_type {
+    my $string = shift;
+
+    my $config = SayCheese::Config->instance->config;
+
+    return grep( { $string eq $_ } @{ $config->{invalid_content_type} } ) ? 0 : 1;
+}
+
 =head2 appprefix
 
 =cut
