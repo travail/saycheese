@@ -97,6 +97,7 @@ invalid_uri:
   - http://youtube.com
   - http://www.youtube.com
   - http://www.nicovideo.jp
+  - http://files.me.com
 
 invalid_content_type:
   - applications/octet-stream
