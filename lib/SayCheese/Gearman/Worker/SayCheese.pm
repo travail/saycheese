@@ -169,7 +169,8 @@ sub saycheese {
 
     $self->unlink_tmpfile;
     $self->saycheese_free;
-    $self->finish_benchmark('saycheese');
+    my $ret = $self->finish_benchmark('saycheese');
+    warn sprintf "INFO: Took %s seconds\n", $ret;
 
     # return thumbnail id, or FAILURE(0)
     if ($obj) {
