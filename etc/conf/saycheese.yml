@@ -96,6 +96,7 @@ invalid_extension:
 invalid_uri:
   - http://youtube.com
   - http://www.youtube.com
+  - http://jp.youtube.com
   - http://www.nicovideo.jp
   - http://files.me.com
 
