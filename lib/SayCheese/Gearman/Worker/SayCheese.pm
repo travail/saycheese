@@ -75,6 +75,7 @@ sub on_work {
 sub saycheese {
     my ( $self, $freezed_job ) = @_;
 
+    $self->start_benchmark('saycheese');
     my $job = Storable::thaw( $freezed_job->arg );
     my $url = $job->{url};
     warn "INFO: URL is $url\n";
@@ -168,6 +169,7 @@ sub saycheese {
 
     $self->unlink_tmpfile;
     $self->saycheese_free;
+    $self->finish_benchmark('saycheese');
 
     # return thumbnail id, or FAILURE(0)
     if ($obj) {
