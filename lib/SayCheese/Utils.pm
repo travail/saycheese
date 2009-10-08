@@ -128,6 +128,23 @@ sub is_valid_scheme {
         ? 0 : 1;
 }
 
+=head2 is_valid_uri( $string )
+
+Returns 1 if $string is valid URI, or returns undef.
+
+=cut
+
+sub is_valid_uri {
+    my $string = shift;
+
+    my $config = SayCheese::Config->instance->config;
+    foreach my $invalid ( @{ $config->{invalid_uri} } ) {
+        return 0 if $string =~ m{^$invalid};
+    }
+
+    return 1;
+}
+
 =head2 is_valid_extension( $string )
 
 Returns 1 if $string is valid extension, or returns 0.

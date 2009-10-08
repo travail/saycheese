@@ -93,10 +93,10 @@ invalid_extension:
   - pls
   - swf
 
-invalid_host:
-  - youtube.com
-  - www.youtube.com
-  - www.nicovideo.jp
+invalid_uri:
+  - http://youtube.com
+  - http://www.youtube.com
+  - http://www.nicovideo.jp
 
 invalid_content_type:
   - applications/octet-stream

@@ -97,6 +97,13 @@ sub saycheese {
         return FAILURE;
     }
 
+    # valid URI
+    if ( !SayCheese::Utils::is_valid_uri( $url ) ) {
+        warn "WARN: $url is invalid URI\n";
+        warn "WARN: Finish saycheese\n\n";
+        return FAILURE;
+    }
+
     # valid extension?
     if ( !SayCheese::Utils::is_valid_extension( $url ) ) {
         warn "WARN: $url is invalid extension\n";
