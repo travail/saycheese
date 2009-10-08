@@ -48,9 +48,19 @@ sub finish_benchmark {
     my $t0  = $self->{bm}->{$key};
     my $t1  = Time::HiRes::gettimeofday;
     my $ret = Time::HiRes::tv_interval( [$t0], [$t1] );
-    $self->reset_bm($key);
+    $self->reset_benchmark($key);
 
     return $ret;
+}
+
+=head2 reset_benchmark
+
+=cut
+
+sub reset_benchmark {
+    my ( $self, $key ) = @_;
+
+    $self->{bm}->{$key} = [];
 }
 
 =head1 AUTHOR
