@@ -9,10 +9,10 @@ Model::DBIC::SayCheese:
     - travail
 
 slave_connect_info:
-  - [ dbi:mysql:saycheese:hostname=127.0.0.1, travail, travail ]
-  - [ dbi:mysql:saycheese:hostname=192.168.1.2, travail, travail ]
-  - [ dbi:mysql:saycheese:hostname=localhost, travail, travail ]
-  - [ dbi:mysql:saycheese:hostname=mina, travail, travail ]
+  - [ 'dbi:mysql:saycheese:hostname=127.0.0.1', travail, travail ]
+  - [ 'dbi:mysql:saycheese:hostname=192.168.1.2', travail, travail ]
+  - [ 'dbi:mysql:saycheese:hostname=localhost', travail, travail ]
+  - [ 'dbi:mysql:saycheese:hostname=mina', travail, travail ]
 
 View::TT:
   INCLUDE_PATH:
