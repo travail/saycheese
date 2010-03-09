@@ -5,6 +5,8 @@ use Moose::Role;
 use SayCheese::Schema;
 use SayCheese::Utils qw();
 
+our $SCHEMA;
+
 has 'moniker' => (
     is       => 'ro',
     isa      => 'Str',
@@ -16,8 +18,10 @@ has 'schema' => (
     isa     => 'SayCheese::Schema',
     lazy    => 1,
     default => sub {
-        my $schema = SayCheese::Schema->connect(SayCheese::Utils::connect_info);
-        return $schema;
+        return $SCHEMA if $SCHEMA;
+        $SCHEMA = SayCheese::Schema->connect(SayCheese::Utils::connect_info);
+        $SCHEMA->storage->debug(1) if $ENV{DBIC_TRACE};
+        return $SCHEMA;
     },
 );
 no Moose::Role;
