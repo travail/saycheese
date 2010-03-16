@@ -1,8 +1,11 @@
 load 'etc/conf/deploy/root'
-set :application, 'SayCheese'
+
 set :user,        'travail'
-set :deploy_via,  :export
 set :deploy_to,   "/home/travail/git/#{application}"
+
+role :web,        '192.168.1.1'
+role :app,        '192.168.1.2'
+role :saycheesed, '192.168.1.1'
 
 namespace :deploy do
   desc 'Restart apache'

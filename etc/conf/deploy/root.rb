@@ -1,17 +1,10 @@
 require 'capistrano_colors'
 
 set :application, 'SayCheese'
-set :user,        'mina'
 set :scm, :git
 set :repository,  'ssh://git.travail.jp/home/public/GIT_REPOS/saycheese.git'
 set :branche,     'master'
 set :deploy_via,  :export
-set :deploy_to,   "/home/public/#{application}"
-
-role :web,        '192.168.1.1'
-role :app,        '192.168.1.2'
-role :saycheesed, '192.168.1.1'
-
 set :shared_children, %w(log root/src/include)
 
 namespace :deploy do
