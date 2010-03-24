@@ -148,7 +148,7 @@ sub saycheese {
     }
 
     my $now = SayCheese::DateTime->now;
-    $obj = $self->{thumbnail}->create(
+    $obj = $self->{thumbnail}->update_or_create(
         {
             created_on  => $now                       || undef,
             modified_on => $now                       || undef,

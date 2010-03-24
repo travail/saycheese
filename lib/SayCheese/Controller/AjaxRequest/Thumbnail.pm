@@ -49,7 +49,7 @@ sub create : Path('create') : Args(0) {
 
     my $api = SayCheese::API::Thumbnail->new;
     my $obj = $api->find_by_url($url);
-    if ( !$obj ) {
+    if ( !$obj || !$obj->is_finished ) {
         my $client = SayCheese::Gearman::Client->new;
         my $id     = $client->do_task( 'saycheese',
             Storable::freeze( { url => $url } ), {} );
