@@ -90,6 +90,17 @@ sub create {
     $self->schema->resultset( $self->moniker )->create( $vals, $attrss );
 }
 
+=head2 update_create
+
+=cut
+
+sub update_or_create {
+    my ( $self, $vals, $attrss ) = @_;
+
+    $self->schema->resultset( $self->moniker )
+        ->update_or_create( $vals, $attrss );
+}
+
 =head1 AUTHOR
 
 TRAVAIL
