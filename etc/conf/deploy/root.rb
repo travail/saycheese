@@ -14,6 +14,9 @@ namespace :deploy do
     dirs += shared_children.map { |d| File.join(shared_path, d) }
     run "mkdir -p #{dirs.join(' ')} && chmod g+w #{dirs.join(' ')}"
     run "chmod -R g+w #{shared_path}/root"
+    run "mkdir -p #{shared_path}/cache"
+    run "mkdir -p #{shared_path}/cache/tt"
+    run "chmod -R 777 #{shared_path}/cache"
   end
 
   desc 'Finalize update'

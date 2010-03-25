@@ -24,7 +24,7 @@ View::TT:
   ERROR: error.tt2
   TIMER: 0,
   COMPILE_EXT: ttc
-  COMPILE_DIR: /tmp
+  COMPILE_DIR: __path_to(../../shared/cache/tt)__
 
 View::File:
   INCLUDE_PATH:
@@ -32,7 +32,7 @@ View::File:
     - __path_to(root/lib)__
     - __path_to(root/static)__
   COMPILE_EXT: ttc
-  COMPILE_DIR: /tmp
+  COMPILE_DIR: __path_to(../../shared/cache/tt)__
 
 job_servers:
   - 192.168.1.1:7003
