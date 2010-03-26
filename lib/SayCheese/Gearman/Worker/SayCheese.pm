@@ -11,6 +11,8 @@ use SayCheese::API::Thumbnail;
 use SayCheese::Config;
 use SayCheese::Constants;
 use SayCheese::DateTime;
+use SayCheese::Log;
+use SayCheese::Timer;
 use SayCheese::UserAgent;
 
 __PACKAGE__->mk_accessors(qw( browser config debug thumbnail user_agent img ));
@@ -45,6 +47,8 @@ sub new {
         config     => $args{config}                  || undef,
         debug      => $args{debug}                   || undef,
         img        => undef,
+        log        => SayCheese::Log->new            || undef,
+        timer      => SayCheese::Timer->new          || undef,
         tmpfile    => undef,
         thumbnail  => SayCheese::API::Thumbnail->new || undef,
         user_agent => $args{user_agent}              || undef,
@@ -64,8 +68,8 @@ sub on_work {
     my $self = shift;
 
     $Data::Dumper::Terse = 1;
-    warn "=== STARTING saycheesed ===\n";
-    warn Dumper( \%ENV );
+    $self->log->info('=== STARTING saycheesed ===');
+    $self->log->info( Dumper( \%ENV ) );
 }
 
 =head2 saycheese
@@ -75,75 +79,89 @@ sub on_work {
 sub saycheese {
     my ( $self, $freezed_job ) = @_;
 
-    $self->start_benchmark('saycheese');
+    $self->timer->start;
     my $job = Storable::thaw( $freezed_job->arg );
     my $url = $job->{url};
-    warn "INFO: URL is $url\n";
+    $self->log->info("Start to saycheese $url");
 
     # finished?
     my $obj = $self->{thumbnail}->find_by_url($url);
     if ($obj) {
-        warn sprintf qq{INFO: %s exists as id %d\n}, $obj->url, $obj->id;
+        $self->log->info( sprintf 'Already exists as id %d', $obj->id );
         if ( $obj->is_finished ) {
-            warn sprintf qq{INFO: %s is already finished\n}, $obj->url;
-            warn "INFO: Finish saycheese\n\n";
+            $self->log->info('Already finished');
+            $self->log->info("Finish to saycheese\n\n");
+            $self->log->_flush;
             return $obj->id;
         }
     }
 
     # valid scheme?
     if ( !SayCheese::Utils::is_valid_scheme( $url ) ) {
-        warn "WARN: $url is invalid scheme\n";
-        warn "WARN: Finish saycheese\n\n";
+        $self->log->error('Invalid scheme');
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
 
     # valid URI
     if ( !SayCheese::Utils::is_valid_uri( $url ) ) {
-        warn "WARN: $url is invalid URI\n";
-        warn "WARN: Finish saycheese\n\n";
+        $self->log->error('Invalid URI');
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
 
     # valid extension?
     if ( !SayCheese::Utils::is_valid_extension( $url ) ) {
-        warn "WARN: $url is invalid extension\n";
-        warn "WARN: Finish saycheese\n\n";
+        $self->log->errror('Invalid extension');
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
 
     # URL exists?
-    warn "INFO: Fetching document $url\n";
+    $self->log->info('Fetching document');
+    $self->timer->set_mark('t0');
     my $res = $self->user_agent->get( $url );
+    $self->timer->set_mark('t1');
+    $self->log->debug(
+        sprintf 'Took %s seconds to fetch document',
+        $self->timer->get_diff_time( 't0', 't1' )
+    );
     if ( !$res->is_success ) {
-        warn sprintf qq{ERROR: %s\n}, $res->status_line;
-        warn "INFO: Finish saycheese\n\n";
+        $self->log->error( $res->status_line );
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
 
     # valid Conetnt-Type?
     my $content_type = $res->headers->header('content_type');
     if ( !SayCheese::Utils::is_valid_content_type($content_type) ) {
-        warn sprintf qq{ERROR: %s is invalid content type\n}, $content_type;
-        warn "INFO: Finish saycheese\n\n";
+        $self->log->error("$content_type is invalid");
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
 
     # open URL
     my $r1 = $self->open_url($url);
     if ($r1) {
-        warn "ERROR: Can't open URL, open_url() returned $r1\n";
-        warn "WARN: Finish saycheese\n\n";
+        $self->log->error("Can't open URL, open_url() returned $r1");
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
-    warn "INFO: Rendering $url\n";
+    $self->log->info("Rendering $url");
     $self->wait;
 
     # make original size thumbnail
     my $r2 = $self->import_display;
     if ( $r2 ) {
-        warn "ERROR: Can't import, import_display() returned $r2\n";
-        warn "WARN: Finish  saycheese\n\n";
+        $self->log->error("Can't import, import_display() returned $r2");
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
 
@@ -157,8 +175,8 @@ sub saycheese {
         },
         { key => 'unique_url' }
     );
-    warn sprintf qq{INFO: Create thumbnail %s as id %d\n}, $obj->url,
-        $obj->id;
+    $self->log->info( sprintf "Create thumbnail %s as id %d",
+        $obj->url, $obj->id );
 
     # make thumbnails
     $self->create_img( path => $self->tmpfile_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
@@ -169,18 +187,20 @@ sub saycheese {
 
     $self->unlink_tmpfile;
     $self->saycheese_free;
-    my $ret = $self->finish_benchmark('saycheese');
-    warn sprintf "INFO: Took %s seconds\n", $ret;
+    $self->log->info( sprintf 'Took %s seconds',
+        $self->timer->get_total_time );
 
     # return thumbnail id, or FAILURE(0)
     if ($obj) {
         $obj->is_finished(1);
         $obj->update;
-        warn "INFO: Finish saycheese\n\n";
+        $self->log->info("Finish to saycheese\n\n");
+        $self->log->_flush;
         return $obj->id;
     }
     else {
-        warn "ERROR: Finish saycheese\n\n";
+        $self->log->error("Finish to saycheese\n\n");
+        $self->log->_flush;
         return FAILURE;
     }
 }
