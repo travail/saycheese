@@ -189,7 +189,7 @@ sub saycheese {
     $self->timer->set_mark('t3');
     $self->log->debug(
         sprintf 'Took %s seconds to write thumbnails',
-        $self->log->get_diff_time( 't2', 't3' )
+        $self->timer->get_diff_time( 't2', 't3' )
     );
 
     $self->unlink_tmpfile;
