@@ -194,6 +194,7 @@ sub saycheese {
 
     $self->unlink_tmpfile;
     $self->saycheese_free;
+    $self->timer->stop;
     $self->log->info( sprintf 'Took %s seconds',
         $self->timer->get_total_time );
 
