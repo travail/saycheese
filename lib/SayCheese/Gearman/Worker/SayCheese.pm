@@ -275,7 +275,7 @@ sub import_display {
 
     my $cmd = sprintf qq{import -display %s -window root -silent %s},
         $ENV{DISPLAY}, $self->tmpfile_path;
-    $self->info("Execute command $cmd");
+    $self->log->info("Execute command $cmd");
 
     return system $cmd;
 }
