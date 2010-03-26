@@ -180,11 +180,17 @@ sub saycheese {
         $obj->url, $obj->id );
 
     # make thumbnails
+    $self->timer->set_mark('t2');
     $self->create_img( path => $self->tmpfile_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
 #    $self->write_thumbnail( path => $obj->original_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
     $self->write_thumbnail( path => $obj->large_path,    width => LARGE_WIDTH,    height => LARGE_HEIGHT    );
     $self->write_thumbnail( path => $obj->medium_path,   width => MEDIUM_WIDTH,   height => MEDIUM_HEIGHT   );
     $self->write_thumbnail( path => $obj->small_path,    width => SMALL_WIDTH,    height => SMALL_HEIGHT    );
+    $self->timer->set_mark('t3');
+    $self->log->debug(
+        sprintf 'Took %s seconds to write thumbnails',
+        $self->log->get_diff_time( 't2', 't3' )
+    );
 
     $self->unlink_tmpfile;
     $self->saycheese_free;
