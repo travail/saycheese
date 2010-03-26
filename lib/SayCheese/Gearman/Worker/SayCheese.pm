@@ -70,6 +70,7 @@ sub on_work {
     $Data::Dumper::Terse = 1;
     $self->log->info('=== STARTING saycheesed ===');
     $self->log->info( Dumper( \%ENV ) );
+    $self->log->_flush;
 }
 
 =head2 saycheese
@@ -235,9 +236,10 @@ sub tmpfile_path { sprintf q{/tmp/%s}, shift->tmpfile }
 sub unlink_tmpfile {
     my $self = shift;
 
-    warn sprintf qq{INFO: Unlink tmp file %s\n}, $self->tmpfile_path;
+    $self->log->info( sprintf 'Unlink tmp file %s', $self->tmpfile_path );
     unlink $self->tmpfile_path
-        or warn sprintf qq{ERROR: Can't unlink tmpfile %s}, $self->tmpfile_path;
+        or $self->log->error( sprintf "Can't unlink tmpfile %s",
+        $self->tmpfile_path );
 }
 
 =head2 wait
@@ -247,7 +249,7 @@ sub unlink_tmpfile {
 sub wait {
     my $self = shift;
 
-    warn sprintf qq{INFO: Wait %d seconds...\n}, $self->{wait};
+    $self->log->info( sprintf 'Wait %d seconds...', $self->{wait} );
     sleep $self->{wait};
 }
 
@@ -259,7 +261,7 @@ sub open_url {
     my ( $self, $url ) = @_;
 
     my $cmd = sprintf q{%s -remote "openURL(%s)"}, $self->browser, $url;
-    warn sprintf qq{INFO: Execute command "%s"\n}, $cmd;
+    $self->log->info("Execute command $cmd");
 
     return system $cmd;
 }
@@ -273,7 +275,7 @@ sub import_display {
 
     my $cmd = sprintf qq{import -display %s -window root -silent %s},
         $ENV{DISPLAY}, $self->tmpfile_path;
-    warn sprintf qq{INFO: Execute command "%s"\n}, $cmd;
+    $self->info("Execute command $cmd");
 
     return system $cmd;
 }
@@ -309,8 +311,8 @@ sub write_thumbnail {
     my $clone = $self->img->Clone;
     $clone->Scale( width => $args{width}, height => $args{height} );
     $clone->Write( $args{path} );
-    warn sprintf qq{INFO: Writing thumbnail %d x %d, %s\n},
-        $args{width}, $args{height}, $args{path};
+    $self->log->info( sprintf 'Writing thumbnail %d x %d, %s',
+        $args{width}, $args{height}, $args{path} );
 }
 
 =head2 saycheese_free
@@ -320,7 +322,7 @@ sub write_thumbnail {
 sub saycheese_free {
     my $self = shift;
 
-    warn "INFO: Clean up img(), tmpfile()\n";
+    $self->log->info('Clean up img(), tmpfile()');
     $self->img(undef);
     $self->tmpfile(undef);
 }
