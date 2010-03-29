@@ -11,7 +11,12 @@ has marks => (
     default => sub { {} },
 );
 
-sub start { shift->set_mark(MARK_START) }
+sub start {
+    my $self = shift;
+
+    $self->_clear;
+    $self->set_mark(MARK_START);
+}
 
 sub stop { shift->set_mark(MARK_STOP) }
 
@@ -41,6 +46,12 @@ sub get_diff_time {
     my $t1 = $self->get_mark($stop);
 
     return Time::HiRes::tv_interval([$t0], [$t1]);
+}
+
+sub _clear {
+    my $self = shift;
+
+    $self->marks->{$_} = '' foreach keys %{ $self->marks };
 }
 
 __PACKAGE__->meta->make_immutable;
