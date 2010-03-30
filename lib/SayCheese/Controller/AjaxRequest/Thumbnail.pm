@@ -42,6 +42,7 @@ sub create : Path('create') : Args(0) {
     my $ua  = SayCheese::UserAgent->new;
     my $res = $ua->get($url);
     if ( !$res->is_success ) {
+        $c->log->error($res->status_line);
         $c->stash->{json_data} = {};
         $c->output_json;
         return;
