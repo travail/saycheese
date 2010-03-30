@@ -88,7 +88,7 @@ sub saycheese {
     # finished?
     my $obj = $self->{thumbnail}->find_by_url($url);
     if ($obj) {
-        $self->log->info( sprintf 'Already exists as id %d', $obj->id );
+        $self->log->info( 'Already exists as id ' . $obj->id );
         if ( $obj->is_finished ) {
             $self->log->info('Already finished');
             $self->log->info("Finish to saycheese\n\n");
@@ -167,15 +167,14 @@ sub saycheese {
     }
 
     my $now = SayCheese::DateTime->now;
-    $obj = $self->{thumbnail}->update_or_create(
+    $obj = $self->{thumbnail}->create(
         {
-            created_on  => $now                       || undef,
-            modified_on => $now                       || undef,
-            url         => $url                       || undef,
-            digest      => Digest::MD5::md5_hex($url) || undef,
+            created_on => $now                       || undef,
+            url        => $url                       || undef,
+            digest     => Digest::MD5::md5_hex($url) || undef,
         },
         { key => 'unique_url' }
-    );
+    ) if !$obj;
     $self->log->info( sprintf "Create thumbnail %s as id %d",
         $obj->url, $obj->id );
 
