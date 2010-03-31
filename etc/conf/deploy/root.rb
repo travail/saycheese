@@ -1,6 +1,7 @@
 require 'capistrano_colors'
 
 set :application, 'SayCheese'
+set :use_sudo,    false
 set :scm, :git
 set :repository,  'ssh://git.travail.jp/home/public/GIT_REPOS/saycheese.git'
 set :branche,     'master'
