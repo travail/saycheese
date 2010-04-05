@@ -127,7 +127,7 @@ sub saycheese {
     my $res = $self->user_agent->get( $url );
     $self->timer->set_mark('t1');
     $self->log->debug(
-        sprintf 'Took %s seconds to fetch document',
+        sprintf 'Took %.5f seconds to fetch document',
         $self->timer->get_diff_time( 't0', 't1' )
     );
     if ( !$res->is_success ) {
@@ -187,14 +187,14 @@ sub saycheese {
     $self->write_thumbnail( path => $obj->small_path,    width => SMALL_WIDTH,    height => SMALL_HEIGHT    );
     $self->timer->set_mark('t3');
     $self->log->debug(
-        sprintf 'Took %s seconds to write thumbnails',
+        sprintf 'Took %.5f seconds to write thumbnails',
         $self->timer->get_diff_time( 't2', 't3' )
     );
 
     $self->unlink_tmpfile;
     $self->saycheese_free;
     $self->timer->stop;
-    $self->log->info( sprintf 'Took %s seconds',
+    $self->log->info( sprintf 'Took %.5f seconds',
         $self->timer->get_total_time );
 
     # return thumbnail id, or FAILURE(0)
