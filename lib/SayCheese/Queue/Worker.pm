@@ -106,7 +106,7 @@ around 'enqueue' => sub {
 around 'dequeue' => sub {
     my ( $orig, $self, $table, $columns ) = @_;
 
-    $table   ||= $self->tables->[0];
+    $table   ||= $self->queue->__table;
     $columns ||= $self->columns;
     $self->$orig( $table, $columns );
 };
@@ -114,7 +114,7 @@ around 'dequeue' => sub {
 around 'dequeue_array' => sub {
     my ( $orig, $self, $table, $columns ) = @_;
 
-    $table   ||= $self->tables->[0];
+    $table   ||= $self->queue->__table;
     $columns ||= $self->columns;
     $self->$orig( $table, $columns );
 };
@@ -122,7 +122,7 @@ around 'dequeue_array' => sub {
 around 'dequeue_arrayref' => sub {
     my ( $orig, $self, $table, $columns ) = @_;
 
-    $table   ||= $self->tables->[0];
+    $table   ||= $self->queue->__table;
     $columns ||= $self->columns;
     $self->$orig( $table, $columns );
 };
@@ -130,7 +130,7 @@ around 'dequeue_arrayref' => sub {
 around 'dequeue_hashref' => sub {
     my ($orig, $self, $table, $columns) = @_;
 
-    $table   ||= $self->tables->[0];
+    $table   ||= $self->queue->__table;
     $columns ||= $self->columns;
     $self->$orig($table, $columns);
 };
