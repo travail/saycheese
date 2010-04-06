@@ -51,6 +51,8 @@ sub BUILD {
         if !$self->interval;
 }
 
+__PACKAGE__->meta->make_immutable;
+
 sub _work {
     my $self = shift;
 
@@ -177,10 +179,6 @@ sub _work {
     }
 }
 
-=head2 tmpfile
-
-=cut
-
 sub tmpfile {
     my $self = shift;
 
@@ -194,15 +192,7 @@ sub tmpfile {
     }
 }
 
-=head2 tmpfile_path
-
-=cut
-
 sub tmpfile_path { sprintf q{/tmp/%s}, shift->tmpfile }
-
-=head2 unlink_tmpfile
-
-=cut
 
 sub unlink_tmpfile {
     my $self = shift;
@@ -212,19 +202,11 @@ sub unlink_tmpfile {
         or $self->log->error( "Can't unlink tmpfile " . $self->tmpfile_path );
 }
 
-=head2 wait
-
-=cut
-
 sub wait {
     my $self = shift;
 
     sleep $self->interval;
 }
-
-=head2 open_url
-
-=cut
 
 sub open_url {
     my ( $self, $url ) = @_;
@@ -234,10 +216,6 @@ sub open_url {
 
     return system $cmd;
 }
-
-=head2 import_display
-
-=cut
 
 sub import_display {
     my $self = shift;
@@ -249,10 +227,6 @@ sub import_display {
     return system $cmd;
 }
  
-=head2 create_img
-
-=cut
-
 sub create_img {
     my ( $self, %args ) = @_;
 
@@ -278,10 +252,6 @@ sub write_thumbnail {
     $self->log->info( sprintf 'Writing thumbnail %d x %d, %s',
         $args{width}, $args{height}, $args{path} );
 }
-
-=head2 saycheese_free
-
-=cut
 
 sub saycheese_free {
     my $self = shift;

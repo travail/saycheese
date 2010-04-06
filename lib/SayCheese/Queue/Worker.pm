@@ -89,22 +89,6 @@ sub _build_log     { SayCheese::Log->new }
 sub _build_timer   { SayCheese::Timer->new }
 sub _build_timeout { $_[0]->config->{ $_[0]->meta->name }->{timeout} }
 
-=head1 NAME
-
-SayCheese::Queue::Worker - SayCheese Queue Worker
-
-=head1 DESCRIPTION
-
-SayCheese Queue Worker
-
-=head1 METHODS
-
-=cut
-
-=head2 enqueue
-
-=cut
-
 around 'enqueue' => sub {
     my ( $orig, $self, $table, $fields ) = @_;
 
@@ -117,11 +101,41 @@ around 'enqueue' => sub {
     $self->$orig($table, $fields);
 };
 
+around 'dequeue' => sub {
+    my ( $orig, $self, $table, $columns ) = @_;
+
+    $table   ||= $self->tables->[0];
+    $columns ||= $self->columns;
+    $self->$orig( $table, $columns );
+};
+
+around 'dequeue_array' => sub {
+    my ( $orig, $self, $table, $columns ) = @_;
+
+    $table   ||= $self->tables->[0];
+    $columns ||= $self->columns;
+    $self->$orig( $table, $columns );
+};
+
+around 'dequeue_arrayref' => sub {
+    my ( $orig, $self, $table, $columns ) = @_;
+
+    $table   ||= $self->tables->[0];
+    $columns ||= $self->columns;
+    $self->$orig( $table, $columns );
+};
+
+around 'dequeue_hashref' => sub {
+    my ($orig, $self, $table, $columns) = @_;
+
+    $table   ||= $self->tables->[0];
+    $columns ||= $self->columns;
+    $self->$orig($table, $columns);
+};
+
+__PACKAGE__->meta->make_immutable;
+
 sub enqueue { $_[0]->queue->insert( $_[1], $_[2] ) }
-
-=head2 next
-
-=cut
 
 sub next {
     my ( $self, $conds, $timeout ) = @_;
@@ -140,65 +154,13 @@ sub next {
     $self->queue->next( @tables, $timeout );
 }
 
-=head2 dequeue
-
-=cut
-
-around 'dequeue' => sub {
-    my ( $orig, $self, $table, $columns ) = @_;
-
-    $table   ||= $self->tables->[0];
-    $columns ||= $self->columns;
-    $self->$orig( $table, $columns );
-};
-
 sub dequeue { $_[0]->queue->fetch( $_[1], $_[2] ) }
-
-=head2 dequeue_array
-
-=cut
-
-around 'dequeue_array' => sub {
-    my ( $orig, $self, $table, $columns ) = @_;
-
-    $table   ||= $self->tables->[0];
-    $columns ||= $self->columns;
-    $self->$orig( $table, $columns );
-};
 
 sub dequeue_array { $_[0]->queue->fetch_array( $_[1], $_[2] ) }
 
-=head2 dequeue_arrayref
-
-=cut
-
-around 'dequeue_arrayref' => sub {
-    my ( $orig, $self, $table, $columns ) = @_;
-
-    $table   ||= $self->tables->[0];
-    $columns ||= $self->columns;
-    $self->$orig( $table, $columns );
-};
-
 sub dequeue_arrayref { $_[0]->queue->fetch_arrayref( $_[1], $_[2] ) }
 
-=head2 dequeue_hashref
-
-=cut
-
-around 'dequeue_hashref' => sub {
-    my ($orig, $self, $table, $columns) = @_;
-
-    $table   ||= $self->tables->[0];
-    $columns ||= $self->columns;
-    $self->$orig($table, $columns);
-};
-
 sub dequeue_hashref { $_[0]->queue->fetch_hashref( $_[1], $_[2] ) }
-
-=head2 end
-
-=cut
 
 sub end {
     my $self = shift;
@@ -207,20 +169,12 @@ sub end {
       || Carp::Clan::croak( $self->queue->dbh->errstr );
 }
 
-=head2 abort
-
-=cut
-
 sub abort {
     my $self = shift;
 
     $self->queue->dbh->do('SELECT queue_abort()')
       || Carp::Clan::croak( $self->queue->dbh->errstr );
 }
-
-=head2 work
-
-=cut
 
 sub work {
     my $self = shift;
@@ -243,6 +197,54 @@ sub work {
     }
     $pp->wait_all_children;
 }
+
+=head1 NAME
+
+SayCheese::Queue::Worker - SayCheese Queue Worker
+
+=head1 DESCRIPTION
+
+SayCheese Queue Worker
+
+=head1 METHODS
+
+=cut
+
+=head2 enqueue
+
+=cut
+
+=head2 next
+
+=cut
+
+=head2 dequeue
+
+=cut
+
+=head2 dequeue_array
+
+=cut
+
+=head2 dequeue_arrayref
+
+=cut
+
+=head2 dequeue_hashref
+
+=cut
+
+=head2 end
+
+=cut
+
+=head2 abort
+
+=cut
+
+=head2 work
+
+=cut
 
 =head1 AUTHOR
 
