@@ -107,7 +107,7 @@ SayCheese::Queue::Worker::SayCheese:
   debug: 1
   max_workers: 3
   timeout: 5
-  interval: 1
+  interval: 10
   connect_info:
     - 'dbi:mysql:dbname=queue_saycheese:host=192.168.1.1:port=3308'
     - travail

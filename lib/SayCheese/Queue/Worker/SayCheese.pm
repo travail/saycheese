@@ -20,18 +20,19 @@ has 'thumbnail' => (
 
 has 'image' => (
     is       => 'rw',
-    isa      => 'Image::Magick',
-    required => 1,
-    lazy     => 1,
-    builder  => '_build_image'
 );
 
 has 'user_agent' => (
     is       => 'rw',
-    isa      => 'SayCheese::UserAgent',
     required => 1,
     lazy     => 1,
     builder  => '_build_user_agent',
+);
+
+has 'browser' => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => 'firefox',
 );
 
 has 'interval' => (
@@ -41,12 +42,12 @@ has 'interval' => (
 
 sub _build_thumbnail  { SayCheese::API::Thumbnail->new }
 sub _build_user_agent { SayCheese::UserAgent->new }
-sub _build_image      { Image::Magick->new }
 
 sub BUILD {
     my $self = shift;
 
-    $self->interval( $self->config->{$self->meta->name}->{interval} )
+    $ENV{DISPLAY} = $self->config->{DISPLAY};
+    $self->interval( $self->config->{ $self->meta->name }->{interval} )
         if !$self->interval;
 }
 
@@ -119,6 +120,15 @@ sub _work {
         $self->log->info( sprintf 'Wait %d seconds...', $self->interval );
         $self->wait;
 
+        # make original size thumbnail
+        my $r2 = $self->import_display;
+        if ( $r2 ) {
+            $self->log->error("Can't import, import_display() returned $r2");
+            $self->log->info("Finish to saycheese\n\n");
+            $self->log->_flush;
+            return FAILURE;
+        }
+
         my $now = SayCheese::DateTime->now;
         $obj = $self->thumbnail->create(
             {
@@ -174,13 +184,13 @@ sub _work {
 sub tmpfile {
     my $self = shift;
 
-    if ( defined $self->tmpfile ) {
-        return $self->tmpfile;
+    if ( defined $self->{tmpfile} ) {
+        return $self->{tmpfile};
     }
     else {
-        $self->tmpfile = sprintf q{%d-%d.%s}, time, $$,
+        $self->{tmpfile} = sprintf q{%d-%d.%s}, time, $$,
             $self->config->{thumbnail}->{extension};
-        return $self->tmpfile;
+        return $self->{tmpfile};
     }
 }
 
@@ -247,14 +257,16 @@ sub create_img {
     my ( $self, %args ) = @_;
 
     $args{quality} ||= 100;
-    $self->image->Read( $args{path} );
-    $self->image->Set( quality => $args{quality} );
-    $self->image->Crop(
+    my $image = Image::Magick->new;
+    $image->Read( $args{path} );
+    $image->Set( quality => $args{quality} );
+    $image->Crop(
         width  => $args{width},
         height => $args{height},
         x      => 7,
         y      => 116
     );
+    $self->image($image);
 }
 
 sub write_thumbnail {
@@ -276,7 +288,7 @@ sub saycheese_free {
 
     $self->log->info('Clean up img(), tmpfile()');
     $self->image(undef);
-    $self->tmpfile(undef);
+    $self->{tmpfile} = undef;
 }
 
 1;
