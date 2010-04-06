@@ -9,7 +9,7 @@ use Storable qw();
 use SayCheese::API::Thumbnail;
 use SayCheese::Constants qw( CACHE_FOR );
 use SayCheese::DateTime;
-use SayCheese::Gearman::Client;
+use SayCheese::Queue::Worker::SayCheese;
 use SayCheese::UserAgent;
 use SayCheese::Utils qw();
 
@@ -51,10 +51,11 @@ sub create : Path('create') : Args(0) {
     my $api = SayCheese::API::Thumbnail->new;
     my $obj = $api->find_by_url($url);
     if ( !$obj || !$obj->is_finished ) {
-        my $client = SayCheese::Gearman::Client->new;
-        my $id     = $client->do_task( 'saycheese',
-            Storable::freeze( { url => $url } ), {} );
-        $obj = $api->find($$id) if $$id;
+        my $worker = SayCheese::Queue::Worker::SayCheese->new;
+        $worker->enqueue('saycheese20', {
+            created_on => undef,
+            url        => $url,
+        });
     }
 
     $c->stash->{json_data} = $obj ? $obj->as_hashref : {};
