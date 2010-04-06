@@ -77,8 +77,9 @@ has 'timeout' => (
 );
 
 has 'debug' => (
-    is  => 'rw',
-    isa => 'Int'
+    is       => 'rw',
+    isa      => 'Bool',
+    required => 0,
 );
 
 sub _build_connect_info { $_[0]->config->{ $_[0]->meta->name }->{connect_info} }
