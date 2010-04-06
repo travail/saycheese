@@ -72,6 +72,7 @@ sub _work {
                 $self->log->info('Already finished');
                 $self->log->info("Finish to saycheese\n\n");
                 $self->log->_flush;
+                $self->end;
                 return $obj->id;
             }
         }
@@ -81,6 +82,7 @@ sub _work {
             $self->log->error('Invalid scheme');
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
+            $self->end;
             return FAILURE;
         }
 
@@ -89,6 +91,7 @@ sub _work {
             $self->log->error('Invalid URI');
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
+            $self->end;
             return FAILURE;
         }
 
@@ -113,6 +116,7 @@ sub _work {
             $self->log->error("$content_type is invalid");
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
+            $self->end;
             return FAILURE;
         }
 
@@ -127,6 +131,7 @@ sub _work {
             $self->log->error("Can't open URL, open_url() returned $r1");
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
+            $self->end;
             return FAILURE;
         }
         $self->log->info("Rendering $url");
@@ -144,6 +149,7 @@ sub _work {
             $self->log->error("Can't import, import_display() returned $r2");
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
+            $self->end;
             return FAILURE;
         }
 
@@ -184,7 +190,6 @@ sub _work {
             $obj->update;
             $self->log->info("Finish to saycheese\n\n");
             $ret = $obj->id;
-            $self->end;
         }
         else {
             $self->log->error("Finish to saycheese\n\n");
@@ -196,6 +201,7 @@ sub _work {
             });
         }
 
+        $self->end;
         $self->log->_flush;
         return $ret;
     }

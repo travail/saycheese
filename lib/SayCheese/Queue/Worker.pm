@@ -135,6 +135,20 @@ around 'dequeue_hashref' => sub {
     $self->$orig($table, $columns);
 };
 
+around 'work' => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    $self->log->info('=== STARTUP ===');
+    $self->log->info( 'MAX_WORKERS: ' . $self->max_workers . "\n\n" );
+    $self->log->_flush;
+
+    $self->$orig(@_);
+
+    $self->log->info("=== SHUTDOWN ===\n\n");
+    $self->log->_flush;
+};
+
 __PACKAGE__->meta->make_immutable;
 
 sub enqueue { $_[0]->queue->insert( $_[1], $_[2] ) }
@@ -189,6 +203,8 @@ sub work {
             HUP  => 'TERM',
         },
     });
+#    $self->log->info('=== STARTUP ===');
+#    $self->log->_flush;
     while ($pp->signal_received ne 'TERM') {
         $pp->start and next;
         $self->log->info("(PID: $$) Start to work");
@@ -198,7 +214,11 @@ sub work {
         $pp->finish;
     }
     $pp->wait_all_children;
+#    $self->log->info('=== SHUTDOWN ===');
+#    $self->log->_flush;
 }
+
+sub _work {}
 
 =head1 NAME
 
