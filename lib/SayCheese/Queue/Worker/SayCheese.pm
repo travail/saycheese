@@ -7,6 +7,7 @@ use SayCheese::API::Thumbnail;
 use SayCheese::Constants;
 use SayCheese::DateTime;
 use SayCheese::UserAgent;
+use namespace::autoclean;
 
 extends 'SayCheese::Queue::Worker';
 
@@ -56,7 +57,7 @@ __PACKAGE__->meta->make_immutable;
 sub _work {
     my $self = shift;
 
-    while ( my $ret = $self->next ) {
+    while ( my $ret = $self->next(['http_status = 0', 'http_status = 0', 'http_status = 0']) ) {
         $self->timer->start;
         $self->log->debug("PID: $$ Working");
         my $q   = $self->dequeue_hashref;
@@ -104,6 +105,11 @@ sub _work {
         # valid Conetnt-Type?
         my $content_type = $res->headers->header('content_type');
         if ( !SayCheese::Utils::is_valid_content_type($content_type) ) {
+            $self->enqueue( 'saycheese30', {
+                    created_on  => undef,
+                    url         => $url,
+                    http_status => $res->code,
+            });
             $self->log->error("$content_type is invalid");
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
@@ -113,6 +119,11 @@ sub _work {
         # open URL
         my $r1 = $self->open_url($url);
         if ($r1) {
+            $self->enqueue( 'saycheese30', {
+                    created_on  => undef,
+                    url         => $url,
+                    http_status => $res->code,
+            });
             $self->log->error("Can't open URL, open_url() returned $r1");
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
@@ -125,6 +136,11 @@ sub _work {
         # make original size thumbnail
         my $r2 = $self->import_display;
         if ( $r2 ) {
+            $self->enqueue( 'saycheese30', {
+                    created_on  => undef,
+                    url         => $url,
+                    http_status => $res->code,
+            });
             $self->log->error("Can't import, import_display() returned $r2");
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
@@ -168,10 +184,16 @@ sub _work {
             $obj->update;
             $self->log->info("Finish to saycheese\n\n");
             $ret = $obj->id;
+            $self->end;
         }
         else {
             $self->log->error("Finish to saycheese\n\n");
             $ret = FAILURE;
+            $self->enqueue( 'saycheese30', {
+                    created_on  => undef,
+                    url         => $url,
+                    http_status => $res->code,
+            });
         }
 
         $self->log->_flush;

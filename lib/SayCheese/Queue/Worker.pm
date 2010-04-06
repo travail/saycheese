@@ -8,6 +8,7 @@ use SayCheese::Config;
 use SayCheese::Log;
 use SayCheese::Timer;
 use Data::Dumper;
+use namespace::autoclean;
 
 has 'config' => (
     is       => 'rw',
