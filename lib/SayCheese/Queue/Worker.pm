@@ -203,8 +203,6 @@ sub work {
             HUP  => 'TERM',
         },
     });
-#    $self->log->info('=== STARTUP ===');
-#    $self->log->_flush;
     while ($pp->signal_received ne 'TERM') {
         $pp->start and next;
         $self->log->info("(PID: $$) Start to work");
@@ -214,8 +212,6 @@ sub work {
         $pp->finish;
     }
     $pp->wait_all_children;
-#    $self->log->info('=== SHUTDOWN ===');
-#    $self->log->_flush;
 }
 
 sub _work {}

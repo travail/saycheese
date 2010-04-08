@@ -1,7 +1,6 @@
 package SayCheese::CLI::SayCheese;
 
 use Moose;
-use Pod::Usage ();
 use SayCheese::Queue::Worker::SayCheese;
 use namespace::autoclean;
 
