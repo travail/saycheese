@@ -97,7 +97,7 @@ sub _work {
 
         # valid extension?
         if ( !SayCheese::Utils::is_valid_extension($url) ) {
-            $self->log->errror('Invalid extension');
+            $self->log->error('Invalid extension');
             $self->log->info("Finish to saycheese\n\n");
             $self->log->_flush;
             $self->end;
