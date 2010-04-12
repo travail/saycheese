@@ -33,6 +33,14 @@ has abort => (is => 'rw');
                 $self->_log($name, @_);
             }
         });
+        $meta->add_method('f' . $name, sub {
+            my $self = shift;
+
+            if ($self->level & $level) {
+                $self->_log($name, @_);
+                $self->_flush;
+            }
+        });
     }
 }
 
