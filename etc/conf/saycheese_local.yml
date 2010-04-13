@@ -13,12 +13,6 @@ Model::DBIC::SayCheese:
     - travail
     - travail
 
-slave_connect_info:
-  - [ 'dbi:mysql:saycheese_local:hostname=127.0.0.1', travail, travail ]
-  - [ 'dbi:mysql:saycheese_local:hostname=192.168.1.2', travail, travail ]
-  - [ 'dbi:mysql:saycheese_local:hostname=localhost', travail, travail ]
-  - [ 'dbi:mysql:saycheese_local:hostname=mina', travail, travail ]
-
 View::TT:
   INCLUDE_PATH:
     - __path_to(root/src)__
@@ -46,7 +40,7 @@ user_agent:
 SayCheese::Queue::Worker::SayCheese:
   debug: 1
   max_workers: 3
-  timeout: 5
+  timeout: 300
   interval: 10
   connect_info:
     - 'dbi:mysql:dbname=queue_saycheese_local:host=192.168.1.1:port=3308'
