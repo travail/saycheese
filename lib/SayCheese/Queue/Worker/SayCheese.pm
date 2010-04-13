@@ -57,8 +57,10 @@ __PACKAGE__->meta->make_immutable;
 sub _work {
     my $self = shift;
 
-    my $res = $self->next(
+    my $result = $self->next(
         [ 'http_status = 0', 'http_status = 0', 'http_status = 0' ] );
+    return $self->end if !$result->as_bool;
+
     $self->timer->start;
     my $q   = $self->dequeue_hashref;
     my $url = $q->{url};
@@ -221,7 +223,7 @@ sub _work {
     }
 
     $self->end;
-    return $res;
+    return $result;
 }
 
 sub tmpfile {
