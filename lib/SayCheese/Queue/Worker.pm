@@ -207,8 +207,7 @@ sub work {
         $pp->start and next;
         $self->log->info("(PID: $$) Start to work");
         $self->_work;
-        $self->log->info("(PID: $$) Finish to work");
-        $self->log->_flush;
+        $self->log->finfo("(PID: $$) Finish to work\n\n");
         $pp->finish;
     }
     $pp->wait_all_children;

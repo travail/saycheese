@@ -57,163 +57,171 @@ __PACKAGE__->meta->make_immutable;
 sub _work {
     my $self = shift;
 
-    while ( my $ret = $self->next(['http_status = 0', 'http_status = 0', 'http_status = 0']) ) {
-        $self->timer->start;
-        $self->log->debug("PID: $$ Working");
-        my $q   = $self->dequeue_hashref;
-        my $url = $q->{url};
-        $self->log->info("Start to saycheese $url");
+    my $res = $self->next(
+        [ 'http_status = 0', 'http_status = 0', 'http_status = 0' ] );
+    $self->timer->start;
+    my $q   = $self->dequeue_hashref;
+    my $url = $q->{url};
+    $self->log->info("Start to saycheese $url");
 
-        # finished?
-        my $obj = $self->thumbnail->find_by_url($url);
-        if ($obj) {
-            $self->log->info( 'Already exists ' . $obj->id );
-            if ($obj->is_finished) {
-                $self->log->info('Already finished');
-                $self->log->info("Finish to saycheese\n\n");
-                $self->log->_flush;
-                $self->end;
-                return $obj->id;
-            }
-        }
-
-        # valid schema?
-        if ( !SayCheese::Utils::is_valid_scheme($url) ) {
-            $self->log->error('Invalid scheme');
-            $self->log->info("Finish to saycheese\n\n");
-            $self->log->_flush;
+    # finished?
+    my $obj = $self->thumbnail->find_by_url($url);
+    if ($obj) {
+        $self->log->info( 'Already exists ' . $obj->id );
+        if ( $obj->is_finished ) {
+            $self->log->info('Already finished');
+            $self->log->info('Finish to saycheese');
             $self->end;
-            return FAILURE;
+            return $obj->id;
         }
-
-        # valid URI
-        if ( !SayCheese::Utils::is_valid_uri($url) ) {
-            $self->log->error('Invalid URI');
-            $self->log->info("Finish to saycheese\n\n");
-            $self->log->_flush;
-            $self->end;
-            return FAILURE;
-        }
-
-        # valid extension?
-        if ( !SayCheese::Utils::is_valid_extension($url) ) {
-            $self->log->error('Invalid extension');
-            $self->log->info("Finish to saycheese\n\n");
-            $self->log->_flush;
-            $self->end;
-            return FAILURE;
-        }
-
-        # URL exists?
-        $self->log->info('Fetching the document');
-        $self->timer->set_mark('t0');
-        my $res = $self->user_agent->get($url);
-        $self->timer->set_mark('t1');
-        $self->log->debug(
-            sprintf 'Took %.5f seconds to fetch document',
-            $self->timer->get_diff_time( 't0', 't1' )
-        );
-
-        # valid Conetnt-Type?
-        my $content_type = $res->headers->header('content_type');
-        if ( !SayCheese::Utils::is_valid_content_type($content_type) ) {
-            $self->enqueue( 'saycheese30', {
-                    created_on  => undef,
-                    url         => $url,
-                    http_status => $res->code,
-            });
-            $self->log->error("$content_type is invalid");
-            $self->log->info("Finish to saycheese\n\n");
-            $self->log->_flush;
-            $self->end;
-            return FAILURE;
-        }
-
-        # open URL
-        my $r1 = $self->open_url($url);
-        if ($r1) {
-            $self->enqueue( 'saycheese30', {
-                    created_on  => undef,
-                    url         => $url,
-                    http_status => $res->code,
-            });
-            $self->log->error("Can't open URL, open_url() returned $r1");
-            $self->log->info("Finish to saycheese\n\n");
-            $self->log->_flush;
-            $self->end;
-            return FAILURE;
-        }
-        $self->log->info("Rendering $url");
-        $self->log->info( sprintf 'Wait %d seconds...', $self->interval );
-        $self->wait;
-
-        # make original size thumbnail
-        my $r2 = $self->import_display;
-        if ( $r2 ) {
-            $self->enqueue( 'saycheese30', {
-                    created_on  => undef,
-                    url         => $url,
-                    http_status => $res->code,
-            });
-            $self->log->error("Can't import, import_display() returned $r2");
-            $self->log->info("Finish to saycheese\n\n");
-            $self->log->_flush;
-            $self->end;
-            return FAILURE;
-        }
-
-        my $now = SayCheese::DateTime->now;
-        $obj = $self->thumbnail->create(
-            {
-                created_on => $now                       || undef,
-                url        => $url                       || undef,
-                digest     => Digest::MD5::md5_hex($url) || undef,
-            },
-            { key => 'unique_url' }
-        ) if !$obj;
-        $self->log->info( 'Create thumbnail ' . $obj->id );
-
-        # make thumbnails
-        $self->timer->set_mark('t2');
-        $self->create_img( path => $self->tmpfile_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
-#        $self->write_thumbnail( path => $obj->original_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
-        $self->write_thumbnail( path => $obj->large_path,    width => LARGE_WIDTH,    height => LARGE_HEIGHT    );
-        $self->write_thumbnail( path => $obj->medium_path,   width => MEDIUM_WIDTH,   height => MEDIUM_HEIGHT   );
-        $self->write_thumbnail( path => $obj->small_path,    width => SMALL_WIDTH,    height => SMALL_HEIGHT    );
-        $self->timer->set_mark('t3');
-        $self->log->debug(
-            sprintf 'Took %.5f seconds to write thumbnails',
-            $self->timer->get_diff_time( 't2', 't3' )
-        );
-
-        $self->unlink_tmpfile;
-        $self->saycheese_free;
-        $self->timer->stop;
-        $self->log->info( sprintf 'Took %.5f seconds',
-            $self->timer->get_total_time );
-
-        # return thumbnail id, or FAILURE(0)
-        my $ret = undef;
-        if ($obj) {
-            $obj->is_finished(1);
-            $obj->update;
-            $self->log->info("Finish to saycheese\n\n");
-            $ret = $obj->id;
-        }
-        else {
-            $self->log->error("Finish to saycheese\n\n");
-            $ret = FAILURE;
-            $self->enqueue( 'saycheese30', {
-                    created_on  => undef,
-                    url         => $url,
-                    http_status => $res->code,
-            });
-        }
-
-        $self->end;
-        $self->log->_flush;
-        return $ret;
     }
+
+    # valid schema?
+    if ( !SayCheese::Utils::is_valid_scheme($url) ) {
+        $self->log->error('Invalid scheme');
+        $self->log->info('Finish to saycheese');
+        $self->end;
+        return FAILURE;
+    }
+
+    # valid URI
+    if ( !SayCheese::Utils::is_valid_uri($url) ) {
+        $self->log->error('Invalid URI');
+        $self->log->info('Finish to saycheese');
+        $self->end;
+        return FAILURE;
+    }
+
+    # valid extension?
+    if ( !SayCheese::Utils::is_valid_extension($url) ) {
+        $self->log->error('Invalid extension');
+        $self->log->info('Finish to saycheese');
+        $self->end;
+        return FAILURE;
+    }
+
+    # URL exists?
+    $self->log->info('Fetching the document');
+    $self->timer->set_mark('t0');
+    my $res = $self->user_agent->get($url);
+    $self->timer->set_mark('t1');
+    $self->log->debug(
+        sprintf 'Took %.5f seconds to fetch document',
+        $self->timer->get_diff_time( 't0', 't1' )
+    );
+
+    # valid Conetnt-Type?
+    my $content_type = $res->headers->header('content_type');
+    if ( !SayCheese::Utils::is_valid_content_type($content_type) ) {
+        $self->enqueue(
+            'saycheese30',
+            {
+                created_on  => undef,
+                url         => $url,
+                http_status => $res->code,
+            }
+        );
+        $self->log->error("$content_type is invalid");
+        $self->log->info('Finish to saycheese');
+        $self->end;
+        return FAILURE;
+    }
+
+    # open URL
+    my $r1 = $self->open_url($url);
+    if ($r1) {
+        $self->enqueue(
+            'saycheese30',
+            {
+                created_on  => undef,
+                url         => $url,
+                http_status => $res->code,
+            }
+        );
+        $self->log->error("Can't open URL, open_url() returned $r1");
+        $self->log->info('Finish to saycheese');
+        $self->end;
+        return FAILURE;
+    }
+    $self->log->info("Rendering $url");
+    $self->log->info( sprintf 'Wait %d seconds...', $self->interval );
+    $self->wait;
+
+    # make original size thumbnail
+    my $r2 = $self->import_display;
+    if ($r2) {
+        $self->enqueue(
+            'saycheese30',
+            {
+                created_on  => undef,
+                url         => $url,
+                http_status => $res->code,
+            }
+        );
+        $self->log->error("Can't import, import_display() returned $r2");
+        $self->log->info("Finish to saycheese");
+        $self->end;
+        return FAILURE;
+    }
+
+    my $now = SayCheese::DateTime->now;
+    $obj = $self->thumbnail->create(
+        {
+            created_on => $now                       || undef,
+            url        => $url                       || undef,
+            digest     => Digest::MD5::md5_hex($url) || undef,
+        },
+        { key => 'unique_url' }
+    ) if !$obj;
+    $self->log->info( 'Create thumbnail ' . $obj->id );
+
+    # make thumbnails
+    $self->timer->set_mark('t2');
+    $self->create_img(
+        path   => $self->tmpfile_path,
+        width  => ORIGINAL_WIDTH,
+        height => ORIGINAL_HEIGHT
+    );
+
+#    $self->write_thumbnail( path => $obj->original_path, width => ORIGINAL_WIDTH, height => ORIGINAL_HEIGHT );
+    $self->write_thumbnail( path => $obj->large_path, width  => LARGE_WIDTH, height => LARGE_HEIGHT );
+    $self->write_thumbnail( path => $obj->medium_path, width  => MEDIUM_WIDTH, height => MEDIUM_HEIGHT );
+    $self->write_thumbnail( path => $obj->small_path, width  => SMALL_WIDTH, height => SMALL_HEIGHT );
+    $self->timer->set_mark('t3');
+    $self->log->debug(
+        sprintf 'Took %.5f seconds to write thumbnails',
+        $self->timer->get_diff_time( 't2', 't3' )
+    );
+
+    $self->unlink_tmpfile;
+    $self->saycheese_free;
+    $self->timer->stop;
+    $self->log->info( sprintf 'Took %.5f seconds',
+        $self->timer->get_total_time );
+
+    # return thumbnail id, or FAILURE(0)
+    my $ret = undef;
+    if ($obj) {
+        $obj->is_finished(1);
+        $obj->update;
+        $self->log->info('Finish to saycheese');
+        $ret = $obj->id;
+    }
+    else {
+        $self->log->error('Finish to saycheese');
+        $ret = FAILURE;
+        $self->enqueue(
+            'saycheese30',
+            {
+                created_on  => undef,
+                url         => $url,
+                http_status => $res->code,
+            }
+        );
+    }
+
+    $self->end;
+    return $res;
 }
 
 sub tmpfile {
