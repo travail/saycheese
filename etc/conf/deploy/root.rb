@@ -19,17 +19,4 @@ namespace :deploy do
     run "mkdir -p #{shared_path}/cache/tt"
     run "chmod -R 777 #{shared_path}/cache"
   end
-
-  desc 'Finalize update'
-  task :finalize_update, roles => [:web, :app] do
-  end
-
-  desc 'Restart apache'
-  task :restart do
-    parallel do |session|
-      session.when "in?(:web) || in?(:app)", "#{sudo} /etc/rc.d/init.d/httpd restart"
-      session.when "in?(:saycheesed)", "echo This is saycheesed"
-      session.else "echo nothing to do"
-    end
-  end
 end
