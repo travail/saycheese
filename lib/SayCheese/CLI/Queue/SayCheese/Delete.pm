@@ -6,7 +6,11 @@ use namespace::autoclean;
 with 'MooseX::Getopt';
 with 'SayCheese::CLI::Queue::SayCheese';
 
-has http_status => (
+has '+table' => (
+    required => 0,
+);
+
+has 'http_status' => (
     is            => 'ro',
     isa           => 'Int',
     required      => 1,
@@ -19,14 +23,6 @@ has 'rows' => (
     default       => 10,
     required      => 0,
     documentation => 'The number of records to be retrieved',
-);
-
-has 'dry_run' => (
-    is            => 'ro',
-    isa           => 'Bool',
-    default       => 1,
-    required      => 0,
-    documentation => 'Perform a trial run with no changes made',
 );
 
 has 'timeout' => (
@@ -54,7 +50,7 @@ sub run {
         my $q = $self->_saycheese->dequeue_hashref;
         $self->_log->fdebug( 'Queue found in ' . $res->as_string );
         $self->_log->fdebug( $q->{url} );
-        $self->dry_run ? $self->_saycheese->abort : $self->_saycheese->end;
+        $self->_saycheese->end;
     }
 }
 
