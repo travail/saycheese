@@ -48,7 +48,6 @@ sub run {
         )
     {
         my $q = $self->_saycheese->dequeue_hashref;
-        $self->_log->fdebug( 'Queue found in ' . $res->as_string );
         $self->_log->fdebug( $q->{url} );
         $self->_saycheese->end;
     }
