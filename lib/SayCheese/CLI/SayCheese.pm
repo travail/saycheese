@@ -45,14 +45,13 @@ has 'help' => (
 sub run {
     my $self = shift;
 
-    my $worker = SayCheese::Queue::Worker->new;
-    $worker->work(
+    SayCheese::Queue::Worker::SayCheese->new(
         {
             max_workers => $self->max_workers,
             timeout     => $self->timeout,
             debug       => $self->debug,
         }
-    );
+    )->work;
 }
 
 1;
