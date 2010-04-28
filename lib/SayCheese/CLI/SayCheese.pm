@@ -42,6 +42,8 @@ has 'help' => (
     documentation => 'Show this helps',
 );
 
+__PACKAGE__->meta->make_immutable;
+
 sub run {
     my $self = shift;
 
