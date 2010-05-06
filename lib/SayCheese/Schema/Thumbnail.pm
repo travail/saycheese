@@ -17,6 +17,7 @@ __PACKAGE__->add_columns(
     'created_on', { data_type => 'datetime' },
     'modified_on', { data_type => 'datetime' },
     'url', { data_type => 'varchar', is_uri => 1 },
+    'title',
     'digest',
     'is_finished',
 );

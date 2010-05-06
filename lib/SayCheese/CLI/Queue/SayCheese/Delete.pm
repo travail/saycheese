@@ -6,10 +6,6 @@ use namespace::autoclean;
 with 'MooseX::Getopt';
 with 'SayCheese::CLI::Queue::SayCheese';
 
-has '+table' => (
-    required => 0,
-);
-
 has 'http_status' => (
     is            => 'ro',
     isa           => 'Int',
@@ -17,18 +13,10 @@ has 'http_status' => (
     documentation => 'The HTTP status code to be deleted',
 );
 
-has 'rows' => (
-    is            => 'ro',
-    isa           => 'Int',
-    default       => 10,
-    required      => 0,
-    documentation => 'The number of records to be retrieved',
-);
-
 has 'timeout' => (
     is            => 'ro',
     isa           => 'Int',
-    default       => 3,
+    default       => 1,
     required      => 0,
     documentation => 'The seconds to timeout of queue_wait()',
 );

@@ -6,8 +6,13 @@ use namespace::autoclean;
 with 'MooseX::Getopt';
 with 'SayCheese::CLI::Queue::SayCheese';
 
-has '+table' => (
-    required => 1,
+has 'table' => (
+    is            => 'ro',
+    isa           => 'Str',
+    required      => 1,
+    metaclass     => 'MooseX::Getopt::Meta::Attribute',
+    cmd_aliases   => [qw( t )],
+    documentation => 'The table name where queue in',
 );
 
 has 'http_status' => (
@@ -20,7 +25,7 @@ has 'http_status' => (
 has 'timeout' => (
     is            => 'ro',
     isa           => 'Int',
-    default       => 3,
+    default       => 1,
     required      => 0,
     documentation => 'The seconds to timeout of queue_wait()',
 );

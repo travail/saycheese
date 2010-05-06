@@ -36,6 +36,60 @@ user_agent:
   from: saycheese@travail.jp
   timeout: 15
 
+SayCheese::Queue::Q4M::Worker::SayCheese:
+  debug: 1
+  max_workers: 0
+  timeout: 300
+  interval: 10
+  connect_info:
+    - 'dbi:mysql:dbname=queue_saycheese_local:host=192.168.1.1:port=3308'
+    - travail
+    - travail
+  tables:
+    - saycheese10
+    - saycheese20
+    - saycheese30
+  columns:
+    - created_on
+    - url
+    - http_status
+
+SayCheese::Queue::Q4M::Worker::Fetch::Title:
+  debug: 1
+  max_workers: 3
+  timeout: 300
+  connect_info:
+    - 'dbi:mysql:dbname=queue_saycheese:host=192.168.1.1:port=3308'
+    - travail
+    - travail
+  tables:
+    - fetch_title10
+    - fetch_title20
+    - fetch_title30
+  columns:
+    - created_on
+    - url
+    - status_code
+    - status
+
+SayCheese::Queue::Q4M::Worker::Update::Title:
+  debug: 1
+  max_workers: 3
+  timeout: 300
+  connect_info:
+    - 'dbi:mysql:dbname=queue_saycheese:host=192.168.1.1:port=3308'
+    - travail
+    - travail
+  tables:
+    - update_title10
+    - update_title20
+    - update_title30
+  columns:
+    - created_on
+    - url
+    - title
+    - status
+
 SayCheese::Queue::Worker::SayCheese:
   debug: 1
   max_workers: 3

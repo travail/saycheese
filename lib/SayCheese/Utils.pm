@@ -13,6 +13,7 @@ use Class::Inspector;
 use SayCheese::Config;
 
 our @EXPORT_OK = ( qw(
+    guess_encoding encode_utf8 encode_7bit_jis encode_iso_2022_jp decode
     connect_info
     digest2thumbpath url2thumbpath unescape_uri
 ) );
@@ -28,6 +29,49 @@ See L<SayCheese>.
 =head1 DESCRIPTION
 
 =head1 METHODS
+
+=cut
+
+sub guess_encoding {
+    my $text = shift;
+
+    Encode::Guess->set_suspects(qw( euc-jp shiftjis 7bit-jis utf8 ));
+    my $encode = Encode::Guess::guess_encoding($text);
+
+    return ref $encode ? $encode->name : 'utf8';
+}
+
+sub encode_utf8 {
+    my $text = shift;
+
+    return Encode::encode( 'utf8',
+        Encode::is_utf8($text) ? $text : SayCheese::Utils::decode($text) );
+}
+
+sub encode_7bit_jis {
+    my $text = shift;
+
+    return Encode::encode( '7bit-jis',
+        Encode::is_utf8($text) ? $text : SayCheese::Utils::decode($text) );
+}
+
+sub encode_iso_2022_jp {
+    my $text = shift;
+
+    return Encode::encode( 'MIME-Header-ISO_2022_JP',
+        Encode::is_utf8($text) ? $text : SayCheese::Utils::decode($text) );
+}
+
+sub decode {
+    my $text = shift;
+
+    if (Encode::is_utf8($text)) {
+        return $text;
+    }
+    my $encoder = SayCheese::Utils::guess_encoding($text);
+
+    return Encode::decode( $encoder, $text );
+}
 
 =head2 connect_info
 

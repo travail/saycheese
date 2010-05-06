@@ -5,6 +5,19 @@ use warnings;
 use LWP::UserAgent;
 use SayCheese::Config;
 
+sub new {
+    my ( $class, %args ) = @_;
+
+    my $config = SayCheese::Config->instance->config;
+    my $self = LWP::UserAgent->new(
+        agent   => $args{agent}   || $config->{user_agent}->{agent},
+        from    => $args{from}    || $config->{user_agent}->{from},
+        timeout => $args{timeout} || $config->{user_agent}->{timeout},
+    );
+    $self->default_header( Accept => [ qw(text/html text/plain image/*) ] );
+
+    return $self;
+}
 
 =head1 NAME
 
@@ -21,20 +34,6 @@ SayCheese UserAgent
 =head2 new
 
 =cut
-
-sub new {
-    my ( $class, %args ) = @_;
-
-    my $config = SayCheese::Config->instance->config;
-    my $self = LWP::UserAgent->new(
-        agent   => $args{agent}   || $config->{user_agent}->{agent},
-        from    => $args{from}    || $config->{user_agent}->{from},
-        timeout => $args{timeout} || $config->{user_agent}->{timeout},
-    );
-    $self->default_header( Accept => [ qw(text/html text/plain image/*) ] );
-
-    return $self;
-}
 
 =head1 AUTHOR
 

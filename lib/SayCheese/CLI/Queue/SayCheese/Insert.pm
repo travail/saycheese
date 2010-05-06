@@ -6,6 +6,15 @@ use namespace::autoclean;
 with 'MooseX::Getopt';
 with 'SayCheese::CLI::Queue::SayCheese';
 
+has 'table' => (
+    is            => 'ro',
+    isa           => 'Str',
+    required      => 1,
+    metaclass     => 'MooseX::Getopt::Meta::Attribute',
+    cmd_aliases   => [qw( t )],
+    documentation => 'The table name where queue in',
+);
+
 has 'is_finished' => (
     is            => 'ro',
     isa           => 'Int',
