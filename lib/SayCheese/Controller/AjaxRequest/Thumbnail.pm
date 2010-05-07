@@ -9,7 +9,7 @@ use Storable qw();
 use SayCheese::API::Thumbnail;
 use SayCheese::Constants qw( CACHE_FOR );
 use SayCheese::DateTime;
-use SayCheese::Queue::Worker::SayCheese;
+use SayCheese::Queue::Q4M::Worker::SayCheese;
 use SayCheese::UserAgent;
 use SayCheese::Utils qw();
 
@@ -51,7 +51,7 @@ sub create : Path('create') : Args(0) {
     my $api = SayCheese::API::Thumbnail->new;
     my $obj = $api->find_by_url($url);
     if ( !$obj || !$obj->is_finished ) {
-        my $worker = SayCheese::Queue::Worker::SayCheese->new;
+        my $worker = SayCheese::Queue::Q4M::Worker::SayCheese->new;
         $worker->enqueue('saycheese20', {
             created_on => undef,
             url        => $url,

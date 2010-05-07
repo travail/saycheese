@@ -3,7 +3,7 @@ package SayCheese::CLI::Queue::SayCheese;
 use Moose::Role;
 use SayCheese::API::Thumbnail;
 use SayCheese::Log;
-use SayCheese::Queue::Worker::SayCheese;
+use SayCheese::Queue::Q4M::Worker::SayCheese;
 use namespace::autoclean;
 
 with 'MooseX::Getopt';
@@ -37,7 +37,7 @@ has 'help' => (
 
 has '_saycheese' => (
     is       => 'ro',
-    isa      => 'SayCheese::Queue::Worker::SayCheese',
+    isa      => 'SayCheese::Queue::Q4M::Worker::SayCheese',
     required => 1,
     lazy     => 1,
     builder  => '_build_saycheese',
@@ -59,7 +59,7 @@ has '_log' => (
     builder  => '_build_log',
 );
 
-sub _build_saycheese { SayCheese::Queue::Worker::SayCheese->new }
+sub _build_saycheese { SayCheese::Queue::Q4M::Worker::SayCheese->new }
 sub _build_thumbnail { SayCheese::API::Thumbnail->new }
 sub _build_log       { SayCheese::Log->new }
 

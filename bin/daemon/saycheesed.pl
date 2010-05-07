@@ -4,6 +4,6 @@ use strict;
 use warnings;
 use FindBin qw();
 use lib "$FindBin::Bin/../../lib";
-use SayCheese::CLI::SayCheese;
+use SayCheese::CLI::Daemon::SayCheese;
 
-SayCheese::CLI::SayCheese->new_with_options->run;
+SayCheese::CLI::Daemon::SayCheese->new_with_options->run;

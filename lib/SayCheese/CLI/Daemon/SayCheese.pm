@@ -12,7 +12,7 @@ __PACKAGE__->meta->make_immutable;
 sub run {
     my $self = shift;
 
-    SayCheese::Queue::Worker::SayCheese->new(
+    SayCheese::Queue::Q4M::Worker::SayCheese->new(
         {
             max_workers => $self->max_workers,
             timeout     => $self->timeout,

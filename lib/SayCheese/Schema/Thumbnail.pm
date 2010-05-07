@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use base 'DBIx::Class';
 use SayCheese::Config;
-use SayCheese::Utils qw();
+use SayCheese::Queue::Q4M::Worker::Fetch::Title;
+use SayCheese::Utils ();
 
 __PACKAGE__->load_components( qw(
     InflateColumn::DateTime
@@ -35,6 +36,17 @@ See L<SayCheese>.
 =head1 DESCRIPTION
 
 =head1 METHODS
+
+=cut
+
+sub insert {
+    my $class = shift;
+
+    my $self = $class->next::method(@_);
+    $self->enqueue_fetch_title();
+
+    return $self;
+}
 
 =head2 as_hashref
 
@@ -102,6 +114,19 @@ Returns path to small size thumbnail.
 =cut
 
 sub small_path { SayCheese::Utils::url2thumbpath( shift->url, 'small' ) }
+
+sub enqueue_fetch_title {
+    my $self = shift;
+
+    my $worker = SayCheese::Queue::Q4M::Worker::Fetch::Title->new;
+    $worker->enqueue(
+        'update_title20',
+        {
+            created_on => undef,
+            url        => $self->url->as_string || undef,
+        }
+    );
+}
 
 =head1 AUTHOR
 

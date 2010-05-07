@@ -1,4 +1,4 @@
-package SayCheese::Queue::Worker::SayCheese;
+package SayCheese::Queue::Q4M::Worker::SayCheese;
 
 use Moose;
 use Digest::MD5 ();
@@ -9,7 +9,7 @@ use SayCheese::DateTime;
 use SayCheese::UserAgent;
 use namespace::autoclean;
 
-extends 'SayCheese::Queue::Worker';
+extends 'SayCheese::Queue::Q4M::Worker';
 
 has 'thumbnail' => (
     is       => 'ro',
