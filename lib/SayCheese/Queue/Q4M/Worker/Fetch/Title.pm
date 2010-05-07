@@ -25,6 +25,7 @@ sub _work {
     my $q = $self->dequeue_hashref;
     my $url = $q->{url};
 
+    $self->log->info( sprintf 'Fetching document %s', $url );
     $self->timer->set_mark('t0');
     $parser->parse($url);
     $self->timer->set_mark('t1');
@@ -39,7 +40,12 @@ sub _work {
     $self->log->debug( sprintf 'Took %.5f seconds to parse title %s',
         $self->timer->get_diff_time( 't2', 't3' ), $title );
 
-    $self->timer->ser_mark('t4');
+    if (!$title) {
+        $self->log->warn(sprintf "Can't fetch the title %s", $url);
+        $self->end;
+    }
+
+    $self->timer->set_mark('t4');
     $updater->enqueue(
         'update_title20',
         {
@@ -48,7 +54,7 @@ sub _work {
             title      => $title || undef,
         }
     );
-    $self->timer->ser_mark('t5');
+    $self->timer->set_mark('t5');
     $self->log->debug(
         sprintf 'Took %.5f seconds to queue in update_title',
         $self->timer->get_diff_time( 't4', 't5' )

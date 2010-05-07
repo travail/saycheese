@@ -31,11 +31,12 @@ sub _work {
     my $url   = $q->{url};
     my $title = $q->{title};
 
+    $self->log->info( sprintf 'Retrieving the thumbnail %s', $url );
     $self->timer->set_mark('t0');
     my $thumb = $self->_thumbnail->find_by_url($url);
     $self->timer->set_mark('t1');
     $self->log->debug(
-        sprintf 'Took %.5f seconds to fetch the thumbnail',
+        sprintf 'Took %.5f seconds to retrieve the thumbnail',
         $self->timer->get_diff_time( 't0', 't1' )
     );
 
