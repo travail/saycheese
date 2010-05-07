@@ -5,13 +5,12 @@ DAEMON_NAME="saycheesed_local"
 DAEMON_PATH=$DAEMON_DIR/$DAEMON_NAME
 
 mkdir -p $DAEMON_PATH
-chmod +t $DAEMON_PATH
 touch $DAEMON_PATH/run
 chmod 755 $DAEMON_PATH/run
 cat <<'EOF' > $DAEMON_PATH/run
 #!/bin/sh
 
-exec setuidgid travail envdir ./env /home/travail/git/SayCheese/bin/daemon/saycheesed.pl 2>&1
+exec setuidgid travail envdir ./env /home/travail/git/SayCheese/current/bin/daemon/saycheesed.pl 2>&1
 EOF
 
 # for env
