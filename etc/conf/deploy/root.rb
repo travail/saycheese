@@ -1,5 +1,3 @@
-require 'capistrano_colors'
-
 set :application, 'SayCheese'
 set :use_sudo,    false
 set :scm, :git
