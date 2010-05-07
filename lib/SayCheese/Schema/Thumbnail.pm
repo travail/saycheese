@@ -120,7 +120,7 @@ sub enqueue_fetch_title {
 
     my $worker = SayCheese::Queue::Q4M::Worker::Fetch::Title->new;
     $worker->enqueue(
-        'update_title20',
+        'fetch_title20',
         {
             created_on => undef,
             url        => $self->url->as_string || undef,
