@@ -102,3 +102,4 @@ invalid_uri:
 
 invalid_content_type:
   - applications/octet-stream
+  - video/3gpp
