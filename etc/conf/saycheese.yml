@@ -101,5 +101,6 @@ invalid_uri:
   - http://files.me.com
 
 invalid_content_type:
+  - application/pdf
   - applications/octet-stream
   - video/3gpp
