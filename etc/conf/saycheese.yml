@@ -105,3 +105,4 @@ invalid_content_type:
   - applications/octet-stream
   - application/octet-stream
   - video/3gpp
+  - video/x-ms-asf
