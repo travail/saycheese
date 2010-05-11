@@ -9,6 +9,8 @@ use SayCheese::DateTime;
 use SayCheese::UserAgent;
 use namespace::autoclean;
 
+use constant TABLE_REENQUEUE => 'saycheese30';
+
 extends 'SayCheese::Queue::Q4M::Worker';
 
 has 'thumbnail' => (
@@ -108,17 +110,26 @@ sub _work {
     my $res = $self->user_agent->get($url);
     $self->timer->set_mark('t1');
     $self->log->debug(
-        sprintf 'Took %.5f seconds to fetch document',
+        sprintf 'Took %.5f seconds to fetch the document',
         $self->timer->get_diff_time( 't0', 't1' )
     );
+
+    # successful response?
+    if ( !$res->is_success ) {
+        $self->log->error( sprintf '%d - %s', $res->code, $res->message );
+        $self->reenqueue(
+            {
+                url         => $url,
+                http_status => $res->code,
+            }
+        );
+    }
 
     # valid Conetnt-Type?
     my $content_type = $res->headers->header('content_type');
     if ( !SayCheese::Utils::is_valid_content_type($content_type) ) {
-        $self->enqueue(
-            'saycheese30',
+        $self->reenqueue(
             {
-                created_on  => undef,
                 url         => $url,
                 http_status => $res->code,
             }
@@ -132,10 +143,8 @@ sub _work {
     # open URL
     my $r1 = $self->open_url($url);
     if ($r1) {
-        $self->enqueue(
-            'saycheese30',
+        $self->reenqueue(
             {
-                created_on  => undef,
                 url         => $url,
                 http_status => $res->code,
             }
@@ -152,10 +161,8 @@ sub _work {
     # make original size thumbnail
     my $r2 = $self->import_display;
     if ($r2) {
-        $self->enqueue(
-            'saycheese30',
+        $self->reenqueue(
             {
-                created_on  => undef,
                 url         => $url,
                 http_status => $res->code,
             }
@@ -212,10 +219,8 @@ sub _work {
     else {
         $self->log->error('Finish to saycheese');
         $ret = FAILURE;
-        $self->enqueue(
-            'saycheese30',
+        $self->reenqueue(
             {
-                created_on  => undef,
                 url         => $url,
                 http_status => $res->code,
             }
@@ -306,6 +311,19 @@ sub saycheese_free {
     $self->log->info('Clean up img(), tmpfile()');
     $self->image(undef);
     $self->{tmpfile} = undef;
+}
+
+sub reenqueue {
+    my ( $self, $attrs ) = @_;
+
+    return $self->enqueue(
+        TABLE_REENQUEUE,
+        {
+            created_on  => undef,
+            url         => $attrs->{url},
+            http_status => $attrs->{http_status},
+        }
+    );
 }
 
 1;
