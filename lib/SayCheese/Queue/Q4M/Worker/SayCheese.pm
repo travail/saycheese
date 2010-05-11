@@ -123,7 +123,7 @@ sub _work {
                 http_status => $res->code,
             }
         );
-        $self->log->error("$content_type is invalid");
+        $self->log->error("Invalid Content-Type $content_type");
         $self->log->info('Finish to saycheese');
         $self->end;
         return FAILURE;
