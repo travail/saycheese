@@ -1,10 +1,10 @@
 load 'etc/conf/deploy/root'
 
-set :user,        'mina'
-set :deploy_to,   "/home/public/#{application}"
+set :user,      'mina'
+set :deploy_to, "/home/public/#{application}"
 
-role :web,        '192.168.1.1'
-role :app,        '192.168.1.2'
+role :web,    '192.168.1.1'
+role :app,    '192.168.1.2'
 role :worker, '192.168.1.1'
 
 namespace :deploy do
@@ -17,7 +17,7 @@ namespace :deploy do
     task :stop do
       run "#{sudo} mv /service/saycheesed /service/.saycheesed && #{sudo} svc -dx /service/.saycheesed && #{sudo} svc -dx /service/.saycheesed/log"
     end
-    desc 'Stop saycheesed'
+    desc 'Restart saycheesed'
     task :restart do
       run "#{sudo} svc -t /service/saycheesed && #{sudo} svc -t /service/saycheesed/log"
     end
