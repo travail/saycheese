@@ -17,4 +17,8 @@ namespace :deploy do
     run "mkdir -p #{shared_path}/cache/tt"
     run "chmod -R 777 #{shared_path}/cache"
   end
+
+  desc 'Finalize update'
+  task :finalize_update, roles => [:web, :app] do
+  end
 end
