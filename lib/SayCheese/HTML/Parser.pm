@@ -37,14 +37,14 @@ has status_code => (
 has content => (
     is       => 'rw',
     isa      => 'Str',
-    default  => undef,
+    default  => '',
     required => 0,
 );
 
 has decoded_content => (
     is       => 'rw',
     isa      => 'Str',
-    default  => undef,
+    default  => '',
     required => 0,
 );
 
@@ -88,8 +88,8 @@ sub _parse_from_uri {
     $self->is_success( $res->is_success );
     return '' if !$res->is_success;
 
-    $self->content( $res->content );
-    $self->decoded_content( $res->decoded_content );
+    $self->content( $res->content || '' );
+    $self->decoded_content( $res->decoded_content || '' );
 
     return $self;
 }
