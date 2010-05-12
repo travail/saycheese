@@ -13,7 +13,11 @@ sub run {
     my $self = shift;
 
     SayCheese::Queue::Q4M::Worker::Update::Title->new(
-        { max_workers => $self->max_workers, } )->work;
+        {
+            max_workers => $self->max_workers,
+            timeout     => $self->timeout,
+        }
+    )->work;
 }
 
 1;
