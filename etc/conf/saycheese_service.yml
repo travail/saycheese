@@ -1,6 +1,9 @@
 ---
 DEBUG: info
 
+service_url: http://saycheese.travail.jp/
+thumb_url: http://thumb.saycheese.travail.jp/
+
 Model::DBIC::SayCheese:
   schema_class: SayCheese::Schema
   connect_info:
