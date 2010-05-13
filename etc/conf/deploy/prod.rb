@@ -50,12 +50,4 @@ namespace :deploy do
       run "#{sudo} svc -t /service/updatetitled && #{sudo} svc -t /service/updatetitled/log"
     end
   end
-
-  desc 'Restart apache'
-  task :restart do
-    parallel do |session|
-      session.when "in?(:web) || in?(:app)", "#{sudo} /etc/rc.d/init.d/httpd restart"
-      session.else "echo nothing to do"
-    end
-  end
 end

@@ -21,4 +21,12 @@ namespace :deploy do
   desc 'Finalize update'
   task :finalize_update, roles => [:web, :app] do
   end
+
+  desc 'Restart apache'
+  task :restart do
+    parallel do |session|
+      session.when "in?(:web) || in?(:app)", "#{sudo} /etc/rc.d/init.d/httpd restart"
+      session.else "echo Nothing to do"
+    end
+  end
 end
