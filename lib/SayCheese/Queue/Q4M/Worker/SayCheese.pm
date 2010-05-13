@@ -84,24 +84,21 @@ sub _work {
     if ( !SayCheese::Utils::is_valid_scheme($url) ) {
         $self->log->error('Invalid scheme');
         $self->log->info('Finish to saycheese');
-        $self->end;
-        return FAILURE;
+        return $self->end;
     }
 
     # valid URI
     if ( !SayCheese::Utils::is_valid_uri($url) ) {
         $self->log->error('Invalid URI');
         $self->log->info('Finish to saycheese');
-        $self->end;
-        return FAILURE;
+        return $self->end;
     }
 
     # valid extension?
     if ( !SayCheese::Utils::is_valid_extension($url) ) {
         $self->log->error('Invalid extension');
         $self->log->info('Finish to saycheese');
-        $self->end;
-        return FAILURE;
+        return $self->end;
     }
 
     # URL exists?
@@ -123,6 +120,7 @@ sub _work {
                 http_status => $res->code,
             }
         );
+        return $self->end;
     }
 
     # valid Conetnt-Type?
@@ -136,8 +134,7 @@ sub _work {
         );
         $self->log->error("Invalid Content-Type $content_type");
         $self->log->info('Finish to saycheese');
-        $self->end;
-        return FAILURE;
+        return $self->end;
     }
 
     # open URL
@@ -151,8 +148,7 @@ sub _work {
         );
         $self->log->error("Can't open URL, open_url() returned $r1");
         $self->log->info('Finish to saycheese');
-        $self->end;
-        return FAILURE;
+        return $self->end;
     }
     $self->log->info("Rendering $url");
     $self->log->info( sprintf 'Wait %d seconds...', $self->interval );
@@ -169,8 +165,7 @@ sub _work {
         );
         $self->log->error("Can't import, import_display() returned $r2");
         $self->log->info("Finish to saycheese");
-        $self->end;
-        return FAILURE;
+        return $self->end;
     }
 
     my $now = SayCheese::DateTime->now;
