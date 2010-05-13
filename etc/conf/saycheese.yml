@@ -100,8 +100,9 @@ invalid_uri:
 
 invalid_content_type:
   - application/pdf
-  - applications/octet-stream
   - application/octet-stream
+  - application/unregisterd-mime-type-to-avoid-IE-MIME-sniffing;
+  - applications/octet-stream
   - video/3gpp
   - video/mpeg
   - video/x-ms-asf
