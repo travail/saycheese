@@ -10,8 +10,6 @@ View::JSON:
   expose_stash: json_data
   encoding: utf8
 
-service_url: http://saycheese.travail.jp/
-
 authentication:
   default_realm: member
   realms:
