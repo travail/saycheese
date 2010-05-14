@@ -30,7 +30,7 @@ sub run {
         )
     {
         my $q = $self->_fetch_title->dequeue_hashref;
-        $self->_log->fdebug($q->{url});
+        $self->_log->fdebug( $q->{url} );
         $self->_fetch_ttle->end;
     }
 }
