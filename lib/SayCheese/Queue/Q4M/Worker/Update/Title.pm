@@ -31,6 +31,11 @@ sub _work {
     my $url   = $q->{url};
     my $title = $q->{title};
 
+    if (!$title) {
+        $self->log->warn('No title dequeued');
+        return $self->end;
+    }
+
     $self->log->info( sprintf 'Retrieving the thumbnail %s', $url );
     $self->timer->set_mark('t0');
     my $thumb = $self->_thumbnail->find_by_url($url);

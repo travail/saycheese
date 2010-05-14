@@ -22,7 +22,7 @@ sub _work {
     $self->timer->start;
     $self->log->info( sprintf 'Queue found in %s', $res->as_string );
 
-    my $q = $self->dequeue_hashref;
+    my $q   = $self->dequeue_hashref;
     my $url = $q->{url};
 
     $self->log->info( sprintf 'Fetching document %s', $url );
@@ -40,9 +40,9 @@ sub _work {
     $self->log->debug( sprintf 'Took %.5f seconds to parse title %s',
         $self->timer->get_diff_time( 't2', 't3' ), $title );
 
-    if (!$title) {
-        $self->log->warn(sprintf "Can't fetch the title %s", $url);
-        $self->end;
+    if ( !$title ) {
+        $self->log->warn( sprintf "Can't fetch the title %s", $url );
+        return $self->end;
     }
 
     $self->timer->set_mark('t4');
