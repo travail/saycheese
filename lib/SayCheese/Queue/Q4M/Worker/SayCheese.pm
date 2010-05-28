@@ -168,10 +168,8 @@ sub _work {
         return $self->end;
     }
 
-    my $now = SayCheese::DateTime->now;
     $obj = $self->thumbnail->create(
         {
-            created_on => $now                       || undef,
             url        => $url                       || undef,
             digest     => Digest::MD5::md5_hex($url) || undef,
         },

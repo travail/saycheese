@@ -4,10 +4,12 @@ use strict;
 use warnings;
 use base 'DBIx::Class';
 use SayCheese::Config;
+use SayCheese::DateTime;
 use SayCheese::Queue::Q4M::Worker::Fetch::Title;
 use SayCheese::Utils ();
 
 __PACKAGE__->load_components( qw(
+    TimeStamp
     InflateColumn::DateTime
     InflateColumn::URI
     Core
@@ -15,7 +17,7 @@ __PACKAGE__->load_components( qw(
 __PACKAGE__->table('thumbnail');
 __PACKAGE__->add_columns(
     'id',
-    'created_on', { data_type => 'datetime' },
+    'created_on', { data_type => 'datetime', set_on_create => 1 },
     'modified_on', { data_type => 'datetime' },
     'url', { data_type => 'varchar', is_uri => 1 },
     'title',
@@ -127,6 +129,8 @@ sub enqueue_fetch_title {
         }
     );
 }
+
+sub get_timestamp { SayCheese::DateTime->now }
 
 =head1 AUTHOR
 

@@ -7,13 +7,14 @@ use SayCheese::Config;
 use SayCheese::Utils qw();
 
 __PACKAGE__->load_components( qw(
+    TimeStamp
     InflateColumn::DateTime
     Core
 ) );
 __PACKAGE__->table('member');
 __PACKAGE__->add_columns(
     'id',
-    'created_on', { data_type => 'datetime' },
+    'created_on', { data_type => 'datetime', set_on_create => 1 },
     'modified_on', { data_type => 'datetime' },
     'member_id',
     'password',
@@ -21,6 +22,8 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint( unique_member_id => [ qw( member_id ) ] );
+
+sub get_timestamp { SayCheese::DateTime->now }
 
 =head1 NAME
 
@@ -33,14 +36,6 @@ See L<SayCheese>.
 =head1 DESCRIPTION
 
 =head1 METHODS
-
-=head2 foo
-
-Foo
-
-=cut
-
-sub foo {}
 
 =head1 AUTHOR
 
