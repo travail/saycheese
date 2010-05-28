@@ -2,11 +2,11 @@
 
 use strict;
 use warnings;
-use FindBin qw/ $Bin /;
-use lib "$Bin/../lib";
+use FindBin ();
+use lib "$FindBin::Bin/../../lib";
 use SayCheese::Schema;
-use SayCheese::Utils qw//;
-use Digest::MD5 qw/ md5_hex /;
+use SayCheese::Utils ();
+use Digest::MD5 qw( md5_hex );
 use Getopt::Long;
 use Pod::Usage;
 
