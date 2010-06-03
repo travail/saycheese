@@ -5,7 +5,6 @@ use warnings;
 use DateTime;
 use DateTime::Format::HTTP;
 use DateTime::Format::MySQL;
-use SayCheese::Config;
 
 use constant TIME_ZONE => 'Asia/Tokyo';
 
