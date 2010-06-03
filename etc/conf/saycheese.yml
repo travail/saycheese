@@ -30,8 +30,6 @@ session:
     - 192.168.1.1:11211
     - 192.168.1.2:11211
 
-time_zone: Asia/Tokyo
-
 cache:
   servers:
     - 192.168.1.1:11211 
