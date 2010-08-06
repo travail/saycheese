@@ -95,6 +95,7 @@ invalid_uri:
   - http://jp.youtube.com
   - http://www.nicovideo.jp
   - http://files.me.com
+  - http://statter.hoge.in
 
 invalid_content_type:
   - application/pdf
