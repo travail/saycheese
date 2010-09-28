@@ -88,6 +88,7 @@ invalid_extension:
   - dmg
   - pls
   - swf
+  - gz
 
 invalid_uri:
   - http://youtube.com
