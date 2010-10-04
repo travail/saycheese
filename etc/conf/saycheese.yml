@@ -109,3 +109,4 @@ invalid_content_type:
   - video/3gpp
   - video/mpeg
   - video/x-ms-asf
+  - video/x-ms-wmv
