@@ -1,33 +1,28 @@
 use strict;
 use warnings;
-use Test::More tests => 21;
+use Test::More tests => 39;
+use SayCheese::Config;
 use Data::Dumper;
 
 BEGIN { use_ok 'SayCheese::Utils' }
 
-my @invalid_extension = qw(
-    http://example.com/example.pdf
-    http://example.com/example.mov
-    http://example.com/example.rm
-    http://example.com/example.wmv
-    http://example.com/example.mp3
-    http://example.com/example.mp4
-    http://example.com/example.wav
-    http://example.com/example.ppt
-    http://example.com/example.doc
-    http://example.com/example.png
-    http://example.com/example.jpg
-    http://example.com/example.jpeg
-    http://example.com/example.gif
-    http://example.com/example.zip
-    http://example.com/example.lzh
-    http://example.com/example.dmg
-    http://example.com/example.pls
-    http://example.com/example.swf
-    http://example.com/example.gz
-    http://example.com/example.tar.gz
-);
-foreach my $invalid_extension (@invalid_extension) {
-    is(SayCheese::Utils::is_valid_extension($invalid_extension),
+my $config = SayCheese::Config->instance->config;
+
+my @invalid_ext = @{$config->{invalid_extension}};
+foreach my $invalid_ext (@invalid_ext) {
+    my $url = 'http://example.com/file.' . $invalid_ext;
+    is(SayCheese::Utils::is_valid_extension($url),
         0, 'is_valid_extension');
+}
+
+my @invalid_uri = @{$config->{invalid_uri}};
+foreach my $invalid_uri (@invalid_uri) {
+    is(SayCheese::Utils::is_valid_uri($invalid_uri),
+        0, 'invalid_uri');
+}
+
+my @invalid_content_type = @{$config->{invalid_content_type}};
+foreach my $invalid_content_type (@invalid_content_type) {
+    is(SayCheese::Utils::is_valid_content_type($invalid_content_type),
+        0, 'is_valid_content_type');
 }

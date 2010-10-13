@@ -97,6 +97,8 @@ invalid_uri:
   - http://www.nicovideo.jp
   - http://files.me.com
   - http://statter.hoge.in
+  - http://www.kaunet.com
+  - https://www.kaunet.com
 
 invalid_content_type:
   - application/pdf
@@ -106,6 +108,7 @@ invalid_content_type:
   - application/x-httpd-php
   - application/x-tar
   - applications/octet-stream
+  - text/x-server-parsed-html
   - video/3gpp
   - video/mpeg
   - video/x-ms-asf
