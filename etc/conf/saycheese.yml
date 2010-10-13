@@ -99,6 +99,7 @@ invalid_uri:
   - http://statter.hoge.in
   - http://www.kaunet.com
   - https://www.kaunet.com
+  - http://clipper.shop24.makeshop.jp
 
 invalid_content_type:
   - application/pdf
