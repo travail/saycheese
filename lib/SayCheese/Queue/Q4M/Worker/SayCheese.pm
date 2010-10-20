@@ -42,13 +42,11 @@ has browser => (
 has ua_timeout => (
     is         => 'rw',
     isa        => 'Int',
-    lazy_build => 1,
 );
 
 has interval => (
     is         => 'rw',
     isa        => 'Int',
-    lazy_build => 1,
 );
 
 sub _build_thumbnail { SayCheese::API::Thumbnail->new }

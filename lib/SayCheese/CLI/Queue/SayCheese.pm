@@ -59,7 +59,11 @@ has '_log' => (
     builder  => '_build_log',
 );
 
-sub _build_saycheese { SayCheese::Queue::Q4M::Worker::SayCheese->new }
+sub _build_saycheese {
+    SayCheese::Queue::Q4M::Worker::SayCheese->new(
+        { max_workers => 1, timeout => 5, ua_timeout => 10, interval => 10 }
+    );
+}
 sub _build_thumbnail { SayCheese::API::Thumbnail->new }
 sub _build_log       { SayCheese::Log->new }
 
