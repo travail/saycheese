@@ -1,6 +1,7 @@
 package SayCheese::Queue::Q4M::Worker::SayCheese;
 
 use Moose;
+use Carp ();
 use Digest::MD5 ();
 use Image::Magick;
 use SayCheese::API::Thumbnail;
@@ -13,7 +14,7 @@ use constant TABLE_REENQUEUE => 'saycheese30';
 
 extends 'SayCheese::Queue::Q4M::Worker';
 
-has 'thumbnail' => (
+has thumbnail => (
     is       => 'ro',
     isa      => 'SayCheese::API::Thumbnail',
     required => 1,
@@ -21,37 +22,51 @@ has 'thumbnail' => (
     builder  => '_build_thumbnail'
 );
 
-has 'image' => (
+has image => (
     is       => 'rw',
 );
 
-has 'user_agent' => (
+has user_agent => (
     is       => 'rw',
     required => 1,
     lazy     => 1,
     builder  => '_build_user_agent',
 );
 
-has 'browser' => (
+has browser => (
     is      => 'rw',
     isa     => 'Str',
     default => 'firefox',
 );
 
-has 'interval' => (
-    is  => 'rw',
-    isa => 'Int',
+has ua_timeout => (
+    is         => 'rw',
+    isa        => 'Int',
+    lazy_build => 1,
 );
 
-sub _build_thumbnail  { SayCheese::API::Thumbnail->new }
-sub _build_user_agent { SayCheese::UserAgent->new }
+has interval => (
+    is         => 'rw',
+    isa        => 'Int',
+    lazy_build => 1,
+);
+
+sub _build_thumbnail { SayCheese::API::Thumbnail->new }
+
+sub _build_user_agent {
+    my $self = shift;
+
+    return SayCheese::UserAgent->new( timeout => $self->ua_timeout );
+}
 
 sub BUILD {
     my $self = shift;
 
+    Carp::croak "Specify natural number for ua_timeout"
+        if !SayCheese::Utils::is_natural_number( $self->ua_timeout );
+    Carp::croak "Specify natural numbre for interval"
+        if !SayCheese::Utils::is_natural_number( $self->interval );
     $ENV{DISPLAY} = $self->config->{DISPLAY};
-    $self->interval( $self->config->{ $self->meta->name }->{interval} )
-        if !$self->interval;
 }
 
 __PACKAGE__->meta->make_immutable;

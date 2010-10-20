@@ -43,6 +43,7 @@ SayCheese::Queue::Q4M::Worker::SayCheese:
   debug: 1
   max_workers: 0
   timeout: 300
+  ua_timeout: 10
   interval: 10
   connect_info:
     - 'dbi:mysql:dbname=queue_saycheese_local:host=192.168.1.1:port=3308'
@@ -92,21 +93,3 @@ SayCheese::Queue::Q4M::Worker::Update::Title:
     - url
     - title
     - status
-
-SayCheese::Queue::Worker::SayCheese:
-  debug: 1
-  max_workers: 3
-  timeout: 300
-  interval: 10
-  connect_info:
-    - 'dbi:mysql:dbname=queue_saycheese:host=192.168.1.1:port=3308'
-    - travail
-    - travail
-  tables:
-    - saycheese10
-    - saycheese20
-    - saycheese30
-  columns:
-    - created_on
-    - url
-    - http_status

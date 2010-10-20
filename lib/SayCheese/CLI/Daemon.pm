@@ -1,21 +1,26 @@
 package SayCheese::CLI::Daemon;
 
 use Moose::Role;
+use Moose::Util::TypeConstraints;
+use SayCheese::Utils ();
 use namespace::autoclean;
 
 with 'MooseX::Getopt';
 
+subtype 'NaturalNumber' => as 'Int' =>
+    where { SayCheese::Utils::is_natural_number($_) };
+
 has max_workers => (
     is            => 'ro',
-    isa           => 'Int',
-    default       => 0,
+    isa           => 'NaturalNumber',
+    default       => 1,
     required      => 0,
     documentation => 'The number of processes to be forked',
 );
 
 has timeout => (
     is            => 'ro',
-    isa           => 'Int',
+    isa           => 'NaturalNumber',
     default       => 300,
     required      => 0,
     documentation => 'The number of senconds to timeout queue_wait()',

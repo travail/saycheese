@@ -12,6 +12,7 @@ use Digest::MD5 ();
 use Path::Class;
 use URI;
 use Class::Inspector;
+use Scalar::Util ();
 use SayCheese::Config;
 
 our @EXPORT_OK = ( qw(
@@ -218,6 +219,15 @@ sub is_valid_content_type {
     my $config = SayCheese::Config->instance->config;
 
     return grep( { $string eq $_ } @{ $config->{invalid_content_type} } ) ? 0 : 1;
+}
+
+sub is_natural_number {
+    my $num = shift;
+
+    return
+           Scalar::Util::looks_like_number($num)
+        && ( $num > 0 )
+        && ( $num % 1 == 0 );
 }
 
 =head2 appprefix
