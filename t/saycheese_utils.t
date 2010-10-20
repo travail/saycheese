@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 41;
+use Test::More tests => 42;
 use SayCheese::Config;
 use Data::Dumper;
 
