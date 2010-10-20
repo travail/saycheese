@@ -20,6 +20,9 @@ namespace :deploy do
 
   desc 'Finalize update'
   task :finalize_update, roles => [:web, :app] do
+    run <<-CMD
+      ln -s #{release_path}/etc/httpd/#{apache_config} #{release_path}/etc/httpd/web.conf
+    CMD
   end
 
   desc 'Restart apache'
@@ -27,6 +30,25 @@ namespace :deploy do
     parallel do |session|
       session.when "in?(:web) || in?(:app)", "#{sudo} /etc/rc.d/init.d/httpd restart"
       session.else "echo Nothing to do"
+    end
+  end
+
+  namespace :web do
+    desc ''
+    task :enable, :roles => :web do
+      run <<-CMD
+        rm -f #{current_path}/etc/httpd/web.conf &&
+        ln -s #{current_path}/etc/httpd/#{apache_config} #{current_path}/etc/httpd/web.conf &&
+        #{sudo} /etc/rc.d/init.d/httpd reload
+      CMD
+    end
+    desc ''
+    task :disable, :roles => :web do
+      run <<-CMD
+        rm -f #{current_path}/etc/httpd/web.conf &&
+        ln -s #{current_path}/etc/httpd/#{maintenance_config} #{current_path}/etc/httpd/web.conf &&
+        #{sudo} /etc/rc.d/init.d/httpd reload
+      CMD
     end
   end
 end

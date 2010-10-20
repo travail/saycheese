@@ -1,7 +1,9 @@
 load 'etc/conf/deploy/root'
 
-set :user,        'travail'
-set :deploy_to,   "/home/travail/git/#{application}"
+set :user,               'travail'
+set :deploy_to,          "/home/travail/git/#{application}"
+set :apache_config,      'www.saycheese_local.conf'
+set :maintenance_config, 'www.saycheese_local_maintenance.conf'
 
 role :web,    '192.168.1.1'
 role :app,    '192.168.1.2'
