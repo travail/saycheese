@@ -18,13 +18,61 @@ namespace :deploy do
     run "chmod -R 777 #{shared_path}/cache"
   end
 
+  # finalize update
   desc 'Finalize update'
   task :finalize_update, roles => [:web, :app] do
     run <<-CMD
-      ln -s #{release_path}/etc/httpd/#{apache_config} #{release_path}/etc/httpd/web.conf
+      ln -s #{www_conf_path} #{release_path}/etc/httpd/web.conf
     CMD
   end
 
+  # worker
+  namespace :saycheesed do
+    desc 'Start saycheesed'
+    task :start do
+      daemon_start "#{saycheesed_name}"
+    end
+    desc 'Stop saycheesed'
+    task :stop do
+      daemon_stop "#{saycheesed_name}"
+    end
+    desc 'Restart saycheesed'
+    task :restart do
+      daemon_restart "#{saycheesed_name}"
+    end
+  end
+
+  namespace :fetchtitled do
+    desc 'Start fetchtitled'
+    task :start do
+      daemon_start "#{fetchtitled_name}"
+    end
+    desc 'Stop fetchtitled'
+    task :stop do
+      daemon_stop "#{fetchtitled_name}"
+    end
+    desc 'Restart fetchtitled'
+    task :restart do
+      daemon_restart "#{fetchtitled_name}"
+    end
+  end
+
+  namespace :updatetitled do
+    desc 'Start updatetitled'
+    task :start do
+      daemon_start "#{updatetitled_name}"
+    end
+    desc 'Stop updatetitled'
+    task :stop do
+      daemon_stop "#{updatetitled_name}"
+    end
+    desc 'Restart updatetitled'
+    task :restart do
+      daemon_restart "#{updatetitled_name}"
+    end
+  end
+
+  # httpd
   desc 'Restart apache'
   task :restart do
     parallel do |session|
@@ -37,18 +85,29 @@ namespace :deploy do
     desc ''
     task :enable, :roles => :web do
       run <<-CMD
-        rm -f #{current_path}/etc/httpd/web.conf &&
-        ln -s #{current_path}/etc/httpd/#{apache_config} #{current_path}/etc/httpd/web.conf &&
+        rm -f #{httpd_conf_root}/web.conf &&
+        ln -s #{www_conf_path} #{current_path}/etc/httpd/web.conf &&
         #{sudo} /etc/rc.d/init.d/httpd reload
       CMD
     end
     desc ''
     task :disable, :roles => :web do
       run <<-CMD
-        rm -f #{current_path}/etc/httpd/web.conf &&
-        ln -s #{current_path}/etc/httpd/#{maintenance_config} #{current_path}/etc/httpd/web.conf &&
+        rm -f #{httpd_conf_root}/web.conf &&
+        ln -s #{maintenance_conf_path} #{current_path}/etc/httpd/web.conf &&
         #{sudo} /etc/rc.d/init.d/httpd reload
       CMD
     end
+  end
+
+  # utilities
+  def daemon_start(name)
+      run "#{sudo} mv /service/.#{name} /service/#{name}"
+  end
+  def daemon_stop(name)
+      run "#{sudo} mv /service/#{name} /service/.#{name} && #{sudo} svc -dx /service/.#{name} && #{sudo} svc -dx /service/.#{name}/log"
+  end
+  def daemon_restart(name)
+    run "#{sudo} svc -t /service/#{name} && #{sudo} svc -t /service/#{name}/log"
   end
 end
