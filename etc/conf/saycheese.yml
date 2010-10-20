@@ -105,6 +105,7 @@ invalid_content_type:
   - application/pdf
   - application/octet-stream
   - application/unregisterd-mime-type-to-avoid-IE-MIME-sniffing;
+  - application/vnd.openxmlformats
   - application/x-gzip
   - application/x-httpd-php
   - application/x-tar
