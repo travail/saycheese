@@ -1,7 +1,6 @@
 package SayCheese::Queue::Q4M::Worker::SayCheese;
 
 use Moose;
-use Carp ();
 use Digest::MD5 ();
 use Image::Magick;
 use SayCheese::API::Thumbnail;
@@ -42,28 +41,26 @@ has browser => (
 has ua_timeout => (
     is         => 'rw',
     isa        => 'Int',
+    lazy_build => 1,
 );
 
 has interval => (
     is         => 'rw',
     isa        => 'Int',
+    lazy_build => 1,
 );
 
 sub _build_thumbnail { SayCheese::API::Thumbnail->new }
 
 sub _build_user_agent {
-    my $self = shift;
-
-    return SayCheese::UserAgent->new( timeout => $self->ua_timeout );
+    SayCheese::UserAgent->new( timeout => $_[0]->ua_timeout );
 }
+sub _build_ua_timeout { $_[0]->config( $_[0]->meta->name )->{ua_timeout} }
+sub _build_interval   { $_[0]->config( $_[0]->meta->name )->{interval} }
 
 sub BUILD {
     my $self = shift;
 
-    Carp::croak "Specify natural number for ua_timeout"
-        if !SayCheese::Utils::is_natural_number( $self->ua_timeout );
-    Carp::croak "Specify natural numbre for interval"
-        if !SayCheese::Utils::is_natural_number( $self->interval );
     $ENV{DISPLAY} = $self->config->{DISPLAY};
 }
 
