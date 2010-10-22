@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 42;
+use Test::More qw(no_plan);
 use SayCheese::Config;
 use Data::Dumper;
 
