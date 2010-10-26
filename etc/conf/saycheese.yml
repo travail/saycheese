@@ -102,6 +102,7 @@ invalid_uri:
   - http://clipper.shop24.makeshop.jp
   - http://shop.ohm.jp
   - http://d.hatena.ne.jp/ranpha
+  - http://shop.jmam.co.jp
 
 invalid_content_type:
   - application/pdf
