@@ -101,6 +101,7 @@ invalid_uri:
   - https://www.kaunet.com
   - http://clipper.shop24.makeshop.jp
   - http://shop.ohm.jp
+  - http://d.hatena.ne.jp/ranpha
 
 invalid_content_type:
   - application/pdf
