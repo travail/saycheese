@@ -109,6 +109,7 @@ invalid_content_type:
   - application/pdf;charset=shift_jis
   - application/octet-stream
   - application/unregisterd-mime-type-to-avoid-IE-MIME-sniffing;
+  - application/vnd.ms-powerpoint
   - application/vnd.openxmlformats
   - application/x-gzip
   - application/x-httpd-php
