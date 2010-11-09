@@ -106,6 +106,7 @@ invalid_uri:
 
 invalid_content_type:
   - application/pdf
+  - application/pdf;charset=shift_jis
   - application/octet-stream
   - application/unregisterd-mime-type-to-avoid-IE-MIME-sniffing;
   - application/vnd.openxmlformats
