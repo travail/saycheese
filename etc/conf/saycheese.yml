@@ -107,6 +107,7 @@ invalid_uri:
 invalid_content_type:
   - application/pdf
   - application/pdf;charset=shift_jis
+  - application/pdf;charset=UTF-8
   - application/octet-stream
   - application/unregisterd-mime-type-to-avoid-IE-MIME-sniffing;
   - application/vnd.ms-powerpoint
