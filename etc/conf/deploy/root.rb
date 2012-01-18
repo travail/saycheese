@@ -12,10 +12,11 @@ namespace :deploy do
     dirs = [deploy_to, releases_path, shared_path]
     dirs += shared_children.map { |d| File.join(shared_path, d) }
     run "mkdir -p #{dirs.join(' ')} && chmod g+w #{dirs.join(' ')}"
-    run "chmod -R g+w #{shared_path}/root"
+    run "#{sudo} chmod -R g+w #{shared_path}/root"
     run "mkdir -p #{shared_path}/cache"
     run "mkdir -p #{shared_path}/cache/tt"
-    run "chmod -R 777 #{shared_path}/cache"
+    run "#{sudo} chmod -R 777 #{shared_path}/cache"
+    run "#{sudo} mkdir -p #{httpd_conf_root}"
   end
 
   # finalize update
@@ -85,16 +86,35 @@ namespace :deploy do
     desc ''
     task :enable, :roles => :web do
       run <<-CMD
-        rm -f #{httpd_conf_root}/web.conf &&
-        ln -s #{www_conf_path} #{current_path}/etc/httpd/web.conf &&
+        #{sudo} rm -f #{httpd_conf_root}/web.conf &&
+        #{sudo} ln -s #{current_path}/etc/httpd/#{www_conf_file} #{httpd_conf_root}/web.conf &&
         #{sudo} /etc/rc.d/init.d/httpd reload
       CMD
     end
     desc ''
     task :disable, :roles => :web do
       run <<-CMD
-        rm -f #{httpd_conf_root}/web.conf &&
-        ln -s #{maintenance_conf_path} #{current_path}/etc/httpd/web.conf &&
+        #{sudo} rm -f #{httpd_conf_root}/web.conf &&
+        #{sudo} ln -s #{current_path}/etc/httpd/#{www_maintenance_conf_file} #{httpd_conf_root}/web.conf &&
+        #{sudo} /etc/rc.d/init.d/httpd reload
+      CMD
+    end
+  end
+
+  namespace :thumb do
+    desc ''
+    task :enable, :roles => :web do
+      run <<-CMD
+        #{sudo} rm -f #{httpd_conf_root}/thumb.conf &&
+        #{sudo} ln -s #{current_path}/etc/httpd/#{thumb_conf_file} #{httpd_conf_root}/thumb.conf &&
+        #{sudo} /etc/rc.d/init.d/httpd reload
+      CMD
+    end
+    desc ''
+    task :disable, :roles => :web do
+      run <<-CMD
+        #{sudo} rm -f #{httpd_conf_root}/thumb.conf &&
+        #{sudo} ln -s #{current_path}/etc/httpd/#{thumb_maintenance_conf_file} #{httpd_conf_root}/thumb.conf &&
         #{sudo} /etc/rc.d/init.d/httpd reload
       CMD
     end
