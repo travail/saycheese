@@ -82,12 +82,12 @@ sub _work {
     my $obj = $self->thumbnail->find_by_url($url);
     if ($obj) {
         $self->log->info( 'Already exists ' . $obj->id );
-        if ( $obj->is_finished ) {
-            $self->log->info('Already finished');
-            $self->log->info('Finish to saycheese');
-            $self->end;
-            return $obj->id;
-        }
+        # if ( $obj->is_finished ) {
+        #     $self->log->info('Already finished');
+        #     $self->log->info('Finish to saycheese');
+        #     $self->end;
+        #     return $obj->id;
+        # }
     }
 
     # valid schema?
@@ -292,7 +292,7 @@ sub create_img {
     $image->Crop(
         width  => $args{width},
         height => $args{height},
-        x      => 7,
+        x      => 40,
         y      => 116
     );
     $self->image($image);
