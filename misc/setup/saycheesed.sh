@@ -10,7 +10,7 @@ chmod 755 $DAEMON_PATH/run
 cat <<'EOF' > $DAEMON_PATH/run
 #!/bin/sh
 
-exec setuidgid travail envdir ./env /home/public/SayCheese/current/bin/daemon/saycheesed.pl 2>&1
+exec setuidgid travail envdir ./env /home/public/SayCheese/current/bin/daemon/saycheesed.pl --interval 6 --ua_timeout 3 2>&1
 EOF
 
 # for env
