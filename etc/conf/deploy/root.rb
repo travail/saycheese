@@ -22,9 +22,6 @@ namespace :deploy do
   # finalize update
   desc 'Finalize update'
   task :finalize_update, roles => [:web, :app] do
-    run <<-CMD
-      ln -s #{www_conf_path} #{release_path}/etc/httpd/web.conf
-    CMD
   end
 
   # worker
