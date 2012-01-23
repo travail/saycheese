@@ -1,7 +1,7 @@
 set :application, 'SayCheese'
 set :use_sudo,    false
 set :scm, :git
-set :repository,  'ssh://git.travail.jp/home/public/GIT_REPOS/saycheese.git'
+set :repository,  'ssh://git.travail.jp/var/git/saycheese.git'
 set :branche,     'master'
 set :deploy_via,  :export
 set :shared_children, %w(log root/src/include)
